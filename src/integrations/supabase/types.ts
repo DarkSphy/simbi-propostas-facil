@@ -14,7 +14,186 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      clients: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          name: string
+          notes: string | null
+          phone: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          phone?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          company_name: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          logo_url: string | null
+          updated_at: string
+          whatsapp: string | null
+        }
+        Insert: {
+          company_name?: string | null
+          created_at?: string
+          full_name?: string | null
+          id: string
+          logo_url?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+        }
+        Update: {
+          company_name?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          logo_url?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+        }
+        Relationships: []
+      }
+      proposal_images: {
+        Row: {
+          created_at: string
+          id: string
+          proposal_id: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          proposal_id: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          proposal_id?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "proposal_images_proposal_id_fkey"
+            columns: ["proposal_id"]
+            isOneToOne: false
+            referencedRelation: "proposals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      proposal_items: {
+        Row: {
+          description: string
+          id: string
+          proposal_id: string
+          quantity: number
+          sort_order: number
+          unit_price: number
+        }
+        Insert: {
+          description: string
+          id?: string
+          proposal_id: string
+          quantity?: number
+          sort_order?: number
+          unit_price?: number
+        }
+        Update: {
+          description?: string
+          id?: string
+          proposal_id?: string
+          quantity?: number
+          sort_order?: number
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "proposal_items_proposal_id_fkey"
+            columns: ["proposal_id"]
+            isOneToOne: false
+            referencedRelation: "proposals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      proposals: {
+        Row: {
+          approved_at: string | null
+          client_id: string | null
+          created_at: string
+          description: string | null
+          id: string
+          notes: string | null
+          public_slug: string
+          status: Database["public"]["Enums"]["proposal_status"]
+          title: string
+          total: number
+          updated_at: string
+          user_id: string
+          viewed_at: string | null
+        }
+        Insert: {
+          approved_at?: string | null
+          client_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          notes?: string | null
+          public_slug?: string
+          status?: Database["public"]["Enums"]["proposal_status"]
+          title: string
+          total?: number
+          updated_at?: string
+          user_id: string
+          viewed_at?: string | null
+        }
+        Update: {
+          approved_at?: string | null
+          client_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          notes?: string | null
+          public_slug?: string
+          status?: Database["public"]["Enums"]["proposal_status"]
+          title?: string
+          total?: number
+          updated_at?: string
+          user_id?: string
+          viewed_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "proposals_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +202,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      proposal_status: "sent" | "viewed" | "approved" | "rejected"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +329,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      proposal_status: ["sent", "viewed", "approved", "rejected"],
+    },
   },
 } as const
