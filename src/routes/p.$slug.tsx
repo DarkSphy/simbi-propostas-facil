@@ -145,11 +145,11 @@ function PublicProposal() {
               {(profile.company_name?.[0] ?? profile.full_name?.[0] ?? "S").toUpperCase()}
             </div>
           )}
-          <h2 className="text-2xl font-extrabold text-foreground tracking-tight">{profile.company_name ?? profile.full_name ?? "Profissional"}</h2>
+          <h2 className="text-2xl font-extrabold tracking-tight">{profile.company_name ?? profile.full_name ?? "Profissional"}</h2>
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary mt-1.5 opacity-90">Proposta Comercial</p>
         </div>
 
-        <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-elevated">
+        <div className="overflow-hidden rounded-3xl border border-border bg-card text-card-foreground shadow-elevated" style={{ "--foreground": "var(--card-foreground)", "--color-foreground": "var(--color-card-foreground)" } as React.CSSProperties}>
           <div className="border-b border-border bg-muted/30 px-6 py-4 flex items-center justify-between">
             <span className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Status</span>
             {statusBadge(data.status)}
@@ -285,24 +285,24 @@ function PublicProposal() {
         {(profile.instagram_url || profile.linkedin_url || profile.website_url) && (
           <div className="mt-8 flex items-center justify-center gap-4">
             {profile.instagram_url && (
-              <a href={profile.instagram_url.startsWith('http') ? profile.instagram_url : `https://${profile.instagram_url}`} target="_blank" rel="noreferrer" className="flex h-12 w-12 items-center justify-center rounded-full bg-card border border-border shadow-sm transition-all hover:scale-110 hover:border-primary hover:text-primary">
+              <a href={profile.instagram_url.startsWith('http') ? profile.instagram_url : `https://${profile.instagram_url}`} target="_blank" rel="noreferrer" className="flex h-12 w-12 items-center justify-center rounded-full bg-card text-card-foreground border border-border shadow-sm transition-all hover:scale-110 hover:border-primary hover:text-primary" style={{ "--foreground": "var(--card-foreground)", "--color-foreground": "var(--color-card-foreground)" } as React.CSSProperties}>
                 <Instagram className="h-5 w-5" />
               </a>
             )}
             {profile.linkedin_url && (
-              <a href={profile.linkedin_url.startsWith('http') ? profile.linkedin_url : `https://${profile.linkedin_url}`} target="_blank" rel="noreferrer" className="flex h-12 w-12 items-center justify-center rounded-full bg-card border border-border shadow-sm transition-all hover:scale-110 hover:border-primary hover:text-primary">
+              <a href={profile.linkedin_url.startsWith('http') ? profile.linkedin_url : `https://${profile.linkedin_url}`} target="_blank" rel="noreferrer" className="flex h-12 w-12 items-center justify-center rounded-full bg-card text-card-foreground border border-border shadow-sm transition-all hover:scale-110 hover:border-primary hover:text-primary" style={{ "--foreground": "var(--card-foreground)", "--color-foreground": "var(--color-card-foreground)" } as React.CSSProperties}>
                 <Linkedin className="h-5 w-5" />
               </a>
             )}
             {profile.website_url && (
-              <a href={profile.website_url.startsWith('http') ? profile.website_url : `https://${profile.website_url}`} target="_blank" rel="noreferrer" className="flex h-12 w-12 items-center justify-center rounded-full bg-card border border-border shadow-sm transition-all hover:scale-110 hover:border-primary hover:text-primary">
+              <a href={profile.website_url.startsWith('http') ? profile.website_url : `https://${profile.website_url}`} target="_blank" rel="noreferrer" className="flex h-12 w-12 items-center justify-center rounded-full bg-card text-card-foreground border border-border shadow-sm transition-all hover:scale-110 hover:border-primary hover:text-primary" style={{ "--foreground": "var(--card-foreground)", "--color-foreground": "var(--color-card-foreground)" } as React.CSSProperties}>
                 <Globe className="h-5 w-5" />
               </a>
             )}
           </div>
         )}
 
-        <p className="mt-8 mb-4 text-center text-xs text-muted-foreground opacity-50">Proposta comercial gerada via <span className="font-bold">Simbi</span></p>
+        <p className="mt-8 mb-4 text-center text-xs opacity-60">Proposta comercial gerada via <span className="font-bold">Simbi</span></p>
       </div>
     </div>
   );
