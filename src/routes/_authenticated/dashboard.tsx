@@ -26,10 +26,11 @@ function Dashboard() {
     enabled: !!user,
   });
 
+  const isWon = (status: string) => ["approved", "paid", "finished"].includes(status);
   const sent = proposals.length;
-  const approved = proposals.filter(p => p.status === "approved").length;
+  const approved = proposals.filter(p => isWon(p.status)).length;
   const rate = sent ? Math.round((approved / sent) * 100) : 0;
-  const total = proposals.filter(p => p.status === "approved").reduce((s, p) => s + Number(p.total), 0);
+  const total = proposals.filter(p => isWon(p.status)).reduce((s, p) => s + Number(p.total), 0);
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-8">
@@ -50,17 +51,17 @@ function Dashboard() {
         <Stat icon={DollarSign} label="Total movimentado" value={formatBRL(total)} />
       </div>
 
-      <div className="mt-10 overflow-hidden rounded-3xl border border-border bg-card shadow-elevated transition-all">
-        <div className="flex items-center justify-between border-b border-border bg-muted/20 px-6 py-5">
-          <h2 className="text-lg font-semibold tracking-tight">Últimas propostas</h2>
+      <div className="mt-10 overflow-hidden rounded-3xl border border-border/50 bg-card shadow-card transition-all">
+        <div className="flex items-center justify-between border-b border-border/50 bg-transparent px-6 py-5">
+          <h2 className="text-lg font-bold tracking-tight">Últimas propostas</h2>
           <Link to="/proposals" className="text-sm font-medium text-primary hover:underline">Ver todas</Link>
         </div>
         {proposals.length === 0 ? (
           <EmptyState />
         ) : (
-          <ul className="divide-y divide-border">
+          <ul className="divide-y divide-border/50">
             {proposals.slice(0, 6).map(p => (
-              <li key={p.id} className="flex items-center justify-between px-6 py-4 text-sm transition-colors hover:bg-muted/30">
+              <li key={p.id} className="flex items-center justify-between px-6 py-5 text-sm transition-colors hover:bg-muted/10">
                 <Link to="/proposals/$id" params={{ id: p.id }} className="flex-1 truncate font-semibold transition-colors hover:text-primary">
                   {p.title}
                 </Link>
@@ -78,14 +79,15 @@ function Dashboard() {
 
 function Stat({ icon: Icon, label, value }: any) {
   return (
-    <div className="group rounded-3xl border border-border bg-card p-6 shadow-soft transition-all hover:shadow-elevated hover:-translate-y-1 hover:border-primary/30">
-      <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground transition-colors group-hover:text-foreground">{label}</span>
-        <div className="grid h-8 w-8 place-items-center rounded-full bg-muted transition-colors group-hover:bg-primary/10">
-          <Icon className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-primary" />
+    <div className="group relative overflow-hidden rounded-3xl border border-border/50 bg-card p-6 shadow-card transition-all hover:shadow-elevated hover:-translate-y-1">
+      <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-primary/5 opacity-0 transition-opacity group-hover:opacity-100" />
+      <div className="relative flex items-center justify-between">
+        <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground transition-colors group-hover:text-primary">{label}</span>
+        <div className="grid h-10 w-10 place-items-center rounded-2xl bg-primary/5 transition-colors group-hover:bg-primary">
+          <Icon className="h-5 w-5 text-primary transition-colors group-hover:text-primary-foreground" />
         </div>
       </div>
-      <div className="mt-4 text-3xl font-bold tracking-tight">{value}</div>
+      <div className="relative mt-5 text-3xl font-black tracking-tight text-foreground">{value}</div>
     </div>
   );
 }

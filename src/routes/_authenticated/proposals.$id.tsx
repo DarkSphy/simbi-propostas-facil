@@ -75,6 +75,21 @@ function ProposalDetail() {
         </div>
       </div>
 
+      <div className="mt-5 rounded-2xl border-2 border-primary/10 bg-primary/5 p-5 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 className="text-sm font-bold uppercase tracking-widest text-primary">Status da Proposta</h2>
+            <p className="text-sm text-muted-foreground mt-1">Atualize o andamento desta negociação com o cliente.</p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button variant="outline" className="bg-white border-border shadow-sm hover:bg-muted" onClick={() => updateStatus("in_progress")}>Em execução</Button>
+            <Button variant="outline" className="bg-white border-border shadow-sm hover:bg-muted" onClick={() => updateStatus("finished")}>Finalizada</Button>
+            <Button className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/20 transition-all hover:-translate-y-0.5" onClick={() => updateStatus("paid")}>Marcar como Paga</Button>
+            <Button variant="outline" className="text-destructive border-destructive/30 hover:bg-destructive/10" onClick={() => updateStatus("canceled")}>Cancelada</Button>
+          </div>
+        </div>
+      </div>
+
       <div className="mt-5 rounded-2xl border border-border bg-card p-5 shadow-soft">
         <div className="flex items-center gap-2 text-sm">
           <Share2 className="h-4 w-4 text-muted-foreground" />
@@ -108,16 +123,6 @@ function ProposalDetail() {
           <p className="whitespace-pre-wrap text-sm">{data.notes}</p>
         </div>
       )}
-
-      <div className="mt-5 rounded-2xl border border-border bg-card p-5 shadow-soft">
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">Alterar Status</h2>
-        <div className="flex flex-wrap gap-2">
-          <Button variant="outline" size="sm" onClick={() => updateStatus("in_progress")}>Marcar: Em execução</Button>
-          <Button variant="outline" size="sm" onClick={() => updateStatus("finished")}>Marcar: Finalizada</Button>
-          <Button variant="outline" size="sm" onClick={() => updateStatus("paid")} className="text-emerald-600 hover:text-emerald-700">Marcar: Paga</Button>
-          <Button variant="outline" size="sm" onClick={() => updateStatus("canceled")} className="text-destructive hover:text-destructive">Marcar: Cancelada</Button>
-        </div>
-      </div>
 
       <div className="mt-8 flex justify-end">
         <Button variant="ghost" className="text-destructive hover:text-destructive" onClick={remove}><Trash2 className="mr-1 h-4 w-4" /> Excluir proposta</Button>
