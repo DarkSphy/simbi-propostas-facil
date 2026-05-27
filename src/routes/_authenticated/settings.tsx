@@ -166,13 +166,13 @@ function SettingsPage() {
                   </SelectContent>
                 </Select>
 
-                <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-6 mt-2">
                   {logoUrl ? (
-                    <div className="relative">
+                    <div className="relative shrink-0">
                       <div className={`overflow-hidden rounded-xl border border-border bg-muted/20 ${headerType === 'banner' ? 'h-24 w-full sm:w-64' : 'h-20 w-20'}`}>
                         <img src={logoUrl} alt="Logo/Banner" className={`h-full w-full ${headerType === 'banner' ? 'object-cover' : 'object-contain p-2'}`} />
                       </div>
-                      <button onClick={() => setLogoUrl("")} className="absolute -right-2 -top-2 z-10 grid h-6 w-6 place-items-center rounded-full bg-destructive text-destructive-foreground hover:scale-110 transition-transform shadow-sm"><X className="h-3 w-3" /></button>
+                      <button onClick={() => setLogoUrl("")} className="absolute -right-3 -top-3 z-10 grid h-7 w-7 place-items-center rounded-full bg-destructive text-destructive-foreground hover:scale-110 transition-transform shadow-md border-2 border-card"><X className="h-3 w-3" /></button>
                     </div>
                   ) : (
                     <Button type="button" variant="outline" className={`rounded-xl border-dashed ${headerType === 'banner' ? 'h-24 w-full sm:w-64' : 'h-20 w-20'}`} onClick={() => fileRef.current?.click()}>
@@ -271,15 +271,15 @@ function SettingsPage() {
             )}
 
             {bgType === "image" && (
-              <div className="space-y-3 col-span-full">
+              <div className="space-y-3 col-span-full mt-2">
                 <Label className="text-muted-foreground font-semibold">Imagem Escolhida</Label>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-6 mt-2">
                   {backgroundImageUrl ? (
-                    <div className="relative">
+                    <div className="relative shrink-0">
                       <div className="h-20 w-32 overflow-hidden rounded-lg border border-border bg-muted/20">
                         <img src={backgroundImageUrl} alt="Background" className="h-full w-full object-cover" />
                       </div>
-                      <button onClick={() => setBackgroundImageUrl("")} className="absolute -right-2 -top-2 z-10 grid h-6 w-6 place-items-center rounded-full bg-destructive text-destructive-foreground hover:scale-110 transition-transform shadow-sm"><X className="h-3 w-3" /></button>
+                      <button onClick={() => setBackgroundImageUrl("")} className="absolute -right-3 -top-3 z-10 grid h-7 w-7 place-items-center rounded-full bg-destructive text-destructive-foreground hover:scale-110 transition-transform shadow-md border-2 border-card"><X className="h-3 w-3" /></button>
                     </div>
                   ) : (
                     <Button type="button" variant="outline" className="h-20 w-32 rounded-lg border-dashed" onClick={() => bgFileRef.current?.click()}>
