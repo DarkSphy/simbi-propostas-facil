@@ -26,6 +26,7 @@ function SettingsPage() {
   const [headerTexture, setHeaderTexture] = useState("none");
   const [fontFamily, setFontFamily] = useState("inter");
   const [itemLayout, setItemsLayout] = useState("minimal");
+  const [bgType, setBgType] = useState<"color" | "texture" | "image">("color");
   const [instagram, setInstagram] = useState("");
   const [linkedin, setLinkedin] = useState("");
   const [website, setWebsite] = useState("");
@@ -52,6 +53,10 @@ function SettingsPage() {
         setInstagram(data.instagram_url ?? "");
         setLinkedin(data.linkedin_url ?? "");
         setWebsite(data.website_url ?? "");
+
+        if (data.background_image_url) setBgType("image");
+        else if (data.header_texture && data.header_texture !== "none") setBgType("texture");
+        else setBgType("color");
       }
     });
   }, [user]);
@@ -59,6 +64,21 @@ function SettingsPage() {
   async function save() {
     if (!user) return;
     setSaving(true);
+
+    let finalBgUrl = backgroundImageUrl;
+    let finalBgColor = backgroundColor;
+    let finalTexture = headerTexture;
+
+    if (bgType === "color") {
+      finalBgUrl = "";
+      finalTexture = "none";
+    } else if (bgType === "texture") {
+      finalBgUrl = "";
+    } else if (bgType === "image") {
+      finalBgColor = "";
+      finalTexture = "none";
+    }
+
     const { error } = await supabase.from("profiles").upsert({ 
       id: user.id, 
       full_name: fullName, 
@@ -66,9 +86,9 @@ function SettingsPage() {
       whatsapp, 
       logo_url: logoUrl,
       theme_color: themeColor,
-      background_color: backgroundColor,
-      background_image_url: backgroundImageUrl,
-      header_texture: headerTexture,
+      background_color: finalBgColor,
+      background_image_url: finalBgUrl,
+      header_texture: finalTexture,
       font_family: fontFamily,
       item_layout: itemLayout,
       instagram_url: instagram,
@@ -167,7 +187,7 @@ function SettingsPage() {
         
         <div>
           <h2 className="text-xl font-bold tracking-tight mb-6">Estilo da Proposta</h2>
-          <div className="grid gap-6 sm:grid-cols-4">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
             <div className="space-y-3">
               <Label className="text-muted-foreground font-semibold">Tipografia</Label>
               <Select value={fontFamily} onValueChange={setFontFamily}>
@@ -189,43 +209,72 @@ function SettingsPage() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="space-y-3">
-              <Label className="text-muted-foreground font-semibold">Cor de Fundo</Label>
-              <div className="flex items-center gap-3">
-                <input type="color" value={backgroundColor} onChange={(e) => setBackgroundColor(e.target.value)} className="h-10 w-12 cursor-pointer rounded-lg border border-border bg-card p-1 shadow-sm" />
-                <Input value={backgroundColor} onChange={(e) => setBackgroundColor(e.target.value)} className="font-mono uppercase w-28" />
+          </div>
+
+          <h3 className="text-lg font-bold tracking-tight mb-4">Fundo da Proposta</h3>
+          <div className="rounded-2xl border border-border bg-muted/10 p-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="col-span-full">
+              <Label className="text-muted-foreground font-semibold mb-3 block">Tipo de Fundo</Label>
+              <div className="flex flex-wrap items-center gap-3">
+                <Button type="button" variant={bgType === "color" ? "default" : "outline"} onClick={() => setBgType("color")} className="rounded-xl">Cor Sólida</Button>
+                <Button type="button" variant={bgType === "texture" ? "default" : "outline"} onClick={() => setBgType("texture")} className="rounded-xl">Cor + Textura</Button>
+                <Button type="button" variant={bgType === "image" ? "default" : "outline"} onClick={() => setBgType("image")} className="rounded-xl">Imagem de Fundo</Button>
               </div>
             </div>
-            <div className="space-y-3">
-              <Label className="text-muted-foreground font-semibold">Imagem de Fundo</Label>
-              <div className="flex items-center gap-4">
-                {backgroundImageUrl ? (
-                  <div className="relative">
-                    <div className="h-12 w-20 overflow-hidden rounded-lg border border-border bg-muted/20">
-                      <img src={backgroundImageUrl} alt="Background" className="h-full w-full object-cover" />
-                    </div>
-                    <button onClick={() => setBackgroundImageUrl("")} className="absolute -right-2 -top-2 z-10 grid h-6 w-6 place-items-center rounded-full bg-destructive text-destructive-foreground hover:scale-110 transition-transform shadow-sm"><X className="h-3 w-3" /></button>
+
+            {bgType === "color" && (
+              <div className="space-y-3 col-span-full sm:col-span-1">
+                <Label className="text-muted-foreground font-semibold">Cor de Fundo</Label>
+                <div className="flex items-center gap-3">
+                  <input type="color" value={backgroundColor} onChange={(e) => setBackgroundColor(e.target.value)} className="h-10 w-12 cursor-pointer rounded-lg border border-border bg-card p-1 shadow-sm" />
+                  <Input value={backgroundColor} onChange={(e) => setBackgroundColor(e.target.value)} className="font-mono uppercase w-28" />
+                </div>
+              </div>
+            )}
+
+            {bgType === "texture" && (
+              <>
+                <div className="space-y-3">
+                  <Label className="text-muted-foreground font-semibold">Cor Base</Label>
+                  <div className="flex items-center gap-3">
+                    <input type="color" value={backgroundColor} onChange={(e) => setBackgroundColor(e.target.value)} className="h-10 w-12 cursor-pointer rounded-lg border border-border bg-card p-1 shadow-sm" />
+                    <Input value={backgroundColor} onChange={(e) => setBackgroundColor(e.target.value)} className="font-mono uppercase w-28" />
                   </div>
-                ) : (
-                  <Button type="button" variant="outline" className="h-12 w-20 rounded-lg border-dashed" onClick={() => bgFileRef.current?.click()}>
-                    {uploadingBg ? "..." : <Upload className="h-4 w-4 text-muted-foreground" />}
-                  </Button>
-                )}
-                <input type="file" ref={bgFileRef} className="hidden" accept="image/*" onChange={handleBgUpload} />
+                </div>
+                <div className="space-y-3">
+                  <Label className="text-muted-foreground font-semibold">Textura</Label>
+                  <Select value={headerTexture} onValueChange={setHeaderTexture}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="waves">Ondas Elegantes</SelectItem>
+                      <SelectItem value="dots">Pontilhados</SelectItem>
+                      <SelectItem value="grid">Malha / Grid</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </>
+            )}
+
+            {bgType === "image" && (
+              <div className="space-y-3 col-span-full">
+                <Label className="text-muted-foreground font-semibold">Imagem Escolhida</Label>
+                <div className="flex items-center gap-4">
+                  {backgroundImageUrl ? (
+                    <div className="relative">
+                      <div className="h-20 w-32 overflow-hidden rounded-lg border border-border bg-muted/20">
+                        <img src={backgroundImageUrl} alt="Background" className="h-full w-full object-cover" />
+                      </div>
+                      <button onClick={() => setBackgroundImageUrl("")} className="absolute -right-2 -top-2 z-10 grid h-6 w-6 place-items-center rounded-full bg-destructive text-destructive-foreground hover:scale-110 transition-transform shadow-sm"><X className="h-3 w-3" /></button>
+                    </div>
+                  ) : (
+                    <Button type="button" variant="outline" className="h-20 w-32 rounded-lg border-dashed" onClick={() => bgFileRef.current?.click()}>
+                      {uploadingBg ? "Enviando..." : <div className="flex flex-col items-center"><Upload className="h-5 w-5 text-muted-foreground mb-1" /><span className="text-xs">Fazer Upload</span></div>}
+                    </Button>
+                  )}
+                  <input type="file" ref={bgFileRef} className="hidden" accept="image/*" onChange={handleBgUpload} />
+                </div>
               </div>
-            </div>
-            <div className="space-y-3">
-              <Label className="text-muted-foreground font-semibold">Textura (se sem Imagem)</Label>
-              <Select value={headerTexture} onValueChange={setHeaderTexture}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">Cor Sólida</SelectItem>
-                  <SelectItem value="waves">Ondas Elegantes</SelectItem>
-                  <SelectItem value="dots">Pontilhados</SelectItem>
-                  <SelectItem value="grid">Malha / Grid</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            )}
           </div>
         </div>
 
