@@ -158,6 +158,7 @@ function PublicProposal() {
         </div>
 
         <div className="overflow-hidden rounded-3xl border border-border bg-card text-card-foreground shadow-elevated" style={{ "--foreground": "var(--card-foreground)", "--color-foreground": "var(--color-card-foreground)" } as React.CSSProperties}>
+          <div className="h-2 w-full bg-primary" />
           <div className="border-b border-border bg-muted/30 px-6 py-4 flex items-center justify-between">
             <span className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Status</span>
             {statusBadge(data.status)}
@@ -165,12 +166,15 @@ function PublicProposal() {
 
           <div className="px-6 py-8 sm:px-8 sm:py-10">
             <h1 className="text-3xl font-bold leading-tight tracking-tight">{data.title}</h1>
-            {data.clients?.name && <p className="mt-2 text-sm font-medium text-muted-foreground">Preparado exclusivamente para <span className="text-foreground">{data.clients.name}</span></p>}
+            {data.clients?.name && <p className="mt-2 text-sm font-medium text-muted-foreground">Preparado exclusivamente para <span className="text-primary font-bold">{data.clients.name}</span></p>}
 
             {data.description && <p className="mt-6 whitespace-pre-wrap text-[15px] leading-relaxed text-foreground/90">{data.description}</p>}
 
             <div className="mt-10">
-              <h3 className="text-lg font-bold mb-4">Investimento</h3>
+              <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+                <span className="h-5 w-1.5 rounded-full bg-primary" />
+                Investimento
+              </h3>
 
               {hasImages && (
                 <div className="mb-5 rounded-2xl bg-blue-500/10 border border-blue-500/20 px-5 py-3 text-sm text-foreground/80 flex items-center gap-3">
@@ -202,7 +206,9 @@ function PublicProposal() {
                         )}
                         <div>
                           <div className="font-semibold text-base leading-tight">{it.description}</div>
-                          <div className="mt-1 text-sm text-muted-foreground font-medium">Quantidade: {it.quantity}</div>
+                          <div className="mt-1.5 inline-flex items-center rounded-md bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary border border-primary/10">
+                            Qtd: {it.quantity}
+                          </div>
                         </div>
                       </div>
                       <div className="text-left sm:text-right mt-3 sm:mt-0 pt-3 sm:pt-0 border-t border-border/50 sm:border-0 flex justify-between sm:block items-center">
@@ -239,7 +245,12 @@ function PublicProposal() {
                           )}
                           <div className="flex-1">
                             <div className="font-semibold text-base leading-tight">{it.description}</div>
-                            <div className="mt-0.5 text-xs text-muted-foreground">{it.quantity} × {formatBRL(it.unit_price)}</div>
+                            <div className="mt-1.5 flex items-center gap-2 text-xs">
+                              <span className="inline-flex items-center rounded-md bg-primary/10 px-2 py-0.5 font-semibold text-primary border border-primary/10">
+                                Qtd: {it.quantity}
+                              </span>
+                              <span className="text-muted-foreground font-medium">× {formatBRL(it.unit_price)}</span>
+                            </div>
                           </div>
                         </div>
                         <div className="font-bold text-base sm:text-right self-end sm:self-auto mt-1 sm:mt-0 text-emerald-600">{formatBRL(it.quantity * it.unit_price)}</div>
@@ -280,7 +291,7 @@ function PublicProposal() {
                 <a
                   href={`https://wa.me/${whatsapp}?text=${encodeURIComponent(`Olá! Sobre a proposta "${data.title}"…`)}`}
                   target="_blank" rel="noreferrer"
-                  className="flex w-full items-center justify-center rounded-2xl border-2 border-border bg-transparent py-4 text-sm font-bold transition-colors hover:bg-muted/50 mt-4"
+                  className="flex w-full items-center justify-center rounded-2xl border-2 border-primary/20 bg-transparent py-4 text-sm font-bold text-foreground transition-colors hover:bg-primary/5 hover:border-primary/50 mt-4"
                 >
                   <MessageCircle className="mr-2 h-5 w-5 text-green-500" /> Tirar dúvidas no WhatsApp
                 </a>
