@@ -11,27 +11,15 @@ export const Route = createFileRoute("/p/$slug")({
   component: PublicProposal,
 });
 
-// Helper to convert HEX to HSL for Tailwind CSS variables
-function hexToHslString(hex: string) {
-  if (!hex) return "";
-  hex = hex.replace(/^#/, '');
-  if (hex.length === 3) hex = hex.split('').map(x => x + x).join('');
-  const r = parseInt(hex.substring(0, 2), 16) / 255;
-  const g = parseInt(hex.substring(2, 4), 16) / 255;
-  const b = parseInt(hex.substring(4, 6), 16) / 255;
-  const max = Math.max(r, g, b), min = Math.min(r, g, b);
-  let h = 0, s = 0, l = (max + min) / 2;
-  if (max !== min) {
-    const d = max - min;
-    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-    switch (max) {
-      case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-      case g: h = (b - r) / d + 2; break;
-      case b: h = (r - g) / d + 4; break;
-    }
-    h /= 6;
-  }
-  return `${Math.round(h * 360)} ${Math.round(s * 100)}% ${Math.round(l * 100)}%`;
+// Helper to determine white or black text based on background hex color
+function getContrastColor(hexColor: string) {
+  if (!hexColor) return "#ffffff";
+  const hex = hexColor.replace("#", "");
+  const r = parseInt(hex.substr(0, 2), 16);
+  const g = parseInt(hex.substr(2, 2), 16);
+  const b = parseInt(hex.substr(4, 2), 16);
+  const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+  return yiq >= 128 ? "#000000" : "#ffffff";
 }
 
 function PublicProposal() {
@@ -78,32 +66,35 @@ function PublicProposal() {
   const finalized = data.status === "approved" || data.status === "rejected";
   const whatsapp = (profile.whatsapp ?? "").replace(/\D/g, "");
   
-  const themeHsl = profile.theme_color ? hexToHslString(profile.theme_color) : "";
-  const customStyles = themeHsl ? { "--primary": themeHsl } as React.CSSProperties : {};
+  const customStyles = profile.theme_color ? { 
+    "--primary": profile.theme_color,
+    "--color-primary": profile.theme_color,
+    "--primary-foreground": getContrastColor(profile.theme_color),
+    "--color-primary-foreground": getContrastColor(profile.theme_color)
+  } as React.CSSProperties : {};
 
   return (
     <div className="min-h-screen bg-muted/30 py-10 transition-colors" style={customStyles}>
       <div className="mx-auto max-w-xl px-4">
-        <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-elevated">
-          <div className="border-b border-border bg-card px-6 py-5">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                {profile.logo_url ? (
-                  <div className="h-10 w-10 shrink-0 overflow-hidden rounded-lg border border-border">
-                    <img src={profile.logo_url} alt="Logo" className="h-full w-full object-contain" />
-                  </div>
-                ) : (
-                  <div className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-primary text-sm font-bold text-primary-foreground">
-                    {(profile.company_name?.[0] ?? profile.full_name?.[0] ?? "S").toUpperCase()}
-                  </div>
-                )}
-                <div>
-                  <div className="text-sm font-semibold">{profile.company_name ?? profile.full_name ?? "Profissional"}</div>
-                  <div className="text-[11px] uppercase tracking-widest text-muted-foreground">Proposta Comercial</div>
-                </div>
-              </div>
-              {statusBadge(data.status)}
+        {/* Header Visual with Logo */}
+        <div className="mb-8 flex flex-col items-center text-center">
+          {profile.logo_url ? (
+            <div className="h-28 w-28 overflow-hidden rounded-2xl border-4 border-white shadow-xl bg-white mb-4">
+              <img src={profile.logo_url} alt="Logo" className="h-full w-full object-contain p-2" />
             </div>
+          ) : (
+            <div className="mb-4 grid h-20 w-20 place-items-center rounded-2xl bg-primary text-3xl font-bold text-primary-foreground shadow-xl border-4 border-white">
+              {(profile.company_name?.[0] ?? profile.full_name?.[0] ?? "S").toUpperCase()}
+            </div>
+          )}
+          <h2 className="text-xl font-bold text-foreground">{profile.company_name ?? profile.full_name ?? "Profissional"}</h2>
+          <p className="text-xs font-semibold uppercase tracking-widest text-primary mt-1">Proposta Comercial</p>
+        </div>
+
+        <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-elevated">
+          <div className="border-b border-border bg-card px-6 py-4 flex items-center justify-between">
+            <span className="text-sm font-medium text-muted-foreground">Status da proposta</span>
+            {statusBadge(data.status)}
           </div>
 
           <div className="px-6 py-6">
