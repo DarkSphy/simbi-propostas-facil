@@ -21,6 +21,7 @@ function SettingsPage() {
   const [whatsapp, setWhatsapp] = useState("");
   const [logoUrl, setLogoUrl] = useState("");
   const [themeColor, setThemeColor] = useState("#8b5cf6");
+  const [backgroundColor, setBackgroundColor] = useState("");
   const [headerTexture, setHeaderTexture] = useState("none");
   const [fontFamily, setFontFamily] = useState("inter");
   const [itemLayout, setItemsLayout] = useState("minimal");
@@ -40,6 +41,7 @@ function SettingsPage() {
         setWhatsapp(data.whatsapp ?? ""); 
         setLogoUrl(data.logo_url ?? "");
         setThemeColor(data.theme_color ?? "#8b5cf6");
+        setBackgroundColor(data.background_color ?? "");
         setHeaderTexture(data.header_texture ?? "none");
         setFontFamily(data.font_family ?? "inter");
         setItemsLayout(data.item_layout ?? "minimal");
@@ -60,6 +62,7 @@ function SettingsPage() {
       whatsapp, 
       logo_url: logoUrl,
       theme_color: themeColor,
+      background_color: backgroundColor,
       header_texture: headerTexture,
       font_family: fontFamily,
       item_layout: itemLayout,
@@ -140,7 +143,7 @@ function SettingsPage() {
         
         <div>
           <h2 className="text-xl font-bold tracking-tight mb-6">Estilo da Proposta</h2>
-          <div className="grid gap-6 sm:grid-cols-3">
+          <div className="grid gap-6 sm:grid-cols-4">
             <div className="space-y-3">
               <Label className="text-muted-foreground font-semibold">Tipografia</Label>
               <Select value={fontFamily} onValueChange={setFontFamily}>
@@ -161,6 +164,13 @@ function SettingsPage() {
                   <SelectItem value="cards">Cartões Detalhados</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+            <div className="space-y-3">
+              <Label className="text-muted-foreground font-semibold">Cor de Fundo</Label>
+              <div className="flex items-center gap-3">
+                <input type="color" value={backgroundColor} onChange={(e) => setBackgroundColor(e.target.value)} className="h-10 w-12 cursor-pointer rounded-lg border border-border bg-card p-1 shadow-sm" />
+                <Input value={backgroundColor} onChange={(e) => setBackgroundColor(e.target.value)} className="font-mono uppercase w-28" />
+              </div>
             </div>
             <div className="space-y-3">
               <Label className="text-muted-foreground font-semibold">Textura do Fundo</Label>

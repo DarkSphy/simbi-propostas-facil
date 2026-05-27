@@ -67,12 +67,28 @@ function PublicProposal() {
   const finalized = data.status === "approved" || data.status === "rejected";
   const whatsapp = (profile.whatsapp ?? "").replace(/\D/g, "");
   
-  const customStyles = profile.theme_color ? { 
-    "--primary": profile.theme_color,
-    "--color-primary": profile.theme_color,
-    "--primary-foreground": getContrastColor(profile.theme_color),
-    "--color-primary-foreground": getContrastColor(profile.theme_color)
-  } as React.CSSProperties : {};
+  let customStyles = {} as React.CSSProperties;
+  
+  if (profile.theme_color) {
+    customStyles = {
+      ...customStyles,
+      "--primary": profile.theme_color,
+      "--color-primary": profile.theme_color,
+      "--primary-foreground": getContrastColor(profile.theme_color),
+      "--color-primary-foreground": getContrastColor(profile.theme_color)
+    };
+  }
+
+  if (profile.background_color) {
+    const bgContrast = getContrastColor(profile.background_color);
+    customStyles = {
+      ...customStyles,
+      backgroundColor: profile.background_color,
+      color: bgContrast,
+      "--foreground": bgContrast,
+      "--color-foreground": bgContrast,
+    };
+  }
 
   // Resolve tipografia
   const fontClass = profile.font_family === "playfair" ? "font-serif" 
@@ -80,20 +96,20 @@ function PublicProposal() {
                   : "font-sans";
 
   // Resolve textura
-  let textureClass = "bg-muted/30";
+  let textureClass = profile.background_color ? "" : "bg-muted/30";
   let textureStyle: React.CSSProperties = { ...customStyles };
   
   if (profile.header_texture === "dots") {
-    textureClass = "bg-muted/10";
+    textureClass = profile.background_color ? "opacity-20" : "bg-muted/10";
     textureStyle.backgroundImage = "radial-gradient(var(--color-border) 1px, transparent 1px)";
     textureStyle.backgroundSize = "20px 20px";
   } else if (profile.header_texture === "grid") {
-    textureClass = "bg-grid";
+    textureClass = profile.background_color ? "bg-grid opacity-30" : "bg-grid";
   } else if (profile.header_texture === "waves") {
-    textureClass = "bg-muted/10";
+    textureClass = profile.background_color ? "opacity-20" : "bg-muted/10";
     textureStyle.backgroundImage = "radial-gradient(circle at 100% 50%, transparent 20%, var(--color-primary) 21%, var(--color-primary) 34%, transparent 35%, transparent), radial-gradient(circle at 0% 50%, transparent 20%, var(--color-primary) 21%, var(--color-primary) 34%, transparent 35%, transparent)";
     textureStyle.backgroundSize = "60px 60px";
-    textureStyle.opacity = 0.05; // sutil
+    textureStyle.opacity = profile.background_color ? 0.15 : 0.05; // mais visivel com cor escura
   }
 
   const isCards = profile.item_layout === "cards";
