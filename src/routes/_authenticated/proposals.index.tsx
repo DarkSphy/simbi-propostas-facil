@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Plus, FileText } from "lucide-react";
 import { formatBRL, statusBadge } from "@/lib/format";
 
-export const Route = createFileRoute("/_authenticated/proposals")({
+export const Route = createFileRoute("/_authenticated/proposals/")({
   head: () => ({ meta: [{ title: "Propostas · Simbi" }] }),
   component: ProposalsList,
 });
