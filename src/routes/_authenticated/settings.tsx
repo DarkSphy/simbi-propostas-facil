@@ -5,6 +5,7 @@ import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Upload, X } from "lucide-react";
 
@@ -20,6 +21,12 @@ function SettingsPage() {
   const [whatsapp, setWhatsapp] = useState("");
   const [logoUrl, setLogoUrl] = useState("");
   const [themeColor, setThemeColor] = useState("#8b5cf6");
+  const [headerTexture, setHeaderTexture] = useState("none");
+  const [fontFamily, setFontFamily] = useState("inter");
+  const [itemLayout, setItemsLayout] = useState("minimal");
+  const [instagram, setInstagram] = useState("");
+  const [linkedin, setLinkedin] = useState("");
+  const [website, setWebsite] = useState("");
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -33,6 +40,12 @@ function SettingsPage() {
         setWhatsapp(data.whatsapp ?? ""); 
         setLogoUrl(data.logo_url ?? "");
         setThemeColor(data.theme_color ?? "#8b5cf6");
+        setHeaderTexture(data.header_texture ?? "none");
+        setFontFamily(data.font_family ?? "inter");
+        setItemsLayout(data.item_layout ?? "minimal");
+        setInstagram(data.instagram_url ?? "");
+        setLinkedin(data.linkedin_url ?? "");
+        setWebsite(data.website_url ?? "");
       }
     });
   }, [user]);
@@ -47,6 +60,12 @@ function SettingsPage() {
       whatsapp, 
       logo_url: logoUrl,
       theme_color: themeColor,
+      header_texture: headerTexture,
+      font_family: fontFamily,
+      item_layout: itemLayout,
+      instagram_url: instagram,
+      linkedin_url: linkedin,
+      website_url: website,
       updated_at: new Date().toISOString() 
     });
     setSaving(false);
@@ -72,7 +91,7 @@ function SettingsPage() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl px-5 py-8">
+    <div className="mx-auto max-w-4xl px-5 py-8">
       <h1 className="text-3xl font-bold tracking-tight">Configurações</h1>
       <div className="mt-8 space-y-8 rounded-3xl border border-border bg-card p-8 shadow-elevated">
         
@@ -114,6 +133,58 @@ function SettingsPage() {
               </div>
               <p className="text-xs text-muted-foreground">Essa cor será usada em todos os botões e detalhes da proposta enviada ao seu cliente.</p>
             </div>
+          </div>
+        </div>
+
+        <hr className="border-border" />
+        
+        <div>
+          <h2 className="text-xl font-bold tracking-tight mb-6">Estilo da Proposta</h2>
+          <div className="grid gap-6 sm:grid-cols-3">
+            <div className="space-y-3">
+              <Label className="text-muted-foreground font-semibold">Tipografia</Label>
+              <Select value={fontFamily} onValueChange={setFontFamily}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="inter">Moderna (Inter)</SelectItem>
+                  <SelectItem value="playfair">Elegante (Playfair)</SelectItem>
+                  <SelectItem value="quicksand">Criativa (Quicksand)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-3">
+              <Label className="text-muted-foreground font-semibold">Layout dos Itens</Label>
+              <Select value={itemLayout} onValueChange={setItemsLayout}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="minimal">Lista Minimalista</SelectItem>
+                  <SelectItem value="cards">Cartões Detalhados</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-3">
+              <Label className="text-muted-foreground font-semibold">Textura do Fundo</Label>
+              <Select value={headerTexture} onValueChange={setHeaderTexture}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Cor Sólida</SelectItem>
+                  <SelectItem value="waves">Ondas Elegantes</SelectItem>
+                  <SelectItem value="dots">Pontilhados</SelectItem>
+                  <SelectItem value="grid">Malha / Grid</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </div>
+
+        <hr className="border-border" />
+        
+        <div>
+          <h2 className="text-xl font-bold tracking-tight mb-6">Redes Sociais (Rodapé)</h2>
+          <div className="grid gap-6 sm:grid-cols-3">
+            <div className="space-y-2"><Label className="text-muted-foreground font-semibold">Instagram (URL)</Label><Input value={instagram} onChange={(e) => setInstagram(e.target.value)} placeholder="https://instagram.com/..." /></div>
+            <div className="space-y-2"><Label className="text-muted-foreground font-semibold">LinkedIn (URL)</Label><Input value={linkedin} onChange={(e) => setLinkedin(e.target.value)} placeholder="https://linkedin.com/in/..." /></div>
+            <div className="space-y-2"><Label className="text-muted-foreground font-semibold">Site Web (URL)</Label><Input value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="https://..." /></div>
           </div>
         </div>
 
