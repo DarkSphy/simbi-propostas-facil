@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { formatBRL, statusBadge } from "@/lib/format";
-import { Check, MessageCircle, X, Instagram, Linkedin, Globe } from "lucide-react";
+import { Check, MessageCircle, X, Instagram, Linkedin, Globe, ZoomIn } from "lucide-react";
+import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/p/$slug")({
@@ -141,9 +142,20 @@ function PublicProposal() {
                     <div key={it.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-5 gap-4 rounded-2xl border border-border bg-card shadow-sm hover:border-primary/30 transition-colors">
                       <div className="flex items-center gap-4">
                         {it.image_url && (
-                          <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl border border-border bg-muted/20">
-                            <img src={it.image_url} alt={it.description} className="h-full w-full object-cover" />
-                          </div>
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <button className="group relative h-16 w-16 shrink-0 overflow-hidden rounded-xl border border-border bg-muted/20 cursor-zoom-in">
+                                <img src={it.image_url} alt={it.description} className="h-full w-full object-cover transition-transform group-hover:scale-110" />
+                                <div className="absolute inset-0 grid place-items-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
+                                  <ZoomIn className="h-5 w-5 text-white" />
+                                </div>
+                              </button>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-3xl border-none bg-transparent shadow-none">
+                              <DialogTitle className="sr-only">Imagem do item</DialogTitle>
+                              <img src={it.image_url} alt={it.description} className="h-auto w-full max-h-[80vh] rounded-2xl object-contain" />
+                            </DialogContent>
+                          </Dialog>
                         )}
                         <div>
                           <div className="font-semibold text-base">{it.description}</div>
@@ -163,9 +175,20 @@ function PublicProposal() {
                     {items.sort((a: any, b: any) => a.sort_order - b.sort_order).map((it: any) => (
                       <li key={it.id} className="flex items-center justify-between px-5 py-4 gap-4">
                         {it.image_url && (
-                          <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg border border-border bg-muted/20">
-                            <img src={it.image_url} alt={it.description} className="h-full w-full object-cover" />
-                          </div>
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <button className="group relative h-12 w-12 shrink-0 overflow-hidden rounded-lg border border-border bg-muted/20 cursor-zoom-in">
+                                <img src={it.image_url} alt={it.description} className="h-full w-full object-cover transition-transform group-hover:scale-110" />
+                                <div className="absolute inset-0 grid place-items-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
+                                  <ZoomIn className="h-4 w-4 text-white" />
+                                </div>
+                              </button>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-3xl border-none bg-transparent shadow-none">
+                              <DialogTitle className="sr-only">Imagem do item</DialogTitle>
+                              <img src={it.image_url} alt={it.description} className="h-auto w-full max-h-[80vh] rounded-2xl object-contain" />
+                            </DialogContent>
+                          </Dialog>
                         )}
                         <div className="flex-1">
                           <div className="font-semibold text-base">{it.description}</div>
