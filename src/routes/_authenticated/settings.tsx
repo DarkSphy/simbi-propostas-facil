@@ -136,9 +136,11 @@ function SettingsPage() {
               <Label className="text-muted-foreground font-semibold">Logo da Marca</Label>
               <div className="flex items-center gap-4">
                 {logoUrl ? (
-                  <div className="relative h-20 w-20 overflow-hidden rounded-xl border border-border bg-muted/20">
-                    <img src={logoUrl} alt="Logo" className="h-full w-full object-contain p-2" />
-                    <button onClick={() => setLogoUrl("")} className="absolute -right-2 -top-2 grid h-6 w-6 place-items-center rounded-full bg-destructive text-destructive-foreground hover:scale-110 transition-transform"><X className="h-3 w-3" /></button>
+                  <div className="relative">
+                    <div className="h-20 w-20 overflow-hidden rounded-xl border border-border bg-muted/20">
+                      <img src={logoUrl} alt="Logo" className="h-full w-full object-contain p-2" />
+                    </div>
+                    <button onClick={() => setLogoUrl("")} className="absolute -right-2 -top-2 z-10 grid h-6 w-6 place-items-center rounded-full bg-destructive text-destructive-foreground hover:scale-110 transition-transform shadow-sm"><X className="h-3 w-3" /></button>
                   </div>
                 ) : (
                   <Button type="button" variant="outline" className="h-20 w-20 rounded-xl border-dashed" onClick={() => fileRef.current?.click()}>
@@ -198,9 +200,11 @@ function SettingsPage() {
               <Label className="text-muted-foreground font-semibold">Imagem de Fundo</Label>
               <div className="flex items-center gap-4">
                 {backgroundImageUrl ? (
-                  <div className="relative h-12 w-20 overflow-hidden rounded-lg border border-border bg-muted/20">
-                    <img src={backgroundImageUrl} alt="Background" className="h-full w-full object-cover" />
-                    <button onClick={() => setBackgroundImageUrl("")} className="absolute -right-2 -top-2 grid h-6 w-6 place-items-center rounded-full bg-destructive text-destructive-foreground hover:scale-110 transition-transform"><X className="h-3 w-3" /></button>
+                  <div className="relative">
+                    <div className="h-12 w-20 overflow-hidden rounded-lg border border-border bg-muted/20">
+                      <img src={backgroundImageUrl} alt="Background" className="h-full w-full object-cover" />
+                    </div>
+                    <button onClick={() => setBackgroundImageUrl("")} className="absolute -right-2 -top-2 z-10 grid h-6 w-6 place-items-center rounded-full bg-destructive text-destructive-foreground hover:scale-110 transition-transform shadow-sm"><X className="h-3 w-3" /></button>
                   </div>
                 ) : (
                   <Button type="button" variant="outline" className="h-12 w-20 rounded-lg border-dashed" onClick={() => bgFileRef.current?.click()}>

@@ -135,7 +135,7 @@ function PublicProposal() {
 
       <div className="relative z-10 mx-auto max-w-2xl px-4">
         {/* Header Visual with Logo */}
-        <div className="mb-10 flex flex-col items-center text-center">
+        <div className={`mb-10 flex flex-col items-center text-center ${profile.background_image_url ? 'bg-card/80 backdrop-blur-md p-8 rounded-3xl border border-border/50 shadow-sm mx-auto max-w-sm' : ''}`}>
           {profile.logo_url ? (
             <div className="h-32 w-32 overflow-hidden rounded-2xl border-4 border-white shadow-2xl bg-white mb-5 transition-transform hover:scale-105">
               <img src={profile.logo_url} alt="Logo" className="h-full w-full object-contain p-2" />
@@ -145,8 +145,8 @@ function PublicProposal() {
               {(profile.company_name?.[0] ?? profile.full_name?.[0] ?? "S").toUpperCase()}
             </div>
           )}
-          <h2 className="text-2xl font-extrabold tracking-tight">{profile.company_name ?? profile.full_name ?? "Profissional"}</h2>
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary mt-1.5 opacity-90">Proposta Comercial</p>
+          <h2 className={`text-2xl font-extrabold tracking-tight ${profile.background_image_url ? 'text-card-foreground' : ''}`}>{profile.company_name ?? profile.full_name ?? "Profissional"}</h2>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary mt-1.5 opacity-90">Orçamento</p>
         </div>
 
         <div className="overflow-hidden rounded-3xl border border-border bg-card text-card-foreground shadow-elevated" style={{ "--foreground": "var(--card-foreground)", "--color-foreground": "var(--color-card-foreground)" } as React.CSSProperties}>
