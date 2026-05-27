@@ -5,6 +5,9 @@ import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Plus, FileText, CheckCircle2, Percent, DollarSign } from "lucide-react";
 import { formatBRL, statusBadge } from "@/lib/format";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { format, parseISO, subMonths } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard · Simbi" }] }),
@@ -32,6 +35,19 @@ function Dashboard() {
   const rate = sent ? Math.round((approved / sent) * 100) : 0;
   const total = proposals.filter(p => isWon(p.status)).reduce((s, p) => s + Number(p.total), 0);
 
+  // Generate chart data for the last 6 months
+  const chartData = Array.from({ length: 6 }).map((_, i) => {
+    const d = subMonths(new Date(), 5 - i);
+    const monthStr = format(d, 'MMM', { locale: ptBR });
+    const monthProposals = proposals.filter(p => {
+      const pDate = parseISO(p.created_at);
+      return pDate.getMonth() === d.getMonth() && pDate.getFullYear() === d.getFullYear();
+    });
+    const monthApproved = monthProposals.filter(p => isWon(p.status));
+    const revenue = monthApproved.reduce((sum, p) => sum + Number(p.total), 0);
+    return { name: monthStr.toUpperCase(), revenue };
+  });
+
   return (
     <div className="mx-auto max-w-6xl px-5 py-8">
       <div className="flex flex-wrap items-end justify-between gap-3">
@@ -48,30 +64,54 @@ function Dashboard() {
         <Stat icon={FileText} label="Propostas enviadas" value={String(sent)} />
         <Stat icon={CheckCircle2} label="Aprovadas" value={String(approved)} />
         <Stat icon={Percent} label="Taxa de aprovação" value={`${rate}%`} />
-        <Stat icon={DollarSign} label="Total movimentado" value={formatBRL(total)} />
+        <Stat icon={DollarSign} label="Total aprovado" value={formatBRL(total)} />
       </div>
 
-      <div className="mt-10 overflow-hidden rounded-3xl border border-border/50 bg-card shadow-card transition-all">
-        <div className="flex items-center justify-between border-b border-border/50 bg-transparent px-6 py-5">
-          <h2 className="text-lg font-bold tracking-tight">Últimas propostas</h2>
-          <Link to="/proposals" className="text-sm font-medium text-primary hover:underline">Ver todas</Link>
+      <div className="mt-10 grid gap-6 lg:grid-cols-3">
+        <div className="lg:col-span-2 overflow-hidden rounded-3xl border border-border/50 bg-card shadow-card p-6">
+          <h2 className="text-lg font-bold tracking-tight mb-6">Faturamento Aprovado (6 meses)</h2>
+          <div className="h-64 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} dy={10} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} tickFormatter={(val) => `R$ ${val}`} />
+                <Tooltip 
+                  formatter={(value: number) => [formatBRL(value), "Faturamento"]}
+                  contentStyle={{ borderRadius: '1rem', border: '1px solid hsl(var(--border))', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+                />
+                <Line type="monotone" dataKey="revenue" stroke="hsl(var(--primary))" strokeWidth={3} dot={{ r: 4, fill: 'hsl(var(--primary))' }} activeDot={{ r: 6 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
         </div>
-        {proposals.length === 0 ? (
-          <EmptyState />
-        ) : (
-          <ul className="divide-y divide-border/50">
-            {proposals.slice(0, 6).map(p => (
-              <li key={p.id} className="flex items-center justify-between px-6 py-5 text-sm transition-colors hover:bg-muted/10">
-                <Link to="/proposals/$id" params={{ id: p.id }} className="flex-1 truncate font-semibold transition-colors hover:text-primary">
-                  {p.title}
-                </Link>
-                <span className="hidden flex-1 truncate text-muted-foreground sm:block">{(p as any).clients?.name ?? "—"}</span>
-                <span className="w-24 text-right font-medium">{formatBRL(Number(p.total))}</span>
-                <span className="ml-4 w-24 text-right">{statusBadge(p.status)}</span>
-              </li>
-            ))}
-          </ul>
-        )}
+
+        <div className="overflow-hidden rounded-3xl border border-border/50 bg-card shadow-card transition-all">
+          <div className="flex items-center justify-between border-b border-border/50 bg-transparent px-6 py-5">
+            <h2 className="text-lg font-bold tracking-tight">Últimas propostas</h2>
+            <Link to="/proposals" className="text-sm font-medium text-primary hover:underline">Ver todas</Link>
+          </div>
+          {proposals.length === 0 ? (
+            <EmptyState />
+          ) : (
+            <ul className="divide-y divide-border/50">
+              {proposals.slice(0, 5).map(p => (
+                <li key={p.id} className="flex flex-col px-6 py-4 text-sm transition-colors hover:bg-muted/10 gap-2">
+                  <div className="flex items-center justify-between">
+                    <Link to="/proposals/$id" params={{ id: p.id }} className="truncate font-semibold transition-colors hover:text-primary">
+                      {p.title}
+                    </Link>
+                    <span className="w-24 text-right">{statusBadge(p.status)}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-muted-foreground">
+                    <span className="truncate">{(p as any).clients?.name ?? "—"}</span>
+                    <span className="font-medium text-foreground">{formatBRL(Number(p.total))}</span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
     </div>
   );
