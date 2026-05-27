@@ -47,7 +47,7 @@ function NewProposal() {
 
   async function save() {
     if (!title.trim()) { toast.error("Informe um título."); return; }
-    if (!user) return;
+    if (!user) { toast.error("Sua sessão expirou. Faça login novamente."); return; }
     setSaving(true);
     try {
       let finalClientId = clientId || null;
@@ -59,8 +59,9 @@ function NewProposal() {
         finalClientId = data.id;
       }
 
+      const public_slug = Math.random().toString(36).substring(2, 11) + Math.random().toString(36).substring(2, 6);
       const { data: prop, error: pErr } = await supabase.from("proposals")
-        .insert({ user_id: user.id, client_id: finalClientId, title, description, notes, total, status: "sent" })
+        .insert({ user_id: user.id, client_id: finalClientId, title, description, notes, total, status: "sent", public_slug })
         .select("id,public_slug").single();
       if (pErr) throw pErr;
 
@@ -74,7 +75,8 @@ function NewProposal() {
       toast.success("Proposta criada!");
       navigate({ to: "/proposals/$id", params: { id: prop.id } });
     } catch (e: any) {
-      toast.error(e.message ?? "Erro ao criar proposta.");
+      console.error("Erro no save da proposta:", e);
+      toast.error(e.message || "Erro ao criar proposta. Verifique o console.");
     } finally { setSaving(false); }
   }
 
