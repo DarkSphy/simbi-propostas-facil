@@ -159,6 +159,7 @@ function Catalog() {
           </div>
         ) : (
           <ul className="divide-y divide-border">
+            {items.map(it => (
               <li key={it.id} className="flex items-center gap-4 px-5 py-4 hover:bg-muted/40">
                 {it.image_url ? (
                   <div className="h-12 w-12 shrink-0 rounded-lg border border-border overflow-hidden bg-muted/20">
