@@ -46,12 +46,23 @@ function NewProposal() {
   function removeItem(i: number) { setItems(items.filter((_, idx) => idx !== i)); }
 
   async function save() {
-    if (!title.trim()) { toast.error("Informe um título."); return; }
-    if (!user) { toast.error("Sua sessão expirou. Faça login novamente."); return; }
-    setSaving(true);
+    console.log("Botão salvar clicado!");
     try {
+      if (!title || !title.trim()) { 
+        toast.error("Informe um título.");
+        alert("Por favor, preencha o Título da proposta antes de criar.");
+        return; 
+      }
+      if (!user) { 
+        toast.error("Sua sessão expirou.");
+        alert("Sua sessão expirou. Atualize a página e faça login novamente.");
+        return; 
+      }
+      
+      setSaving(true);
+      
       let finalClientId = clientId || null;
-      if (!finalClientId && newClientName.trim()) {
+      if (!finalClientId && newClientName && newClientName.trim()) {
         const { data, error } = await supabase.from("clients")
           .insert({ user_id: user.id, name: newClientName.trim(), phone: newClientPhone.trim() || null })
           .select("id").single();
@@ -65,19 +76,23 @@ function NewProposal() {
         .select("id,public_slug").single();
       if (pErr) throw pErr;
 
-      const cleanItems = items.filter(i => i.description.trim());
-      if (cleanItems.length) {
+      const cleanItems = items.filter(i => i.description && i.description.trim());
+      if (cleanItems.length > 0) {
         const { error: iErr } = await supabase.from("proposal_items").insert(
           cleanItems.map((it, idx) => ({ proposal_id: prop.id, description: it.description, quantity: it.quantity, unit_price: it.unit_price, sort_order: idx }))
         );
         if (iErr) throw iErr;
       }
+      
       toast.success("Proposta criada!");
       navigate({ to: "/proposals/$id", params: { id: prop.id } });
     } catch (e: any) {
       console.error("Erro no save da proposta:", e);
-      toast.error(e.message || "Erro ao criar proposta. Verifique o console.");
-    } finally { setSaving(false); }
+      toast.error(e?.message || "Erro ao criar proposta. Verifique o console.");
+      alert("Ocorreu um erro ao salvar: " + (e?.message || "Erro desconhecido"));
+    } finally { 
+      setSaving(false); 
+    }
   }
 
   return (
