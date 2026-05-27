@@ -36,9 +36,9 @@ export function AppSidebar() {
                 const active = path === it.url || path.startsWith(it.url + "/");
                 return (
                   <SidebarMenuItem key={it.url}>
-                    <SidebarMenuButton asChild isActive={active}>
-                      <Link to={it.url} className="flex items-center gap-2">
-                        <it.icon className="h-4 w-4" />
+                    <SidebarMenuButton asChild isActive={active} className="transition-all data-[active=true]:bg-primary/15 data-[active=true]:text-primary data-[active=true]:font-semibold hover:bg-primary/5">
+                      <Link to={it.url} className="flex items-center gap-3 py-1">
+                        <it.icon className={`h-[1.125rem] w-[1.125rem] ${active ? "text-primary drop-shadow-sm" : "text-muted-foreground"}`} />
                         {!collapsed && <span>{it.title}</span>}
                       </Link>
                     </SidebarMenuButton>
