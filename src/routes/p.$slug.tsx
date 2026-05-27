@@ -158,13 +158,16 @@ function PublicProposal() {
                           </Dialog>
                         )}
                         <div>
-                          <div className="font-semibold text-base">{it.description}</div>
+                          <div className="font-semibold text-base leading-tight">{it.description}</div>
                           <div className="mt-1 text-sm text-muted-foreground font-medium">Quantidade: {it.quantity}</div>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <div className="font-bold text-lg">{formatBRL(it.quantity * it.unit_price)}</div>
-                        <div className="text-xs text-muted-foreground">{formatBRL(it.unit_price)} un</div>
+                      <div className="text-left sm:text-right mt-3 sm:mt-0 pt-3 sm:pt-0 border-t border-border/50 sm:border-0 flex justify-between sm:block items-center">
+                        <div className="text-sm font-semibold text-muted-foreground sm:hidden">Subtotal:</div>
+                        <div>
+                          <div className="font-bold text-lg">{formatBRL(it.quantity * it.unit_price)}</div>
+                          <div className="text-xs text-muted-foreground">{formatBRL(it.unit_price)} un</div>
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -173,28 +176,30 @@ function PublicProposal() {
                 <div className="rounded-2xl border border-border overflow-hidden bg-card">
                   <ul className="divide-y divide-border text-sm">
                     {items.sort((a: any, b: any) => a.sort_order - b.sort_order).map((it: any) => (
-                      <li key={it.id} className="flex items-center justify-between px-5 py-4 gap-4">
-                        {it.image_url && (
-                          <Dialog>
-                            <DialogTrigger asChild>
-                              <button className="group relative h-12 w-12 shrink-0 overflow-hidden rounded-lg border border-border bg-muted/20 cursor-zoom-in">
-                                <img src={it.image_url} alt={it.description} className="h-full w-full object-cover transition-transform group-hover:scale-110" />
-                                <div className="absolute inset-0 grid place-items-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
-                                  <ZoomIn className="h-4 w-4 text-white" />
-                                </div>
-                              </button>
-                            </DialogTrigger>
-                            <DialogContent className="max-w-3xl border-none bg-transparent shadow-none">
-                              <DialogTitle className="sr-only">Imagem do item</DialogTitle>
-                              <img src={it.image_url} alt={it.description} className="h-auto w-full max-h-[80vh] rounded-2xl object-contain" />
-                            </DialogContent>
-                          </Dialog>
-                        )}
-                        <div className="flex-1">
-                          <div className="font-semibold text-base">{it.description}</div>
-                          <div className="mt-0.5 text-xs text-muted-foreground">{it.quantity} × {formatBRL(it.unit_price)}</div>
+                      <li key={it.id} className="flex flex-col sm:flex-row sm:items-center justify-between px-5 py-4 gap-3 sm:gap-4">
+                        <div className="flex items-center gap-3 sm:gap-4 flex-1">
+                          {it.image_url && (
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <button className="group relative h-12 w-12 shrink-0 overflow-hidden rounded-lg border border-border bg-muted/20 cursor-zoom-in">
+                                  <img src={it.image_url} alt={it.description} className="h-full w-full object-cover transition-transform group-hover:scale-110" />
+                                  <div className="absolute inset-0 grid place-items-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
+                                    <ZoomIn className="h-4 w-4 text-white" />
+                                  </div>
+                                </button>
+                              </DialogTrigger>
+                              <DialogContent className="max-w-3xl border-none bg-transparent shadow-none">
+                                <DialogTitle className="sr-only">Imagem do item</DialogTitle>
+                                <img src={it.image_url} alt={it.description} className="h-auto w-full max-h-[80vh] rounded-2xl object-contain" />
+                              </DialogContent>
+                            </Dialog>
+                          )}
+                          <div className="flex-1">
+                            <div className="font-semibold text-base leading-tight">{it.description}</div>
+                            <div className="mt-0.5 text-xs text-muted-foreground">{it.quantity} × {formatBRL(it.unit_price)}</div>
+                          </div>
                         </div>
-                        <div className="font-bold text-base">{formatBRL(it.quantity * it.unit_price)}</div>
+                        <div className="font-bold text-base sm:text-right self-end sm:self-auto mt-1 sm:mt-0">{formatBRL(it.quantity * it.unit_price)}</div>
                       </li>
                     ))}
                   </ul>
