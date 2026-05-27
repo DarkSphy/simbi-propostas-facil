@@ -54,7 +54,7 @@ function Hero() {
     <section className="bg-hero-gradient relative overflow-hidden pt-32 pb-24 lg:pt-48 lg:pb-32">
       {/* Decorative background glow */}
       <div className="absolute top-0 left-1/2 -ml-[30rem] w-[60rem] max-w-none -translate-y-1/2 sm:-ml-[40rem] sm:w-[80rem]">
-        <div className="aspect-[2/1] bg-gradient-to-b from-primary/30 to-transparent blur-3xl" />
+        <div className="aspect-[2/1] bg-gradient-to-b from-primary/50 to-transparent blur-3xl opacity-70 glow-primary" />
       </div>
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
@@ -66,7 +66,7 @@ function Hero() {
             Destaque-se da concorrência com orçamentos elegantes. Crie em minutos, envie direto no WhatsApp e receba o "sim" do cliente mais rápido.
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Button asChild size="lg" className="h-14 rounded-full bg-primary px-8 text-base text-primary-foreground shadow-lg shadow-primary/30 transition hover:bg-primary/90 hover:-translate-y-0.5">
+            <Button asChild size="lg" className="h-14 rounded-full bg-primary px-8 text-base text-primary-foreground shadow-lg shadow-primary/40 glow-primary transition-all hover:bg-primary/90 hover:glow-primary-hover hover:-translate-y-0.5">
               <Link to="/register">Criar conta gratuitamente <ArrowRight className="ml-2 h-5 w-5" /></Link>
             </Button>
           </div>
@@ -131,8 +131,8 @@ function Features() {
         <div className="mx-auto mt-16 max-w-5xl sm:mt-20">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
             {items.map(({ icon: Icon, title, desc }) => (
-              <div key={title} className="group relative overflow-hidden rounded-3xl border border-border bg-card p-10 transition-all hover:shadow-elevated hover:-translate-y-1">
-                <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+              <div key={title} className="group relative overflow-hidden rounded-3xl border border-border bg-card p-10 transition-all hover:shadow-elevated hover:-translate-y-1 hover:border-primary/30">
+                <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all group-hover:glow-primary">
                   <Icon className="h-6 w-6" />
                 </div>
                 <h3 className="mb-3 text-xl font-bold">{title}</h3>
@@ -262,7 +262,7 @@ function CTA() {
           Crie sua primeira proposta em menos de 2 minutos. Comece gratuitamente hoje mesmo.
         </p>
         <div className="mt-10 flex items-center justify-center gap-4">
-          <Button asChild size="lg" className="h-14 rounded-full bg-white px-8 text-base text-primary hover:bg-white/90 shadow-xl transition-transform hover:scale-105">
+          <Button asChild size="lg" className="h-14 rounded-full bg-white px-8 text-base text-primary hover:bg-white/90 shadow-xl transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(255,255,255,0.4)]">
             <Link to="/register">Começar agora gratuitamente</Link>
           </Button>
         </div>
