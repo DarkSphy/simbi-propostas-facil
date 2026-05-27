@@ -199,7 +199,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      update_proposal_status: {
+        Args: { p_slug: string; p_status: string }
+        Returns: undefined
+      }
     }
     Enums: {
       proposal_status: "sent" | "viewed" | "approved" | "rejected"
