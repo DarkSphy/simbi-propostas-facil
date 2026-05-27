@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -7,7 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Trash2, ArrowLeft } from "lucide-react";
+import { Plus, Trash2, ArrowLeft, PackagePlus } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { formatBRL } from "@/lib/format";
 import { Link } from "@tanstack/react-router";
@@ -32,10 +34,20 @@ function NewProposal() {
   const [notes, setNotes] = useState("");
   const [items, setItems] = useState<Item[]>([{ description: "", quantity: 1, unit_price: 0 }]);
   const [saving, setSaving] = useState(false);
+  const [catalogOpen, setCatalogOpen] = useState(false);
 
   useEffect(() => {
     supabase.from("clients").select("id,name").order("name").then(({ data }) => setClients(data ?? []));
   }, []);
+
+  const { data: catalogItems = [] } = useQuery({
+    queryKey: ["catalog-items"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("catalog_items").select("*").order("name");
+      if (error) throw error;
+      return data ?? [];
+    }
+  });
 
   const total = items.reduce((s, it) => s + Number(it.quantity || 0) * Number(it.unit_price || 0), 0);
 
@@ -43,6 +55,16 @@ function NewProposal() {
     setItems(items.map((it, idx) => idx === i ? { ...it, ...patch } : it));
   }
   function addItem() { setItems([...items, { description: "", quantity: 1, unit_price: 0 }]); }
+  function addFromCatalog(catItem: any) {
+    const newIt = { description: catItem.name, quantity: 1, unit_price: catItem.unit_price };
+    if (items.length === 1 && !items[0].description) {
+      setItems([newIt]);
+    } else {
+      setItems([...items, newIt]);
+    }
+    setCatalogOpen(false);
+    toast.success("Item importado!");
+  }
   function removeItem(i: number) { setItems(items.filter((_, idx) => idx !== i)); }
 
   async function save() {
@@ -136,7 +158,34 @@ function NewProposal() {
                 <Button variant="ghost" size="icon" className="col-span-2 sm:col-span-1" onClick={() => removeItem(i)}><Trash2 className="h-4 w-4" /></Button>
               </div>
             ))}
-            <Button variant="outline" size="sm" className="rounded-full" onClick={addItem}><Plus className="mr-1 h-4 w-4" /> Adicionar item</Button>
+            <div className="flex flex-wrap gap-2 pt-2">
+              <Button variant="outline" size="sm" className="rounded-full" onClick={addItem}><Plus className="mr-1 h-4 w-4" /> Adicionar manual</Button>
+              <Dialog open={catalogOpen} onOpenChange={setCatalogOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="secondary" size="sm" className="rounded-full"><PackagePlus className="mr-1 h-4 w-4" /> Importar do catálogo</Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader><DialogTitle>Catálogo de Itens</DialogTitle></DialogHeader>
+                  <div className="max-h-[60vh] overflow-y-auto pt-4">
+                    {catalogItems.length === 0 ? (
+                      <p className="text-center text-sm text-muted-foreground">Nenhum item cadastrado no catálogo.</p>
+                    ) : (
+                      <ul className="divide-y divide-border">
+                        {catalogItems.map(c => (
+                          <li key={c.id} className="flex items-center justify-between py-3">
+                            <div>
+                              <div className="font-medium">{c.name}</div>
+                              <div className="text-xs text-muted-foreground">{formatBRL(Number(c.unit_price))}</div>
+                            </div>
+                            <Button size="sm" onClick={() => addFromCatalog(c)}>Adicionar</Button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
           </div>
           <div className="mt-4 flex justify-between border-t border-border pt-3 text-base font-semibold"><span>Total</span><span>{formatBRL(total)}</span></div>
         </Section>

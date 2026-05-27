@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      catalog_items: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          type: Database["public"]["Enums"]["item_type"]
+          unit_price: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          type: Database["public"]["Enums"]["item_type"]
+          unit_price?: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          type?: Database["public"]["Enums"]["item_type"]
+          unit_price?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       clients: {
         Row: {
           created_at: string
@@ -205,7 +235,8 @@ export type Database = {
       }
     }
     Enums: {
-      proposal_status: "sent" | "viewed" | "approved" | "rejected"
+      item_type: "product" | "service"
+      proposal_status: "sent" | "viewed" | "approved" | "rejected" | "in_progress" | "canceled" | "finished" | "paid"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -333,7 +364,8 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      proposal_status: ["sent", "viewed", "approved", "rejected"],
+      item_type: ["product", "service"],
+      proposal_status: ["sent", "viewed", "approved", "rejected", "in_progress", "canceled", "finished", "paid"],
     },
   },
 } as const

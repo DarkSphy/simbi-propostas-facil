@@ -18,13 +18,23 @@ function PublicProposal() {
 
   useEffect(() => {
     (async () => {
-      const { data, error } = await supabase.from("proposals")
-        .select("*,profiles(full_name,company_name,whatsapp),clients(name,phone),proposal_items(*)")
+      const { data: prop, error } = await supabase.from("proposals")
+        .select("*,clients(name,phone),proposal_items(*)")
         .eq("public_slug", slug).single();
+      
+      if (error || !prop) {
+        setLoading(false);
+        return;
+      }
+
+      const { data: prof } = await supabase.from("profiles")
+        .select("full_name,company_name,whatsapp")
+        .eq("id", prop.user_id).single();
+        
+      setData({ ...prop, profiles: prof || {} });
       setLoading(false);
-      if (error || !data) return;
-      setData(data);
-      if (data.status === "sent") {
+
+      if (prop.status === "sent") {
         await supabase.rpc("update_proposal_status", { p_slug: slug, p_status: "viewed" });
       }
     })();

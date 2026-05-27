@@ -51,6 +51,14 @@ function ProposalDetail() {
     navigate({ to: "/proposals" });
   }
 
+  async function updateStatus(newStatus: string) {
+    const { error } = await supabase.from("proposals").update({ status: newStatus as any }).eq("id", id);
+    if (error) { toast.error(error.message); return; }
+    toast.success("Status atualizado!");
+    qc.invalidateQueries({ queryKey: ["proposal", id] });
+    qc.invalidateQueries({ queryKey: ["proposals-list"] });
+  }
+
   return (
     <div className="mx-auto max-w-3xl px-5 py-8">
       <Link to="/proposals" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground"><ArrowLeft className="mr-1 h-4 w-4" /> Voltar</Link>
@@ -100,6 +108,16 @@ function ProposalDetail() {
           <p className="whitespace-pre-wrap text-sm">{data.notes}</p>
         </div>
       )}
+
+      <div className="mt-5 rounded-2xl border border-border bg-card p-5 shadow-soft">
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">Alterar Status</h2>
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" size="sm" onClick={() => updateStatus("in_progress")}>Marcar: Em execução</Button>
+          <Button variant="outline" size="sm" onClick={() => updateStatus("finished")}>Marcar: Finalizada</Button>
+          <Button variant="outline" size="sm" onClick={() => updateStatus("paid")} className="text-emerald-600 hover:text-emerald-700">Marcar: Paga</Button>
+          <Button variant="outline" size="sm" onClick={() => updateStatus("canceled")} className="text-destructive hover:text-destructive">Marcar: Cancelada</Button>
+        </div>
+      </div>
 
       <div className="mt-8 flex justify-end">
         <Button variant="ghost" className="text-destructive hover:text-destructive" onClick={remove}><Trash2 className="mr-1 h-4 w-4" /> Excluir proposta</Button>
