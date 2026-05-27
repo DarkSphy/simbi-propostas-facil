@@ -24,6 +24,7 @@ function SettingsPage() {
   const [backgroundColor, setBackgroundColor] = useState("");
   const [backgroundImageUrl, setBackgroundImageUrl] = useState("");
   const [headerTexture, setHeaderTexture] = useState("none");
+  const [headerType, setHeaderType] = useState("logo");
   const [fontFamily, setFontFamily] = useState("inter");
   const [itemLayout, setItemsLayout] = useState("minimal");
   const [bgType, setBgType] = useState<"color" | "texture" | "image">("color");
@@ -48,6 +49,7 @@ function SettingsPage() {
         setBackgroundColor(data.background_color ?? "");
         setBackgroundImageUrl(data.background_image_url ?? "");
         setHeaderTexture(data.header_texture ?? "none");
+        setHeaderType(data.header_type ?? "logo");
         setFontFamily(data.font_family ?? "inter");
         setItemsLayout(data.item_layout ?? "minimal");
         setInstagram(data.instagram_url ?? "");
@@ -89,6 +91,7 @@ function SettingsPage() {
       background_color: finalBgColor,
       background_image_url: finalBgUrl,
       header_texture: finalTexture,
+      header_type: headerType,
       font_family: fontFamily,
       item_layout: itemLayout,
       instagram_url: instagram,
@@ -153,22 +156,34 @@ function SettingsPage() {
           <h2 className="text-xl font-bold tracking-tight mb-6">Personalização (Branding)</h2>
           <div className="grid gap-8 sm:grid-cols-2">
             <div className="space-y-3">
-              <Label className="text-muted-foreground font-semibold">Logo da Marca</Label>
-              <div className="flex items-center gap-4">
-                {logoUrl ? (
-                  <div className="relative">
-                    <div className="h-20 w-20 overflow-hidden rounded-xl border border-border bg-muted/20">
-                      <img src={logoUrl} alt="Logo" className="h-full w-full object-contain p-2" />
+              <Label className="text-muted-foreground font-semibold">Imagem do Cabeçalho</Label>
+              <div className="flex flex-col gap-4">
+                <Select value={headerType} onValueChange={setHeaderType}>
+                  <SelectTrigger className="w-full sm:w-[240px]"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="logo">Formato: Logo (Quadrada)</SelectItem>
+                    <SelectItem value="banner">Formato: Banner (Larga)</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                  {logoUrl ? (
+                    <div className="relative">
+                      <div className={`overflow-hidden rounded-xl border border-border bg-muted/20 ${headerType === 'banner' ? 'h-24 w-full sm:w-64' : 'h-20 w-20'}`}>
+                        <img src={logoUrl} alt="Logo/Banner" className={`h-full w-full ${headerType === 'banner' ? 'object-cover' : 'object-contain p-2'}`} />
+                      </div>
+                      <button onClick={() => setLogoUrl("")} className="absolute -right-2 -top-2 z-10 grid h-6 w-6 place-items-center rounded-full bg-destructive text-destructive-foreground hover:scale-110 transition-transform shadow-sm"><X className="h-3 w-3" /></button>
                     </div>
-                    <button onClick={() => setLogoUrl("")} className="absolute -right-2 -top-2 z-10 grid h-6 w-6 place-items-center rounded-full bg-destructive text-destructive-foreground hover:scale-110 transition-transform shadow-sm"><X className="h-3 w-3" /></button>
+                  ) : (
+                    <Button type="button" variant="outline" className={`rounded-xl border-dashed ${headerType === 'banner' ? 'h-24 w-full sm:w-64' : 'h-20 w-20'}`} onClick={() => fileRef.current?.click()}>
+                      {uploading ? "Enviando..." : <Upload className="h-6 w-6 text-muted-foreground" />}
+                    </Button>
+                  )}
+                  <div className="text-xs text-muted-foreground flex-1">
+                    {headerType === 'banner' ? "Recomendado: Imagem retangular (proporção 3:1)." : "Recomendado: PNG fundo transparente. Formato quadrado (1:1)."}
                   </div>
-                ) : (
-                  <Button type="button" variant="outline" className="h-20 w-20 rounded-xl border-dashed" onClick={() => fileRef.current?.click()}>
-                    {uploading ? "..." : <Upload className="h-6 w-6 text-muted-foreground" />}
-                  </Button>
-                )}
-                <div className="text-xs text-muted-foreground flex-1">Recomendado: PNG fundo transparente. Formato quadrado (1:1).</div>
-                <input type="file" ref={fileRef} className="hidden" accept="image/*" onChange={handleLogoUpload} />
+                  <input type="file" ref={fileRef} className="hidden" accept="image/*" onChange={handleLogoUpload} />
+                </div>
               </div>
             </div>
             

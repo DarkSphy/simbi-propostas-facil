@@ -134,19 +134,27 @@ function PublicProposal() {
       <div className={`absolute inset-0 z-0 pointer-events-none ${profile.header_texture !== "waves" ? textureClass : ""}`} style={profile.header_texture !== "waves" ? textureStyle : {}} />
 
       <div className="relative z-10 mx-auto max-w-2xl px-4">
-        {/* Header Visual with Logo */}
-        <div className={`mb-10 flex flex-col items-center text-center ${profile.background_image_url ? 'bg-card/80 backdrop-blur-md p-8 rounded-3xl border border-border/50 shadow-sm mx-auto max-w-sm' : ''}`}>
+        {/* Header Visual with Logo/Banner */}
+        <div className={`mb-10 flex flex-col items-center text-center ${profile.background_image_url ? 'bg-card/80 backdrop-blur-md p-8 rounded-3xl border border-border/50 shadow-sm mx-auto max-w-lg w-full' : 'max-w-lg mx-auto w-full'}`}>
           {profile.logo_url ? (
-            <div className="h-32 w-32 overflow-hidden rounded-2xl border-4 border-white shadow-2xl bg-white mb-5 transition-transform hover:scale-105">
-              <img src={profile.logo_url} alt="Logo" className="h-full w-full object-contain p-2" />
-            </div>
+            profile.header_type === 'banner' ? (
+              <div className="w-full h-32 sm:h-48 overflow-hidden rounded-2xl border border-border/50 shadow-lg bg-muted/20 mb-6 transition-transform hover:scale-[1.02]">
+                <img src={profile.logo_url} alt="Banner" className="h-full w-full object-cover" />
+              </div>
+            ) : (
+              <div className="h-32 w-32 shrink-0 overflow-hidden rounded-2xl border-4 border-white shadow-2xl bg-white mb-5 transition-transform hover:scale-105">
+                <img src={profile.logo_url} alt="Logo" className="h-full w-full object-contain p-2" />
+              </div>
+            )
           ) : (
-            <div className="mb-5 grid h-24 w-24 place-items-center rounded-2xl bg-primary text-4xl font-bold text-primary-foreground shadow-2xl border-4 border-white transition-transform hover:scale-105">
+            <div className={`mb-5 grid place-items-center rounded-2xl bg-primary text-4xl font-bold text-primary-foreground shadow-2xl border-4 border-white transition-transform hover:scale-[1.02] ${profile.header_type === 'banner' ? 'w-full h-32 sm:h-48' : 'h-24 w-24 hover:scale-105'}`}>
               {(profile.company_name?.[0] ?? profile.full_name?.[0] ?? "S").toUpperCase()}
             </div>
           )}
           <h2 className={`text-2xl font-extrabold tracking-tight ${profile.background_image_url ? 'text-card-foreground' : ''}`}>{profile.company_name ?? profile.full_name ?? "Profissional"}</h2>
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary mt-1.5 opacity-90">Orçamento</p>
+          <div className="mt-3 inline-flex items-center justify-center rounded-full bg-primary/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-primary border border-primary/20">
+            Orçamento
+          </div>
         </div>
 
         <div className="overflow-hidden rounded-3xl border border-border bg-card text-card-foreground shadow-elevated" style={{ "--foreground": "var(--card-foreground)", "--color-foreground": "var(--color-card-foreground)" } as React.CSSProperties}>
