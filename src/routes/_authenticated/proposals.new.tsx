@@ -32,12 +32,37 @@ function NewProposal() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [notes, setNotes] = useState("");
+  const [validDays, setValidDays] = useState<string>("");
   const [items, setItems] = useState<Item[]>([{ description: "", quantity: 1, unit_price: 0 }]);
   const [saving, setSaving] = useState(false);
   const [catalogOpen, setCatalogOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   useEffect(() => {
     supabase.from("clients").select("id,name").order("name").then(({ data }) => setClients(data ?? []));
+    
+    // Check for duplicate or edit actions
+    const cloneStr = sessionStorage.getItem("cloneProposal");
+    const editStr = sessionStorage.getItem("editProposal");
+    if (cloneStr || editStr) {
+      const d = JSON.parse((cloneStr || editStr) as string);
+      if (editStr) setEditingId(d.id);
+      setTitle(cloneStr ? d.title + " (Cópia)" : d.title);
+      setDescription(d.description || "");
+      setNotes(d.notes || "");
+      setClientId(d.client_id || "");
+      if (d.valid_until) {
+        const diff = Math.ceil((new Date(d.valid_until).getTime() - new Date().getTime()) / (1000 * 3600 * 24));
+        setValidDays(diff > 0 ? String(diff) : "");
+      }
+      if (d.proposal_items?.length) {
+        setItems(d.proposal_items.sort((a: any, b: any) => a.sort_order - b.sort_order).map((i: any) => ({
+          description: i.description, quantity: i.quantity, unit_price: i.unit_price, image_url: i.image_url
+        })));
+      }
+      sessionStorage.removeItem("cloneProposal");
+      sessionStorage.removeItem("editProposal");
+    }
   }, []);
 
   const { data: catalogItems = [] } = useQuery({
@@ -108,22 +133,38 @@ function NewProposal() {
         finalClientId = data.id;
       }
 
-      const public_slug = Math.random().toString(36).substring(2, 11) + Math.random().toString(36).substring(2, 6);
-      const { data: prop, error: pErr } = await supabase.from("proposals")
-        .insert({ user_id: user.id, client_id: finalClientId, title, description, notes, total, status: "sent", public_slug })
-        .select("id,public_slug").single();
-      if (pErr) throw pErr;
+      let propId = editingId;
+      let pSlug = "";
+
+      if (editingId) {
+        const { data: prop, error: pErr } = await supabase.from("proposals")
+          .update({ client_id: finalClientId, title, description, notes, total, valid_until: validUntil })
+          .eq("id", editingId)
+          .select("id,public_slug").single();
+        if (pErr) throw pErr;
+        pSlug = prop.public_slug;
+        // Delete old items
+        await supabase.from("proposal_items").delete().eq("proposal_id", editingId);
+      } else {
+        const public_slug = Math.random().toString(36).substring(2, 11) + Math.random().toString(36).substring(2, 6);
+        const { data: prop, error: pErr } = await supabase.from("proposals")
+          .insert({ user_id: user.id, client_id: finalClientId, title, description, notes, total, status: "sent", public_slug, valid_until: validUntil })
+          .select("id,public_slug").single();
+        if (pErr) throw pErr;
+        propId = prop.id;
+        pSlug = prop.public_slug;
+      }
 
       const cleanItems = items.filter(i => i.description && i.description.trim());
       if (cleanItems.length > 0) {
         const { error: iErr } = await supabase.from("proposal_items").insert(
-          cleanItems.map((it, idx) => ({ proposal_id: prop.id, description: it.description, quantity: it.quantity, unit_price: it.unit_price, sort_order: idx, image_url: it.image_url || null }))
+          cleanItems.map((it, idx) => ({ proposal_id: propId, description: it.description, quantity: it.quantity, unit_price: it.unit_price, sort_order: idx, image_url: it.image_url || null }))
         );
         if (iErr) throw iErr;
       }
       
-      toast.success("Proposta criada!");
-      navigate({ to: "/proposals/$id", params: { id: prop.id } });
+      toast.success(editingId ? "Proposta atualizada!" : "Proposta criada!");
+      navigate({ to: "/proposals/$id", params: { id: pSlug } });
     } catch (e: any) {
       console.error("Erro no save da proposta:", e);
       toast.error(e?.message || "Erro ao criar proposta. Verifique o console.");
@@ -136,7 +177,7 @@ function NewProposal() {
   return (
     <div className="mx-auto max-w-3xl px-5 py-8">
       <Link to="/proposals" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground"><ArrowLeft className="mr-1 h-4 w-4" /> Voltar</Link>
-      <h1 className="mt-3 text-2xl font-bold tracking-tight">Nova proposta</h1>
+      <h1 className="mt-3 text-2xl font-bold tracking-tight">{editingId ? "Editar proposta" : "Nova proposta"}</h1>
 
       <div className="mt-6 space-y-6">
         <Section title="Cliente">
@@ -160,8 +201,11 @@ function NewProposal() {
         </Section>
 
         <Section title="Detalhes">
-          <div className="space-y-1.5"><Label>Título</Label><Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Identidade visual completa" /></div>
-          <div className="space-y-1.5"><Label>Descrição</Label><Textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Resumo do escopo do serviço…" rows={3} /></div>
+          <div className="grid gap-4 sm:grid-cols-3">
+            <div className="space-y-1.5 sm:col-span-2"><Label>Título</Label><Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Identidade visual completa" /></div>
+            <div className="space-y-1.5"><Label>Validade (Dias)</Label><Input type="number" value={validDays} onChange={(e) => setValidDays(e.target.value)} placeholder="Opcional" /></div>
+          </div>
+          <div className="space-y-1.5 mt-4"><Label>Descrição</Label><Textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Resumo do escopo do serviço…" rows={3} /></div>
         </Section>
 
         <Section title="Itens">
@@ -226,7 +270,7 @@ function NewProposal() {
 
         <div className="flex justify-end gap-2">
           <Button variant="outline" onClick={() => navigate({ to: "/proposals" })}>Cancelar</Button>
-          <Button onClick={save} disabled={saving}>{saving ? "Salvando…" : "Criar proposta"}</Button>
+          <Button onClick={save} disabled={saving}>{saving ? "Salvando…" : (editingId ? "Atualizar proposta" : "Criar proposta")}</Button>
         </div>
       </div>
     </div>

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { formatBRL, statusBadge } from "@/lib/format";
-import { Check, MessageCircle, X, Instagram, Linkedin, Globe, ZoomIn } from "lucide-react";
+import { Check, MessageCircle, X, Instagram, Linkedin, Globe, ZoomIn, Printer, AlertTriangle, ExternalLink } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 
@@ -40,7 +40,7 @@ function PublicProposal() {
       }
 
       const { data: prof } = await supabase.from("profiles")
-        .select("full_name,company_name,whatsapp,logo_url,theme_color,background_color,background_image_url,header_texture,font_family,item_layout,instagram_url,linkedin_url,website_url")
+        .select("full_name,company_name,whatsapp,logo_url,theme_color,background_color,background_image_url,header_texture,header_type,font_family,item_layout,instagram_url,linkedin_url,website_url,payment_link")
         .eq("id", prop.user_id).single();
         
       setData({ ...prop, profiles: prof || {} });
@@ -66,6 +66,15 @@ function PublicProposal() {
   const items = data.proposal_items ?? [];
   const finalized = data.status === "approved" || data.status === "rejected";
   const whatsapp = (profile.whatsapp ?? "").replace(/\D/g, "");
+  
+  // Expiration logic
+  const validDate = data.valid_until ? new Date(data.valid_until) : null;
+  // Use UTC to prevent timezone offsets making it off by 1 day
+  if (validDate) validDate.setMinutes(validDate.getMinutes() + validDate.getTimezoneOffset());
+  
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const isExpired = !finalized && validDate && validDate < today;
   
   let customStyles = {} as React.CSSProperties;
   
@@ -159,9 +168,22 @@ function PublicProposal() {
 
         <div className="overflow-hidden rounded-3xl border border-border bg-card text-card-foreground shadow-elevated" style={{ "--foreground": "var(--card-foreground)", "--color-foreground": "var(--color-card-foreground)" } as React.CSSProperties}>
           <div className="h-2 w-full bg-primary" />
-          <div className="border-b border-border bg-muted/30 px-6 py-4 flex items-center justify-between">
-            <span className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Status</span>
-            {statusBadge(data.status)}
+          <div className="border-b border-border bg-muted/30 px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Status</span>
+                {isExpired ? <span className="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-semibold text-red-800">Expirada</span> : statusBadge(data.status)}
+              </div>
+              {validDate && !finalized && !isExpired && (
+                <div className="text-xs font-medium text-amber-600 bg-amber-500/10 px-2.5 py-1 rounded-full flex items-center border border-amber-500/20">
+                  <AlertTriangle className="w-3 h-3 mr-1" />
+                  Válida até {validDate.toLocaleDateString("pt-BR")}
+                </div>
+              )}
+            </div>
+            <Button variant="outline" size="sm" className="rounded-full shadow-sm print:hidden border-border/50 bg-background/50 backdrop-blur-sm" onClick={() => window.print()}>
+              <Printer className="mr-2 h-4 w-4" /> Salvar PDF
+            </Button>
           </div>
 
           <div className="px-6 py-8 sm:px-8 sm:py-10">
@@ -277,14 +299,29 @@ function PublicProposal() {
             )}
 
             <div className="mt-10 space-y-3">
-              {!finalized && (
-                <div className="grid gap-3 sm:grid-cols-2">
+              {!finalized && !isExpired && (
+                <div className="grid gap-3 sm:grid-cols-2 print:hidden">
                   <Button variant="outline" className="h-14 rounded-2xl border-2 hover:bg-destructive/5 hover:text-destructive hover:border-destructive/30 transition-all text-base font-semibold bg-card" onClick={() => setStatus("rejected")}>
                     <X className="mr-2 h-5 w-5" /> Recusar
                   </Button>
                   <Button className="h-14 rounded-2xl shadow-xl shadow-emerald-600/30 bg-emerald-600 hover:bg-emerald-700 transition-all hover:-translate-y-1 text-base font-bold text-white border-0" onClick={() => setStatus("approved")}>
                     <Check className="mr-2 h-5 w-5" /> Aceitar Proposta
                   </Button>
+                </div>
+              )}
+              {isExpired && (
+                <div className="flex flex-col items-center justify-center p-6 bg-red-50 text-red-600 border border-red-200 rounded-2xl print:hidden">
+                  <AlertTriangle className="h-8 w-8 mb-2 opacity-80" />
+                  <p className="font-bold text-lg">Proposta Expirada</p>
+                  <p className="text-sm mt-1 opacity-80 text-center">O prazo de validade desta proposta expirou. Entre em contato para atualizações.</p>
+                </div>
+              )}
+              {data.status === "approved" && profile.payment_link && (
+                <div className="mt-6 print:hidden">
+                  <a href={profile.payment_link.startsWith('http') ? profile.payment_link : `https://${profile.payment_link}`} target="_blank" rel="noreferrer" className="flex w-full items-center justify-center rounded-2xl bg-primary text-primary-foreground h-16 text-lg font-bold shadow-xl shadow-primary/20 hover:-translate-y-1 transition-all">
+                    Realizar Pagamento <ExternalLink className="ml-2 h-5 w-5" />
+                  </a>
+                  <p className="text-center text-xs text-muted-foreground mt-3">Você será redirecionado para o ambiente seguro de pagamento.</p>
                 </div>
               )}
               {whatsapp && (

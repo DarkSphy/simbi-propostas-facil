@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, Trash2, Package, Search } from "lucide-react";
+import { Plus, Trash2, Package, Search, Pencil } from "lucide-react";
 import { formatBRL } from "@/lib/format";
 import { toast } from "sonner";
 
@@ -23,6 +23,7 @@ function Catalog() {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [type, setType] = useState<"product" | "service">("product");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -53,27 +54,51 @@ function Catalog() {
     if (!user) return;
     setSaving(true);
     try {
-      const { error } = await supabase.from("catalog_items").insert({
+      const payload = {
         user_id: user.id,
         type,
         name: name.trim(),
         description: description.trim() || null,
         unit_price: Number(unitPrice) || 0,
         image_url: imageUrl || null,
-      });
-      if (error) throw error;
-      toast.success("Item adicionado ao catálogo!");
-      setOpen(false);
-      setName("");
-      setDescription("");
-      setUnitPrice("");
-      setImageUrl("");
+      };
+
+      if (editingId) {
+        const { error } = await supabase.from("catalog_items").update(payload).eq("id", editingId);
+        if (error) throw error;
+        toast.success("Item atualizado com sucesso!");
+      } else {
+        const { error } = await supabase.from("catalog_items").insert(payload);
+        if (error) throw error;
+        toast.success("Item adicionado ao catálogo!");
+      }
+      resetForm();
       qc.invalidateQueries({ queryKey: ["catalog-items"] });
     } catch (e: any) {
       toast.error(e.message || "Erro ao salvar.");
     } finally {
       setSaving(false);
     }
+  }
+
+  function resetForm() {
+    setEditingId(null);
+    setName("");
+    setDescription("");
+    setUnitPrice("");
+    setImageUrl("");
+    setType("product");
+    setOpen(false);
+  }
+
+  function editItem(it: any) {
+    setEditingId(it.id);
+    setName(it.name);
+    setDescription(it.description || "");
+    setUnitPrice(it.unit_price);
+    setImageUrl(it.image_url || "");
+    setType(it.type as "product" | "service");
+    setOpen(true);
   }
 
   async function handleRemove(id: string) {
@@ -111,13 +136,13 @@ function Catalog() {
               className="pl-9 rounded-full bg-card"
             />
           </div>
-          <Dialog open={open} onOpenChange={setOpen}>
+          <Dialog open={open} onOpenChange={(val) => { if (!val) resetForm(); else setOpen(true); }}>
             <DialogTrigger asChild>
-              <Button className="rounded-full whitespace-nowrap"><Plus className="mr-1 h-4 w-4" /> Novo item</Button>
+              <Button className="rounded-full whitespace-nowrap" onClick={() => resetForm()}><Plus className="mr-1 h-4 w-4" /> Novo item</Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Adicionar ao Catálogo</DialogTitle>
+                <DialogTitle>{editingId ? "Editar Item" : "Adicionar ao Catálogo"}</DialogTitle>
               </DialogHeader>
               <div className="space-y-4 pt-4">
                 <div className="space-y-1.5">
@@ -200,9 +225,14 @@ function Catalog() {
                   {it.description && <div className="mt-1 text-sm text-muted-foreground">{it.description}</div>}
                 </div>
                 <div className="text-right font-medium">{formatBRL(Number(it.unit_price))}</div>
-                <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive" onClick={() => handleRemove(it.id)}>
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+                <div className="flex items-center gap-1">
+                  <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground" onClick={() => editItem(it)}>
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                  <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive" onClick={() => handleRemove(it.id)}>
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
               </li>
             ))}
           </ul>

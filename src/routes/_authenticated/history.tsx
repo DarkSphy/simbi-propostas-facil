@@ -2,9 +2,12 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { formatBRL, statusBadge } from "@/lib/format";
-import { History, Search } from "lucide-react";
+import { History, Search, Copy, Pencil } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/history")({
   head: () => ({ meta: [{ title: "Histórico · Simbi" }] }),
@@ -12,7 +15,23 @@ export const Route = createFileRoute("/_authenticated/history")({
 });
 
 function HistoryPage() {
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
+
+  async function handleAction(id: string, action: 'clone' | 'edit') {
+    setActionLoading(`${action}-${id}`);
+    try {
+      const { data, error } = await supabase.from("proposals").select("*, proposal_items(*)").eq("id", id).single();
+      if (error) throw error;
+      sessionStorage.setItem(action === 'clone' ? "cloneProposal" : "editProposal", JSON.stringify(data));
+      navigate({ to: "/proposals/new" });
+    } catch (e: any) {
+      toast.error("Erro ao carregar proposta.");
+    } finally {
+      setActionLoading(null);
+    }
+  }
 
   const { data: proposals = [] } = useQuery({
     queryKey: ["history"],
@@ -61,15 +80,23 @@ function HistoryPage() {
         ) : (
           <ul className="divide-y divide-border">
             {filteredProposals.map(p => (
-              <li key={p.id}>
-                <Link to="/proposals/$id" params={{ id: p.id }} className="flex items-center gap-4 px-5 py-3 hover:bg-muted/40">
+              <li key={p.id} className="flex items-center gap-4 px-5 py-3 hover:bg-muted/40 transition-colors">
+                <Link to="/proposals/$id" params={{ id: p.id }} className="flex-1 min-w-0 flex items-center gap-4">
                   <div className="flex-1 truncate">
-                    <div className="truncate font-medium">{p.title}</div>
+                    <div className="truncate font-medium hover:text-primary transition-colors">{p.title}</div>
                     <div className="truncate text-xs text-muted-foreground">{(p as any).clients?.name ?? "—"} · {new Date(p.created_at).toLocaleDateString("pt-BR")}</div>
                   </div>
-                  <div className="w-28 text-right text-sm font-medium">{formatBRL(Number(p.total))}</div>
-                  <div className="w-28 text-right">{statusBadge(p.status)}</div>
+                  <div className="w-24 sm:w-28 text-right text-sm font-medium">{formatBRL(Number(p.total))}</div>
+                  <div className="hidden sm:block w-28 text-right">{statusBadge(p.status)}</div>
                 </Link>
+                <div className="flex items-center gap-1 shrink-0">
+                  <Button variant="ghost" size="icon" onClick={() => handleAction(p.id, 'edit')} disabled={!!actionLoading} title="Editar proposta" className="hidden sm:inline-flex">
+                    <Pencil className="h-4 w-4 text-muted-foreground" />
+                  </Button>
+                  <Button variant="ghost" size="icon" onClick={() => handleAction(p.id, 'clone')} disabled={!!actionLoading} title="Duplicar proposta">
+                    <Copy className="h-4 w-4 text-muted-foreground" />
+                  </Button>
+                </div>
               </li>
             ))}
           </ul>

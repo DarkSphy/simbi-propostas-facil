@@ -31,6 +31,7 @@ function SettingsPage() {
   const [instagram, setInstagram] = useState("");
   const [linkedin, setLinkedin] = useState("");
   const [website, setWebsite] = useState("");
+  const [paymentLink, setPaymentLink] = useState("");
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadingBg, setUploadingBg] = useState(false);
@@ -55,6 +56,7 @@ function SettingsPage() {
         setInstagram(data.instagram_url ?? "");
         setLinkedin(data.linkedin_url ?? "");
         setWebsite(data.website_url ?? "");
+        setPaymentLink(data.payment_link ?? "");
 
         if (data.background_image_url) setBgType("image");
         else if (data.header_texture && data.header_texture !== "none") setBgType("texture");
@@ -97,6 +99,7 @@ function SettingsPage() {
       instagram_url: instagram,
       linkedin_url: linkedin,
       website_url: website,
+      payment_link: paymentLink,
       updated_at: new Date().toISOString() 
     });
     setSaving(false);
@@ -301,6 +304,19 @@ function SettingsPage() {
             <div className="space-y-2"><Label className="text-muted-foreground font-semibold">Instagram (URL)</Label><Input value={instagram} onChange={(e) => setInstagram(e.target.value)} placeholder="https://instagram.com/..." /></div>
             <div className="space-y-2"><Label className="text-muted-foreground font-semibold">LinkedIn (URL)</Label><Input value={linkedin} onChange={(e) => setLinkedin(e.target.value)} placeholder="https://linkedin.com/in/..." /></div>
             <div className="space-y-2"><Label className="text-muted-foreground font-semibold">Site Web (URL)</Label><Input value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="https://..." /></div>
+          </div>
+        </div>
+
+        <hr className="border-border" />
+
+        <div>
+          <h2 className="text-xl font-bold tracking-tight mb-6">Integração de Pagamento</h2>
+          <div className="grid gap-6 sm:grid-cols-2">
+            <div className="space-y-2 col-span-full sm:col-span-1">
+              <Label className="text-muted-foreground font-semibold">Link de Pagamento Padrão</Label>
+              <Input value={paymentLink} onChange={(e) => setPaymentLink(e.target.value)} placeholder="Ex: https://mpago.la/..." />
+              <p className="text-xs text-muted-foreground mt-1">Ao aprovar a proposta, o cliente verá um botão para pagar usando este link (Mercado Pago, Stripe, etc).</p>
+            </div>
           </div>
         </div>
 
