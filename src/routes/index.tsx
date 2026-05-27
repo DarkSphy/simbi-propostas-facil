@@ -1,15 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
-import { ArrowRight, Check, Smartphone, Share2, Zap, MessageCircle, FileText, BarChart3, Sparkles, Star } from "lucide-react";
+import { ArrowRight, Check, Smartphone, Share2, Zap, MessageCircle, FileText, BarChart3, Star, Quote } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Simbi — Propostas que passam confiança" },
       { name: "description", content: "Crie orçamentos profissionais em minutos, envie pelo WhatsApp e feche serviços mais rápido. Mobile-first, sem complicação." },
-      { property: "og:title", content: "Simbi — Propostas que passam confiança" },
-      { property: "og:description", content: "Crie orçamentos profissionais em minutos, envie pelo WhatsApp e feche serviços mais rápido." },
     ],
   }),
   component: Landing,
@@ -17,14 +15,12 @@ export const Route = createFileRoute("/")({
 
 function Landing() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground selection:bg-primary/30">
       <Header />
       <Hero />
-      <Logos />
+      <InfiniteLogos />
       <Features />
       <HowItWorks />
-      <Showcase />
-      <ForWho />
       <Testimonials />
       <CTA />
       <Footer />
@@ -34,18 +30,18 @@ function Landing() {
 
 function Header() {
   return (
-    <header className="sticky top-0 z-40 border-b border-border/60 glass">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
-        <Logo />
-        <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
-          <a href="#recursos" className="hover:text-foreground">Recursos</a>
-          <a href="#como-funciona" className="hover:text-foreground">Como funciona</a>
-          <a href="#depoimentos" className="hover:text-foreground">Depoimentos</a>
+    <header className="absolute inset-x-0 top-0 z-50">
+      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 lg:px-8">
+        <Logo inverted />
+        <nav className="hidden items-center gap-8 text-sm font-medium text-white/80 md:flex">
+          <a href="#recursos" className="transition-colors hover:text-white">Recursos</a>
+          <a href="#como-funciona" className="transition-colors hover:text-white">Como funciona</a>
+          <a href="#depoimentos" className="transition-colors hover:text-white">Depoimentos</a>
         </nav>
-        <div className="flex items-center gap-2">
-          <Link to="/login" className="hidden text-sm font-medium text-muted-foreground hover:text-foreground sm:inline">Entrar</Link>
-          <Button asChild size="sm" className="rounded-full">
-            <Link to="/register">Criar conta grátis</Link>
+        <div className="flex items-center gap-4">
+          <Link to="/login" className="hidden text-sm font-semibold text-white transition-colors hover:text-white/80 sm:block">Log in</Link>
+          <Button asChild size="sm" className="rounded-full bg-white px-5 text-black hover:bg-white/90">
+            <Link to="/register">Testar grátis</Link>
           </Button>
         </div>
       </div>
@@ -55,35 +51,31 @@ function Header() {
 
 function Hero() {
   return (
-    <section className="relative overflow-hidden">
-      <div className="absolute inset-0 bg-grid opacity-30 [mask-image:radial-gradient(ellipse_at_top,black,transparent_70%)]" />
-      <div className="relative mx-auto max-w-6xl px-5 pt-20 pb-24 text-center md:pt-28 md:pb-32">
-        <div className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground shadow-soft">
-          <Sparkles className="h-3 w-3 text-primary" />
-          Novo · Propostas com link compartilhável
-        </div>
-        <h1 className="mx-auto max-w-3xl text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl">
-          Envie propostas que <span className="text-gradient">passam confiança.</span>
-        </h1>
-        <p className="mx-auto mt-5 max-w-xl text-base text-muted-foreground md:text-lg">
-          Crie orçamentos profissionais, compartilhe pelo WhatsApp e feche serviços mais rápido — direto do celular.
-        </p>
-        <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <Button asChild size="lg" className="rounded-full px-6">
-            <Link to="/register">Criar minha conta <ArrowRight className="ml-1 h-4 w-4" /></Link>
-          </Button>
-          <Button asChild size="lg" variant="outline" className="rounded-full px-6">
-            <Link to="/login">Testar gratuitamente</Link>
-          </Button>
-        </div>
-        <p className="mt-4 text-xs text-muted-foreground">Sem cartão de crédito · Sem complicação</p>
+    <section className="bg-hero-gradient relative overflow-hidden pt-32 pb-24 lg:pt-48 lg:pb-32">
+      {/* Decorative background glow */}
+      <div className="absolute top-0 left-1/2 -ml-[30rem] w-[60rem] max-w-none -translate-y-1/2 sm:-ml-[40rem] sm:w-[80rem]">
+        <div className="aspect-[2/1] bg-gradient-to-b from-primary/30 to-transparent blur-3xl" />
+      </div>
 
-        <div className="relative mx-auto mt-16 max-w-4xl">
-          <div className="rounded-2xl border border-border bg-card p-2 shadow-elevated">
-            <MockDashboard />
+      <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="mx-auto max-w-3xl text-center">
+          <h1 className="text-5xl font-bold tracking-tight text-white sm:text-7xl">
+            Propostas que encantam e fecham negócios.
+          </h1>
+          <p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-white/70">
+            Destaque-se da concorrência com orçamentos elegantes. Crie em minutos, envie direto no WhatsApp e receba o "sim" do cliente mais rápido.
+          </p>
+          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <Button asChild size="lg" className="h-14 rounded-full bg-primary px-8 text-base text-primary-foreground shadow-lg shadow-primary/30 transition hover:bg-primary/90 hover:-translate-y-0.5">
+              <Link to="/register">Criar conta gratuitamente <ArrowRight className="ml-2 h-5 w-5" /></Link>
+            </Button>
           </div>
-          <div className="absolute -bottom-6 -right-4 hidden w-64 rotate-3 sm:block">
-            <MockPhone />
+          <p className="mt-4 text-xs font-medium uppercase tracking-wider text-white/40">Não requer cartão de crédito</p>
+        </div>
+
+        <div className="relative mx-auto mt-20 max-w-5xl">
+          <div className="rounded-2xl bg-white/5 p-2 ring-1 ring-white/10 backdrop-blur-sm lg:rounded-3xl lg:p-4">
+            <MockDashboard />
           </div>
         </div>
       </div>
@@ -91,13 +83,28 @@ function Hero() {
   );
 }
 
-function Logos() {
+function InfiniteLogos() {
+  const brands = [
+    "Studio Vértice", "Marina Arquitetura", "Fix Reformas", "Bloom Decor", "Garoa Studio", 
+    "Nova Marketing", "Léo Fotografias", "Doces da Maria", "Consultoria 360", "Evento.co"
+  ];
+  // Duplicar a lista para o efeito infinito suave
+  const infiniteBrands = [...brands, ...brands];
+
   return (
-    <section className="border-y border-border/60 bg-muted/40 py-8">
-      <div className="mx-auto max-w-6xl px-5">
-        <p className="text-center text-xs uppercase tracking-widest text-muted-foreground">Usado por profissionais autônomos e pequenos negócios</p>
-        <div className="mt-5 flex flex-wrap items-center justify-center gap-x-10 gap-y-3 text-sm font-medium text-muted-foreground/70">
-          <span>Studio Vértice</span><span>Marina Arquitetura</span><span>Fix Reformas</span><span>Bloom Decor</span><span>Garoa Studio</span><span>Nova Marketing</span>
+    <section className="border-b border-border bg-card py-10">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <p className="text-center text-sm font-semibold uppercase tracking-widest text-muted-foreground">
+          Aprovado por mais de 5.000 profissionais autônomos
+        </p>
+        <div className="mt-8 flex overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+          <div className="flex w-max min-w-full shrink-0 animate-marquee items-center justify-around gap-16 py-2">
+            {infiniteBrands.map((brand, i) => (
+              <span key={i} className="text-xl font-bold tracking-tight text-foreground/20 transition-colors hover:text-foreground/40">
+                {brand}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -106,96 +113,101 @@ function Logos() {
 
 function Features() {
   const items = [
-    { icon: Zap, title: "Aprovação rápida", desc: "Clientes aprovam com um clique direto pelo link." },
-    { icon: Share2, title: "Link compartilhável", desc: "Cada proposta vira uma página bonita para compartilhar." },
-    { icon: Smartphone, title: "Pensado pro celular", desc: "Crie e envie suas propostas em qualquer lugar." },
-    { icon: MessageCircle, title: "Envio via WhatsApp", desc: "Um toque e a proposta vai direto pro seu cliente." },
-    { icon: FileText, title: "Aparência profissional", desc: "Layout moderno que valoriza o seu trabalho." },
-    { icon: BarChart3, title: "Histórico organizado", desc: "Acompanhe propostas enviadas, vistas e aprovadas." },
+    { icon: Share2, title: "Link de Alto Impacto", desc: "Esqueça PDFs pesados. Envie um link elegante que se adapta perfeitamente à tela do celular do cliente." },
+    { icon: Zap, title: "Aprovação em um clique", desc: "O cliente lê a proposta e clica em 'Aprovar'. Simples assim. Menos atrito significa mais fechamentos." },
+    { icon: MessageCircle, title: "Feito para o WhatsApp", desc: "Integração nativa com a forma que o brasileiro faz negócios. Compartilhe no WhatsApp com um toque." },
+    { icon: FileText, title: "Catálogo Inteligente", desc: "Salve seus produtos e serviços frequentes. Monte orçamentos complexos em poucos segundos." },
   ];
+
   return (
-    <section id="recursos" className="mx-auto max-w-6xl px-5 py-24">
-      <div className="mx-auto max-w-2xl text-center">
-        <h2 className="text-3xl font-bold tracking-tight md:text-4xl">Tudo que você precisa para fechar mais.</h2>
-        <p className="mt-3 text-muted-foreground">Simples, rápido e bonito. Como deveria ser.</p>
-      </div>
-      <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {items.map(({ icon: Icon, title, desc }) => (
-          <div key={title} className="group rounded-2xl border border-border bg-card p-6 shadow-soft transition hover:-translate-y-0.5 hover:shadow-card">
-            <div className="grid h-10 w-10 place-items-center rounded-lg bg-accent text-accent-foreground">
-              <Icon className="h-5 w-5" />
-            </div>
-            <h3 className="mt-4 font-semibold">{title}</h3>
-            <p className="mt-1 text-sm text-muted-foreground">{desc}</p>
+    <section id="recursos" className="bg-background py-24 sm:py-32">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="mx-auto max-w-2xl text-center">
+          <h2 className="text-base font-semibold leading-7 text-primary">Tudo o que você precisa</h2>
+          <p className="mt-2 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">Design que converte.</p>
+          <p className="mt-4 text-lg text-muted-foreground">O Simbi não é apenas um gerador de orçamentos. É uma ferramenta de vendas focada em impressionar o seu cliente.</p>
+        </div>
+        
+        <div className="mx-auto mt-16 max-w-5xl sm:mt-20">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+            {items.map(({ icon: Icon, title, desc }) => (
+              <div key={title} className="group relative overflow-hidden rounded-3xl border border-border bg-card p-10 transition-all hover:shadow-elevated hover:-translate-y-1">
+                <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                  <Icon className="h-6 w-6" />
+                </div>
+                <h3 className="mb-3 text-xl font-bold">{title}</h3>
+                <p className="text-muted-foreground leading-relaxed">{desc}</p>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
     </section>
   );
 }
 
 function HowItWorks() {
-  const steps = [
-    { n: "01", t: "Adicione o cliente", d: "Cadastre nome, contato e observações em segundos." },
-    { n: "02", t: "Monte a proposta", d: "Itens, valores, descrição e imagens opcionais." },
-    { n: "03", t: "Envie e feche", d: "Compartilhe o link no WhatsApp e acompanhe a aprovação." },
-  ];
   return (
-    <section id="como-funciona" className="border-y border-border/60 bg-muted/30 py-24">
-      <div className="mx-auto max-w-6xl px-5">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-3xl font-bold tracking-tight md:text-4xl">Do orçamento ao “sim” em minutos.</h2>
-          <p className="mt-3 text-muted-foreground">Três passos. Sem fricção.</p>
-        </div>
-        <div className="mt-12 grid gap-5 md:grid-cols-3">
-          {steps.map((s) => (
-            <div key={s.n} className="rounded-2xl border border-border bg-card p-6 shadow-soft">
-              <div className="text-xs font-semibold text-primary">{s.n}</div>
-              <h3 className="mt-2 text-lg font-semibold">{s.t}</h3>
-              <p className="mt-1 text-sm text-muted-foreground">{s.d}</p>
+    <section id="como-funciona" className="bg-foreground py-24 sm:py-32 text-background">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div>
+            <h2 className="text-base font-semibold leading-7 text-primary">Simples e direto</h2>
+            <p className="mt-2 text-4xl font-bold tracking-tight text-white sm:text-5xl">Fluxo perfeito.</p>
+            <p className="mt-4 text-lg text-white/70">
+              Pare de perder horas formatando documentos. Focamos no que importa: clareza e velocidade.
+            </p>
+            
+            <div className="mt-10 space-y-8">
+              {[
+                { title: "Adicione do Catálogo", desc: "Puxe serviços e valores cadastrados instantaneamente." },
+                { title: "Compartilhe o Link", desc: "O cliente recebe uma página com a sua marca, impecável." },
+                { title: "Receba a Notificação", desc: "Mude o status e acompanhe o pagamento no seu dashboard." }
+              ].map((step, i) => (
+                <div key={i} className="flex gap-4">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/20 font-bold text-white">
+                    {i + 1}
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-semibold text-white">{step.title}</h4>
+                    <p className="mt-1 text-white/60">{step.desc}</p>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Showcase() {
-  return (
-    <section className="mx-auto max-w-6xl px-5 py-24">
-      <div className="grid items-center gap-12 lg:grid-cols-2">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight md:text-4xl">Uma página de proposta que vende por você.</h2>
-          <p className="mt-3 text-muted-foreground">Cada orçamento vira um link elegante que o cliente abre no celular, lê, aprova e te chama no WhatsApp.</p>
-          <ul className="mt-6 space-y-3 text-sm">
-            {["Identidade visual com sua logo", "Botão de aprovação em destaque", "Status em tempo real: visto / aprovado", "Funciona perfeitamente no celular"].map(t => (
-              <li key={t} className="flex items-start gap-2">
-                <span className="mt-0.5 grid h-5 w-5 place-items-center rounded-full bg-success/15 text-success"><Check className="h-3 w-3" /></span>
-                {t}
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="mx-auto w-full max-w-sm">
-          <MockProposal />
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function ForWho() {
-  const tags = ["Designers", "Arquitetos", "Fotógrafos", "Marketing", "Reformas", "Beleza", "Eventos", "Consultoria", "Freelancers", "Confeitaria"];
-  return (
-    <section className="border-y border-border/60 bg-muted/30 py-20">
-      <div className="mx-auto max-w-4xl px-5 text-center">
-        <h2 className="text-3xl font-bold tracking-tight md:text-4xl">Feito para quem vende serviços.</h2>
-        <p className="mt-3 text-muted-foreground">Empreendedores que querem parecer profissionais sem perder tempo.</p>
-        <div className="mt-8 flex flex-wrap justify-center gap-2">
-          {tags.map(t => (
-            <span key={t} className="rounded-full border border-border bg-card px-4 py-1.5 text-sm shadow-soft">{t}</span>
-          ))}
+          </div>
+          
+          <div className="relative">
+            {/* Dark mode mock */}
+            <div className="rounded-3xl border border-white/10 bg-[#111] p-6 shadow-2xl">
+              <div className="flex items-center gap-3 border-b border-white/10 pb-4">
+                <div className="h-8 w-8 rounded bg-primary/20 flex items-center justify-center text-primary font-bold">M</div>
+                <div>
+                  <div className="text-sm font-semibold text-white">Marina Arquitetura</div>
+                  <div className="text-xs text-white/50">Proposta #1024</div>
+                </div>
+              </div>
+              <div className="mt-6 space-y-4">
+                <div className="flex justify-between items-center rounded-lg bg-white/5 p-3">
+                  <span className="text-white/80 text-sm">Consultoria Inicial</span>
+                  <span className="text-white font-medium">R$ 800,00</span>
+                </div>
+                <div className="flex justify-between items-center rounded-lg bg-white/5 p-3">
+                  <span className="text-white/80 text-sm">Projeto 3D Completo</span>
+                  <span className="text-white font-medium">R$ 4.200,00</span>
+                </div>
+                <div className="flex justify-between items-center border-t border-white/10 pt-4 mt-2">
+                  <span className="text-white font-semibold">Total</span>
+                  <span className="text-white text-xl font-bold text-primary">R$ 5.000,00</span>
+                </div>
+                <div className="mt-6">
+                  <div className="w-full rounded-xl bg-primary py-3 text-center text-sm font-semibold text-primary-foreground">
+                    Aprovar Proposta
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -203,29 +215,39 @@ function ForWho() {
 }
 
 function Testimonials() {
-  const items = [
-    { n: "Camila R.", r: "Arquiteta · São Paulo", q: "Minhas propostas ficaram com cara de escritório grande. Aumentei o ticket médio." },
-    { n: "Diego M.", r: "Designer · Porto Alegre", q: "Fecho orçamento direto do celular entre uma reunião e outra. Mudou meu fluxo." },
-    { n: "Beatriz F.", r: "Marketing · Recife", q: "Os clientes elogiam o link. Parece site de proposta de agência grande." },
+  const reviews = [
+    { body: "Antes eu perdia 40 minutos montando um PDF no Canva para cada cliente. Com o Simbi, eu puxo os itens do catálogo e mando em 2 minutos. Os clientes amam.", author: "Diego M.", role: "Designer Gráfico" },
+    { body: "O design do link que o cliente recebe é absurdamente limpo. Passa muita autoridade. Consegui aumentar meus preços e a taxa de aprovação subiu.", author: "Camila R.", role: "Arquiteta" },
+    { body: "A integração visual da proposta lida no celular mudou o jogo pra mim. Envio pelo WhatsApp e eles fecham na hora, sem precisar baixar arquivo nenhum.", author: "Felipe T.", role: "Fotógrafo" },
   ];
+
   return (
-    <section id="depoimentos" className="mx-auto max-w-6xl px-5 py-24">
-      <div className="mx-auto max-w-2xl text-center">
-        <h2 className="text-3xl font-bold tracking-tight md:text-4xl">Empreendedores fechando mais.</h2>
-      </div>
-      <div className="mt-12 grid gap-4 md:grid-cols-3">
-        {items.map(i => (
-          <div key={i.n} className="rounded-2xl border border-border bg-card p-6 shadow-soft">
-            <div className="flex gap-0.5 text-warning">
-              {[0,1,2,3,4].map(k => <Star key={k} className="h-4 w-4 fill-current" />)}
+    <section id="depoimentos" className="bg-background py-24 sm:py-32">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="mx-auto max-w-xl text-center">
+          <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">Profissionais amam o Simbi.</h2>
+          <p className="mt-4 text-lg text-muted-foreground">Quem testa a agilidade do link não volta para os PDFs.</p>
+        </div>
+        
+        <div className="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-8 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+          {reviews.map((r, i) => (
+            <div key={i} className="flex flex-col justify-between rounded-3xl bg-card border border-border p-8 shadow-soft">
+              <div>
+                <Quote className="h-8 w-8 text-primary/40 mb-4" />
+                <p className="text-lg leading-relaxed text-foreground">"{r.body}"</p>
+              </div>
+              <div className="mt-8 flex items-center gap-4 border-t border-border pt-6">
+                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary">
+                  {r.author[0]}
+                </div>
+                <div>
+                  <div className="font-semibold text-foreground">{r.author}</div>
+                  <div className="text-sm text-muted-foreground">{r.role}</div>
+                </div>
+              </div>
             </div>
-            <p className="mt-3 text-sm">{i.q}</p>
-            <div className="mt-4 text-sm">
-              <div className="font-semibold">{i.n}</div>
-              <div className="text-muted-foreground">{i.r}</div>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -233,16 +255,15 @@ function Testimonials() {
 
 function CTA() {
   return (
-    <section className="mx-auto max-w-5xl px-5 pb-24">
-      <div className="rounded-3xl bg-primary px-8 py-16 text-center text-primary-foreground shadow-elevated">
-        <h2 className="text-3xl font-bold tracking-tight md:text-4xl">Comece a enviar propostas melhores hoje.</h2>
-        <p className="mx-auto mt-3 max-w-lg opacity-80">Sem cartão. Sem fricção. É só criar a conta.</p>
-        <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <Button asChild size="lg" variant="secondary" className="rounded-full px-6">
-            <Link to="/register">Criar minha conta</Link>
-          </Button>
-          <Button asChild size="lg" variant="ghost" className="rounded-full px-6 text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
-            <Link to="/login">Já tenho conta</Link>
+    <section className="relative isolate overflow-hidden bg-primary px-6 py-24 text-center sm:py-32 lg:px-8">
+      <div className="mx-auto max-w-2xl">
+        <h2 className="text-4xl font-bold tracking-tight text-primary-foreground sm:text-5xl">Pronto para impressionar?</h2>
+        <p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-primary-foreground/80">
+          Crie sua primeira proposta em menos de 2 minutos. Comece gratuitamente hoje mesmo.
+        </p>
+        <div className="mt-10 flex items-center justify-center gap-4">
+          <Button asChild size="lg" className="h-14 rounded-full bg-white px-8 text-base text-primary hover:bg-white/90 shadow-xl transition-transform hover:scale-105">
+            <Link to="/register">Começar agora gratuitamente</Link>
           </Button>
         </div>
       </div>
@@ -252,10 +273,10 @@ function CTA() {
 
 function Footer() {
   return (
-    <footer className="border-t border-border/60 py-10">
-      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-5 text-sm text-muted-foreground md:flex-row">
+    <footer className="bg-background py-12 border-t border-border">
+      <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-6 sm:flex-row lg:px-8">
         <Logo />
-        <p>© {new Date().getFullYear()} Simbi · Feito para empreendedores brasileiros.</p>
+        <p className="text-sm text-muted-foreground">© {new Date().getFullYear()} Simbi. Feito para criativos de alto nível.</p>
       </div>
     </footer>
   );
@@ -265,87 +286,60 @@ function Footer() {
 
 function MockDashboard() {
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-background">
-      <div className="flex items-center gap-2 border-b border-border bg-muted/50 px-3 py-2">
-        <div className="h-2.5 w-2.5 rounded-full bg-destructive/60" />
-        <div className="h-2.5 w-2.5 rounded-full bg-warning/70" />
-        <div className="h-2.5 w-2.5 rounded-full bg-success/70" />
-        <div className="ml-3 text-xs text-muted-foreground">simbi.app/dashboard</div>
-      </div>
-      <div className="grid grid-cols-12 gap-3 p-4">
-        <div className="col-span-3 space-y-2 text-xs">
-          <div className="rounded-md bg-primary/10 px-2 py-1.5 font-medium text-primary">Dashboard</div>
-          <div className="px-2 py-1.5 text-muted-foreground">Propostas</div>
-          <div className="px-2 py-1.5 text-muted-foreground">Clientes</div>
-          <div className="px-2 py-1.5 text-muted-foreground">Histórico</div>
+    <div className="overflow-hidden rounded-xl bg-card shadow-2xl">
+      <div className="flex items-center gap-2 border-b border-border bg-muted/40 px-4 py-3">
+        <div className="flex gap-1.5">
+          <div className="h-3 w-3 rounded-full bg-destructive/80" />
+          <div className="h-3 w-3 rounded-full bg-warning/80" />
+          <div className="h-3 w-3 rounded-full bg-success/80" />
         </div>
-        <div className="col-span-9 space-y-3">
-          <div className="grid grid-cols-3 gap-3">
-            {[{l:"Enviadas",v:"24"},{l:"Aprovadas",v:"17"},{l:"Aprovação",v:"71%"}].map(c=>(
-              <div key={c.l} className="rounded-lg border border-border p-3">
-                <div className="text-[10px] uppercase text-muted-foreground">{c.l}</div>
-                <div className="mt-1 text-xl font-semibold">{c.v}</div>
-              </div>
-            ))}
+        <div className="ml-4 flex h-6 flex-1 items-center rounded-md bg-background px-3 text-[10px] font-medium text-muted-foreground ring-1 ring-border sm:text-xs">
+          simbi.app/dashboard
+        </div>
+      </div>
+      <div className="flex">
+        <div className="hidden w-48 flex-col gap-2 border-r border-border bg-muted/20 p-4 sm:flex">
+          <div className="rounded-md bg-primary/10 px-3 py-2 text-sm font-semibold text-primary">Visão Geral</div>
+          <div className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground">Propostas</div>
+          <div className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground">Catálogo</div>
+          <div className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground">Clientes</div>
+        </div>
+        <div className="flex-1 p-6">
+          <div className="mb-6 flex items-center justify-between">
+            <h3 className="text-lg font-bold">Dashboard</h3>
+            <div className="rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-primary-foreground">Nova proposta</div>
           </div>
-          <div className="rounded-lg border border-border p-3">
-            <div className="mb-2 text-xs font-medium">Últimas propostas</div>
-            {["Site institucional · Marina","Logo + identidade · Bloom","Ensaio fotográfico · Léo"].map((r,i)=>(
-              <div key={r} className="flex items-center justify-between border-t border-border py-2 text-xs first:border-t-0">
-                <span>{r}</span>
-                <span className={["text-success","text-primary","text-muted-foreground"][i]}>{["Aprovada","Visto","Enviada"][i]}</span>
-              </div>
-            ))}
+          <div className="grid grid-cols-3 gap-4">
+            <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
+              <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Enviadas</div>
+              <div className="mt-2 text-2xl font-bold">24</div>
+            </div>
+            <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
+              <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Aceitas</div>
+              <div className="mt-2 text-2xl font-bold">18</div>
+            </div>
+            <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
+              <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Taxa de Conversão</div>
+              <div className="mt-2 text-2xl font-bold text-success">75%</div>
+            </div>
+          </div>
+          <div className="mt-6 rounded-xl border border-border bg-card shadow-sm">
+            <div className="border-b border-border p-4 text-sm font-bold">Atividade Recente</div>
+            <div className="divide-y divide-border">
+              {[
+                { n: "Identidade Visual Vértice", s: "Aceita", c: "text-success bg-success/10" },
+                { n: "Redesign Site Institucional", s: "Visualizada", c: "text-blue-600 bg-blue-500/10" },
+                { n: "Consultoria Mensal", s: "Enviada", c: "text-muted-foreground bg-muted" }
+              ].map((item, i) => (
+                <div key={i} className="flex items-center justify-between p-4 text-sm">
+                  <span className="font-medium">{item.n}</span>
+                  <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${item.c}`}>{item.s}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
-}
-
-function MockPhone() {
-  return (
-    <div className="rounded-[2rem] border-[6px] border-foreground/90 bg-background shadow-elevated">
-      <div className="rounded-[1.5rem] bg-card p-4">
-        <div className="text-[10px] font-medium text-muted-foreground">PROPOSTA</div>
-        <div className="mt-1 text-sm font-semibold">Identidade Bloom</div>
-        <div className="mt-3 space-y-1.5 text-[11px]">
-          <Row l="Logo principal" v="R$ 1.200" />
-          <Row l="Manual de marca" v="R$ 900" />
-          <Row l="Cartão & papelaria" v="R$ 600" />
-        </div>
-        <div className="mt-3 flex justify-between border-t border-border pt-2 text-xs font-semibold">
-          <span>Total</span><span>R$ 2.700</span>
-        </div>
-        <button className="mt-3 w-full rounded-lg bg-primary py-2 text-xs font-semibold text-primary-foreground">Aprovar proposta</button>
-      </div>
-    </div>
-  );
-}
-
-function MockProposal() {
-  return (
-    <div className="rounded-3xl border border-border bg-card p-6 shadow-elevated">
-      <div className="flex items-center gap-2">
-        <div className="grid h-8 w-8 place-items-center rounded-md bg-primary text-xs font-bold text-primary-foreground">B</div>
-        <div className="text-sm font-semibold">Bloom Decor</div>
-      </div>
-      <div className="mt-5 text-xs text-muted-foreground">Proposta para</div>
-      <div className="text-base font-semibold">Marina Arquitetura</div>
-      <div className="mt-5 space-y-2 text-sm">
-        <Row l="Consultoria inicial" v="R$ 800" />
-        <Row l="Projeto completo" v="R$ 4.200" />
-        <Row l="Acompanhamento" v="R$ 1.000" />
-      </div>
-      <div className="mt-5 flex justify-between border-t border-border pt-3 font-semibold">
-        <span>Total</span><span>R$ 6.000</span>
-      </div>
-      <button className="mt-5 w-full rounded-xl bg-primary py-2.5 text-sm font-semibold text-primary-foreground">Aprovar proposta</button>
-      <button className="mt-2 w-full rounded-xl border border-border py-2.5 text-sm font-medium">Falar no WhatsApp</button>
-    </div>
-  );
-}
-
-function Row({ l, v }: { l: string; v: string }) {
-  return <div className="flex justify-between"><span className="text-muted-foreground">{l}</span><span>{v}</span></div>;
 }
