@@ -23,6 +23,7 @@ export type Database = {
           type: Database["public"]["Enums"]["item_type"]
           unit_price: number
           user_id: string
+          image_url: string | null
         }
         Insert: {
           created_at?: string
@@ -32,6 +33,7 @@ export type Database = {
           type: Database["public"]["Enums"]["item_type"]
           unit_price?: number
           user_id: string
+          image_url?: string | null
         }
         Update: {
           created_at?: string
@@ -41,6 +43,7 @@ export type Database = {
           type?: Database["public"]["Enums"]["item_type"]
           unit_price?: number
           user_id?: string
+          image_url?: string | null
         }
         Relationships: []
       }
@@ -81,6 +84,7 @@ export type Database = {
           full_name: string | null
           id: string
           logo_url: string | null
+          theme_color: string | null
           updated_at: string
           whatsapp: string | null
         }
@@ -90,6 +94,7 @@ export type Database = {
           full_name?: string | null
           id: string
           logo_url?: string | null
+          theme_color?: string | null
           updated_at?: string
           whatsapp?: string | null
         }
@@ -99,6 +104,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           logo_url?: string | null
+          theme_color?: string | null
           updated_at?: string
           whatsapp?: string | null
         }
@@ -141,6 +147,7 @@ export type Database = {
           quantity: number
           sort_order: number
           unit_price: number
+          image_url: string | null
         }
         Insert: {
           description: string
@@ -149,6 +156,7 @@ export type Database = {
           quantity?: number
           sort_order?: number
           unit_price?: number
+          image_url?: string | null
         }
         Update: {
           description?: string
@@ -157,6 +165,7 @@ export type Database = {
           quantity?: number
           sort_order?: number
           unit_price?: number
+          image_url?: string | null
         }
         Relationships: [
           {

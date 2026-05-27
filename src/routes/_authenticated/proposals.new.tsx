@@ -19,7 +19,7 @@ export const Route = createFileRoute("/_authenticated/proposals/new")({
   component: NewProposal,
 });
 
-type Item = { description: string; quantity: number; unit_price: number };
+type Item = { description: string; quantity: number; unit_price: number; image_url?: string };
 type Client = { id: string; name: string };
 
 function NewProposal() {
@@ -56,7 +56,7 @@ function NewProposal() {
   }
   function addItem() { setItems([...items, { description: "", quantity: 1, unit_price: 0 }]); }
   function addFromCatalog(catItem: any) {
-    const newIt = { description: catItem.name, quantity: 1, unit_price: catItem.unit_price };
+    const newIt = { description: catItem.name, quantity: 1, unit_price: catItem.unit_price, image_url: catItem.image_url };
     if (items.length === 1 && !items[0].description) {
       setItems([newIt]);
     } else {
@@ -66,6 +66,22 @@ function NewProposal() {
     toast.success("Item importado!");
   }
   function removeItem(i: number) { setItems(items.filter((_, idx) => idx !== i)); }
+
+  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>, index: number) {
+    if (!user || !e.target.files || e.target.files.length === 0) return;
+    const file = e.target.files[0];
+    const ext = file.name.split('.').pop();
+    const filePath = `${user.id}/proposal-items/${Date.now()}.${ext}`;
+    
+    // Mostra um loading rápido no botão ou toast
+    const loadingId = toast.loading("Subindo imagem...");
+    const { error } = await supabase.storage.from("proposal-images").upload(filePath, file);
+    if (error) { toast.error("Erro ao subir imagem.", { id: loadingId }); return; }
+    
+    const { data } = supabase.storage.from("proposal-images").getPublicUrl(filePath);
+    updateItem(index, { image_url: data.publicUrl });
+    toast.success("Imagem anexada!", { id: loadingId });
+  }
 
   async function save() {
     console.log("Botão salvar clicado!");
@@ -101,7 +117,7 @@ function NewProposal() {
       const cleanItems = items.filter(i => i.description && i.description.trim());
       if (cleanItems.length > 0) {
         const { error: iErr } = await supabase.from("proposal_items").insert(
-          cleanItems.map((it, idx) => ({ proposal_id: prop.id, description: it.description, quantity: it.quantity, unit_price: it.unit_price, sort_order: idx }))
+          cleanItems.map((it, idx) => ({ proposal_id: prop.id, description: it.description, quantity: it.quantity, unit_price: it.unit_price, sort_order: idx, image_url: it.image_url || null }))
         );
         if (iErr) throw iErr;
       }
@@ -149,13 +165,27 @@ function NewProposal() {
         </Section>
 
         <Section title="Itens">
-          <div className="space-y-2">
+          <div className="space-y-4">
             {items.map((it, i) => (
-              <div key={i} className="grid grid-cols-12 gap-2">
-                <Input className="col-span-12 sm:col-span-6" placeholder="Descrição do item" value={it.description} onChange={(e) => updateItem(i, { description: e.target.value })} />
-                <Input className="col-span-4 sm:col-span-2" type="number" min="0" step="0.01" placeholder="Qtd" value={it.quantity} onChange={(e) => updateItem(i, { quantity: +e.target.value })} />
-                <Input className="col-span-6 sm:col-span-3" type="number" min="0" step="0.01" placeholder="Valor unit." value={it.unit_price} onChange={(e) => updateItem(i, { unit_price: +e.target.value })} />
-                <Button variant="ghost" size="icon" className="col-span-2 sm:col-span-1" onClick={() => removeItem(i)}><Trash2 className="h-4 w-4" /></Button>
+              <div key={i} className="flex gap-2 p-3 border border-border rounded-xl bg-muted/10 relative">
+                <div className="flex-1 space-y-2">
+                  <Input placeholder="Descrição do item" value={it.description} onChange={(e) => updateItem(i, { description: e.target.value })} className="font-medium" />
+                  <div className="flex gap-2">
+                    <Input className="w-20" type="number" min="0" step="0.01" placeholder="Qtd" value={it.quantity} onChange={(e) => updateItem(i, { quantity: +e.target.value })} />
+                    <Input className="flex-1" type="number" min="0" step="0.01" placeholder="Valor unitário" value={it.unit_price} onChange={(e) => updateItem(i, { unit_price: +e.target.value })} />
+                  </div>
+                </div>
+                <div className="flex flex-col items-center gap-2">
+                  <div className="relative h-20 w-20 shrink-0 rounded-lg border border-border border-dashed bg-card overflow-hidden grid place-items-center">
+                    {it.image_url ? (
+                      <img src={it.image_url} alt="Item" className="h-full w-full object-cover" />
+                    ) : (
+                      <span className="text-xs text-muted-foreground text-center px-1">Add Foto</span>
+                    )}
+                    <input type="file" accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer" onChange={(e) => handleImageUpload(e, i)} title="Adicionar foto ao item" />
+                  </div>
+                </div>
+                <Button variant="destructive" size="icon" className="absolute -top-3 -right-3 h-6 w-6 rounded-full" onClick={() => removeItem(i)}><Trash2 className="h-3 w-3" /></Button>
               </div>
             ))}
             <div className="flex flex-wrap gap-2 pt-2">

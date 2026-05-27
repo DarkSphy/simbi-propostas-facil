@@ -27,6 +27,8 @@ function Catalog() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [unitPrice, setUnitPrice] = useState<number | string>("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [uploading, setUploading] = useState(false);
 
   const { data: items = [], isLoading } = useQuery({
     queryKey: ["catalog-items"],
@@ -50,6 +52,7 @@ function Catalog() {
         name: name.trim(),
         description: description.trim() || null,
         unit_price: Number(unitPrice) || 0,
+        image_url: imageUrl || null,
       });
       if (error) throw error;
       toast.success("Item adicionado ao catálogo!");
@@ -57,6 +60,7 @@ function Catalog() {
       setName("");
       setDescription("");
       setUnitPrice("");
+      setImageUrl("");
       qc.invalidateQueries({ queryKey: ["catalog-items"] });
     } catch (e: any) {
       toast.error(e.message || "Erro ao salvar.");
@@ -71,6 +75,19 @@ function Catalog() {
     if (error) { toast.error(error.message); return; }
     toast.success("Item excluído.");
     qc.invalidateQueries({ queryKey: ["catalog-items"] });
+  }
+
+  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    if (!user || !e.target.files || e.target.files.length === 0) return;
+    const file = e.target.files[0];
+    setUploading(true);
+    const ext = file.name.split('.').pop();
+    const filePath = `${user.id}/catalog/${Date.now()}.${ext}`;
+    const { error } = await supabase.storage.from("proposal-images").upload(filePath, file);
+    if (error) { toast.error("Erro ao subir imagem."); setUploading(false); return; }
+    const { data } = supabase.storage.from("proposal-images").getPublicUrl(filePath);
+    setImageUrl(data.publicUrl);
+    setUploading(false);
   }
 
   return (
@@ -108,6 +125,17 @@ function Catalog() {
                 <Label>Preço Unitário</Label>
                 <Input type="number" min="0" step="0.01" value={unitPrice} onChange={e => setUnitPrice(e.target.value)} placeholder="0.00" />
               </div>
+              <div className="space-y-1.5">
+                <Label>Foto do item (Opcional)</Label>
+                <div className="flex items-center gap-3">
+                  {imageUrl ? (
+                    <div className="h-12 w-12 rounded border border-border bg-muted/20 overflow-hidden shrink-0">
+                      <img src={imageUrl} alt="preview" className="h-full w-full object-cover" />
+                    </div>
+                  ) : null}
+                  <Input type="file" accept="image/*" onChange={handleImageUpload} disabled={uploading} className="flex-1" />
+                </div>
+              </div>
               <div className="flex justify-end gap-2 pt-2">
                 <Button variant="outline" onClick={() => setOpen(false)}>Cancelar</Button>
                 <Button onClick={handleSave} disabled={saving}>{saving ? "Salvando..." : "Salvar"}</Button>
@@ -131,8 +159,16 @@ function Catalog() {
           </div>
         ) : (
           <ul className="divide-y divide-border">
-            {items.map(it => (
               <li key={it.id} className="flex items-center gap-4 px-5 py-4 hover:bg-muted/40">
+                {it.image_url ? (
+                  <div className="h-12 w-12 shrink-0 rounded-lg border border-border overflow-hidden bg-muted/20">
+                    <img src={it.image_url} alt={it.name} className="h-full w-full object-cover" />
+                  </div>
+                ) : (
+                  <div className="h-12 w-12 shrink-0 rounded-lg border border-border border-dashed bg-muted/10 grid place-items-center">
+                    <Package className="h-5 w-5 text-muted-foreground/50" />
+                  </div>
+                )}
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
                     <span className="font-medium">{it.name}</span>

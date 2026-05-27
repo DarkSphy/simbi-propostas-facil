@@ -1,11 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { Upload, X } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   head: () => ({ meta: [{ title: "Configurações · Simbi" }] }),
@@ -14,34 +15,113 @@ export const Route = createFileRoute("/_authenticated/settings")({
 
 function SettingsPage() {
   const { user } = useAuth();
-  const [fullName, setFullName] = useState(""); const [companyName, setCompanyName] = useState(""); const [whatsapp, setWhatsapp] = useState("");
+  const [fullName, setFullName] = useState(""); 
+  const [companyName, setCompanyName] = useState(""); 
+  const [whatsapp, setWhatsapp] = useState("");
+  const [logoUrl, setLogoUrl] = useState("");
+  const [themeColor, setThemeColor] = useState("#8b5cf6");
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!user) return;
     supabase.from("profiles").select("*").eq("id", user.id).single().then(({ data }) => {
-      if (data) { setFullName(data.full_name ?? ""); setCompanyName(data.company_name ?? ""); setWhatsapp(data.whatsapp ?? ""); }
+      if (data) { 
+        setFullName(data.full_name ?? ""); 
+        setCompanyName(data.company_name ?? ""); 
+        setWhatsapp(data.whatsapp ?? ""); 
+        setLogoUrl(data.logo_url ?? "");
+        setThemeColor(data.theme_color ?? "#8b5cf6");
+      }
     });
   }, [user]);
 
   async function save() {
     if (!user) return;
     setSaving(true);
-    const { error } = await supabase.from("profiles").upsert({ id: user.id, full_name: fullName, company_name: companyName, whatsapp, updated_at: new Date().toISOString() });
+    const { error } = await supabase.from("profiles").upsert({ 
+      id: user.id, 
+      full_name: fullName, 
+      company_name: companyName, 
+      whatsapp, 
+      logo_url: logoUrl,
+      theme_color: themeColor,
+      updated_at: new Date().toISOString() 
+    });
     setSaving(false);
     if (error) { toast.error(error.message); return; }
     toast.success("Salvo!");
   }
 
+  async function handleLogoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    if (!user || !e.target.files || e.target.files.length === 0) return;
+    const file = e.target.files[0];
+    setUploading(true);
+    const ext = file.name.split('.').pop();
+    const filePath = `${user.id}/logos/${Date.now()}.${ext}`;
+    const { error } = await supabase.storage.from("proposal-images").upload(filePath, file);
+    if (error) {
+      toast.error("Erro ao fazer upload da logo.");
+      setUploading(false);
+      return;
+    }
+    const { data } = supabase.storage.from("proposal-images").getPublicUrl(filePath);
+    setLogoUrl(data.publicUrl);
+    setUploading(false);
+  }
+
   return (
-    <div className="mx-auto max-w-2xl px-5 py-8">
-      <h1 className="text-2xl font-bold tracking-tight">Configurações</h1>
-      <div className="mt-6 space-y-4 rounded-2xl border border-border bg-card p-6 shadow-soft">
-        <div className="space-y-1.5"><Label>Nome</Label><Input value={fullName} onChange={(e) => setFullName(e.target.value)} /></div>
-        <div className="space-y-1.5"><Label>Empresa / marca</Label><Input value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="Aparece no topo das suas propostas" /></div>
-        <div className="space-y-1.5"><Label>WhatsApp</Label><Input value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} placeholder="(11) 99999-9999" /></div>
-        <div className="space-y-1.5"><Label>E-mail</Label><Input value={user?.email ?? ""} disabled /></div>
-        <div className="flex justify-end"><Button onClick={save} disabled={saving}>{saving ? "Salvando…" : "Salvar"}</Button></div>
+    <div className="mx-auto max-w-3xl px-5 py-8">
+      <h1 className="text-3xl font-bold tracking-tight">Configurações</h1>
+      <div className="mt-8 space-y-8 rounded-3xl border border-border bg-card p-8 shadow-elevated">
+        
+        <div className="grid gap-6 sm:grid-cols-2">
+          <div className="space-y-2"><Label className="text-muted-foreground font-semibold">Nome</Label><Input value={fullName} onChange={(e) => setFullName(e.target.value)} /></div>
+          <div className="space-y-2"><Label className="text-muted-foreground font-semibold">Empresa / marca</Label><Input value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="Aparece nas propostas" /></div>
+          <div className="space-y-2"><Label className="text-muted-foreground font-semibold">WhatsApp</Label><Input value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} placeholder="(11) 99999-9999" /></div>
+          <div className="space-y-2"><Label className="text-muted-foreground font-semibold">E-mail</Label><Input value={user?.email ?? ""} disabled /></div>
+        </div>
+
+        <hr className="border-border" />
+        
+        <div>
+          <h2 className="text-xl font-bold tracking-tight mb-6">Personalização (Branding)</h2>
+          <div className="grid gap-8 sm:grid-cols-2">
+            <div className="space-y-3">
+              <Label className="text-muted-foreground font-semibold">Logo da Marca</Label>
+              <div className="flex items-center gap-4">
+                {logoUrl ? (
+                  <div className="relative h-20 w-20 overflow-hidden rounded-xl border border-border bg-muted/20">
+                    <img src={logoUrl} alt="Logo" className="h-full w-full object-contain p-2" />
+                    <button onClick={() => setLogoUrl("")} className="absolute -right-2 -top-2 grid h-6 w-6 place-items-center rounded-full bg-destructive text-destructive-foreground hover:scale-110 transition-transform"><X className="h-3 w-3" /></button>
+                  </div>
+                ) : (
+                  <Button type="button" variant="outline" className="h-20 w-20 rounded-xl border-dashed" onClick={() => fileRef.current?.click()}>
+                    {uploading ? "..." : <Upload className="h-6 w-6 text-muted-foreground" />}
+                  </Button>
+                )}
+                <div className="text-xs text-muted-foreground flex-1">Recomendado: PNG fundo transparente. Formato quadrado (1:1).</div>
+                <input type="file" ref={fileRef} className="hidden" accept="image/*" onChange={handleLogoUpload} />
+              </div>
+            </div>
+            
+            <div className="space-y-3">
+              <Label className="text-muted-foreground font-semibold">Cor Principal</Label>
+              <div className="flex items-center gap-3">
+                <input type="color" value={themeColor} onChange={(e) => setThemeColor(e.target.value)} className="h-12 w-16 cursor-pointer rounded-lg border border-border bg-card p-1 shadow-sm" />
+                <Input value={themeColor} onChange={(e) => setThemeColor(e.target.value)} className="font-mono uppercase w-32" />
+              </div>
+              <p className="text-xs text-muted-foreground">Essa cor será usada em todos os botões e detalhes da proposta enviada ao seu cliente.</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex justify-end pt-4">
+          <Button onClick={save} disabled={saving} className="rounded-full px-8 shadow-lg shadow-primary/20 glow-primary hover:glow-primary-hover hover:-translate-y-0.5 transition-all">
+            {saving ? "Salvando…" : "Salvar Configurações"}
+          </Button>
+        </div>
       </div>
     </div>
   );
