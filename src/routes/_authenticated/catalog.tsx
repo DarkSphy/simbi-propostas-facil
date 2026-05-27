@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, Trash2, Package } from "lucide-react";
+import { Plus, Trash2, Package, Search } from "lucide-react";
 import { formatBRL } from "@/lib/format";
 import { toast } from "sonner";
 
@@ -30,6 +30,8 @@ function Catalog() {
   const [imageUrl, setImageUrl] = useState("");
   const [uploading, setUploading] = useState(false);
 
+  const [search, setSearch] = useState("");
+
   const { data: items = [], isLoading } = useQuery({
     queryKey: ["catalog-items"],
     queryFn: async () => {
@@ -40,6 +42,11 @@ function Catalog() {
       return data ?? [];
     },
   });
+
+  const filteredItems = items.filter((it: any) => 
+    it.name.toLowerCase().includes(search.toLowerCase()) || 
+    (it.description && it.description.toLowerCase().includes(search.toLowerCase()))
+  );
 
   async function handleSave() {
     if (!name.trim()) { toast.error("Informe um nome."); return; }
@@ -92,57 +99,68 @@ function Catalog() {
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-8">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h1 className="text-2xl font-bold tracking-tight">Catálogo</h1>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <Button className="rounded-full"><Plus className="mr-1 h-4 w-4" /> Novo item</Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Adicionar ao Catálogo</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4 pt-4">
-              <div className="space-y-1.5">
-                <Label>Tipo</Label>
-                <Select value={type} onValueChange={(v: any) => setType(v)}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="product">Produto</SelectItem>
-                    <SelectItem value="service">Serviço</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-1.5">
-                <Label>Nome</Label>
-                <Input value={name} onChange={e => setName(e.target.value)} placeholder="Ex: Criação de Logotipo" />
-              </div>
-              <div className="space-y-1.5">
-                <Label>Descrição (Opcional)</Label>
-                <Textarea value={description} onChange={e => setDescription(e.target.value)} placeholder="Detalhes do que está incluso..." rows={2} />
-              </div>
-              <div className="space-y-1.5">
-                <Label>Preço Unitário</Label>
-                <Input type="number" min="0" step="0.01" value={unitPrice} onChange={e => setUnitPrice(e.target.value)} placeholder="0.00" />
-              </div>
-              <div className="space-y-1.5">
-                <Label>Foto do item (Opcional)</Label>
-                <div className="flex items-center gap-3">
-                  {imageUrl ? (
-                    <div className="h-12 w-12 rounded border border-border bg-muted/20 overflow-hidden shrink-0">
-                      <img src={imageUrl} alt="preview" className="h-full w-full object-cover" />
-                    </div>
-                  ) : null}
-                  <Input type="file" accept="image/*" onChange={handleImageUpload} disabled={uploading} className="flex-1" />
+        <div className="flex items-center gap-3">
+          <div className="relative w-full sm:w-64">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input 
+              placeholder="Buscar no catálogo..." 
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-9 rounded-full bg-card"
+            />
+          </div>
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <Button className="rounded-full whitespace-nowrap"><Plus className="mr-1 h-4 w-4" /> Novo item</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Adicionar ao Catálogo</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4 pt-4">
+                <div className="space-y-1.5">
+                  <Label>Tipo</Label>
+                  <Select value={type} onValueChange={(v: any) => setType(v)}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="product">Produto</SelectItem>
+                      <SelectItem value="service">Serviço</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Nome</Label>
+                  <Input value={name} onChange={e => setName(e.target.value)} placeholder="Ex: Criação de Logotipo" />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Descrição (Opcional)</Label>
+                  <Textarea value={description} onChange={e => setDescription(e.target.value)} placeholder="Detalhes do que está incluso..." rows={2} />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Preço Unitário</Label>
+                  <Input type="number" min="0" step="0.01" value={unitPrice} onChange={e => setUnitPrice(e.target.value)} placeholder="0.00" />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Foto do item (Opcional)</Label>
+                  <div className="flex items-center gap-3">
+                    {imageUrl ? (
+                      <div className="h-12 w-12 rounded border border-border bg-muted/20 overflow-hidden shrink-0">
+                        <img src={imageUrl} alt="preview" className="h-full w-full object-cover" />
+                      </div>
+                    ) : null}
+                    <Input type="file" accept="image/*" onChange={handleImageUpload} disabled={uploading} className="flex-1" />
+                  </div>
+                </div>
+                <div className="flex justify-end gap-2 pt-2">
+                  <Button variant="outline" onClick={() => setOpen(false)}>Cancelar</Button>
+                  <Button onClick={handleSave} disabled={saving}>{saving ? "Salvando..." : "Salvar"}</Button>
                 </div>
               </div>
-              <div className="flex justify-end gap-2 pt-2">
-                <Button variant="outline" onClick={() => setOpen(false)}>Cancelar</Button>
-                <Button onClick={handleSave} disabled={saving}>{saving ? "Salvando..." : "Salvar"}</Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       <div className="mt-6 rounded-2xl border border-border bg-card shadow-soft">
@@ -157,9 +175,11 @@ function Catalog() {
             <p className="mt-1 text-sm text-muted-foreground">Cadastre seus produtos e serviços para usá-los nas propostas.</p>
             <Button onClick={() => setOpen(true)} variant="outline" className="mt-4 rounded-full"><Plus className="mr-1 h-4 w-4" /> Adicionar item</Button>
           </div>
+        ) : filteredItems.length === 0 ? (
+          <div className="p-10 text-center text-sm text-muted-foreground">Nenhum item encontrado na busca.</div>
         ) : (
           <ul className="divide-y divide-border">
-            {items.map(it => (
+            {filteredItems.map(it => (
               <li key={it.id} className="flex items-center gap-4 px-5 py-4 hover:bg-muted/40">
                 {it.image_url ? (
                   <div className="h-12 w-12 shrink-0 rounded-lg border border-border overflow-hidden bg-muted/20">

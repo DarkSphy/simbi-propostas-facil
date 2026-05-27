@@ -22,6 +22,7 @@ function SettingsPage() {
   const [logoUrl, setLogoUrl] = useState("");
   const [themeColor, setThemeColor] = useState("#8b5cf6");
   const [backgroundColor, setBackgroundColor] = useState("");
+  const [backgroundImageUrl, setBackgroundImageUrl] = useState("");
   const [headerTexture, setHeaderTexture] = useState("none");
   const [fontFamily, setFontFamily] = useState("inter");
   const [itemLayout, setItemsLayout] = useState("minimal");
@@ -30,7 +31,9 @@ function SettingsPage() {
   const [website, setWebsite] = useState("");
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadingBg, setUploadingBg] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const bgFileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -42,6 +45,7 @@ function SettingsPage() {
         setLogoUrl(data.logo_url ?? "");
         setThemeColor(data.theme_color ?? "#8b5cf6");
         setBackgroundColor(data.background_color ?? "");
+        setBackgroundImageUrl(data.background_image_url ?? "");
         setHeaderTexture(data.header_texture ?? "none");
         setFontFamily(data.font_family ?? "inter");
         setItemsLayout(data.item_layout ?? "minimal");
@@ -63,6 +67,7 @@ function SettingsPage() {
       logo_url: logoUrl,
       theme_color: themeColor,
       background_color: backgroundColor,
+      background_image_url: backgroundImageUrl,
       header_texture: headerTexture,
       font_family: fontFamily,
       item_layout: itemLayout,
@@ -91,6 +96,23 @@ function SettingsPage() {
     const { data } = supabase.storage.from("proposal-images").getPublicUrl(filePath);
     setLogoUrl(data.publicUrl);
     setUploading(false);
+  }
+
+  async function handleBgUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    if (!user || !e.target.files || e.target.files.length === 0) return;
+    const file = e.target.files[0];
+    setUploadingBg(true);
+    const ext = file.name.split('.').pop();
+    const filePath = `${user.id}/bg/${Date.now()}.${ext}`;
+    const { error } = await supabase.storage.from("proposal-images").upload(filePath, file);
+    if (error) {
+      toast.error("Erro ao fazer upload da imagem de fundo.");
+      setUploadingBg(false);
+      return;
+    }
+    const { data } = supabase.storage.from("proposal-images").getPublicUrl(filePath);
+    setBackgroundImageUrl(data.publicUrl);
+    setUploadingBg(false);
   }
 
   return (
@@ -173,7 +195,23 @@ function SettingsPage() {
               </div>
             </div>
             <div className="space-y-3">
-              <Label className="text-muted-foreground font-semibold">Textura do Fundo</Label>
+              <Label className="text-muted-foreground font-semibold">Imagem de Fundo</Label>
+              <div className="flex items-center gap-4">
+                {backgroundImageUrl ? (
+                  <div className="relative h-12 w-20 overflow-hidden rounded-lg border border-border bg-muted/20">
+                    <img src={backgroundImageUrl} alt="Background" className="h-full w-full object-cover" />
+                    <button onClick={() => setBackgroundImageUrl("")} className="absolute -right-2 -top-2 grid h-6 w-6 place-items-center rounded-full bg-destructive text-destructive-foreground hover:scale-110 transition-transform"><X className="h-3 w-3" /></button>
+                  </div>
+                ) : (
+                  <Button type="button" variant="outline" className="h-12 w-20 rounded-lg border-dashed" onClick={() => bgFileRef.current?.click()}>
+                    {uploadingBg ? "..." : <Upload className="h-4 w-4 text-muted-foreground" />}
+                  </Button>
+                )}
+                <input type="file" ref={bgFileRef} className="hidden" accept="image/*" onChange={handleBgUpload} />
+              </div>
+            </div>
+            <div className="space-y-3">
+              <Label className="text-muted-foreground font-semibold">Textura (se sem Imagem)</Label>
               <Select value={headerTexture} onValueChange={setHeaderTexture}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>

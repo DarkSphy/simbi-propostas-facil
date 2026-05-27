@@ -2,7 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { formatBRL, statusBadge } from "@/lib/format";
-import { History } from "lucide-react";
+import { History, Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
 
 export const Route = createFileRoute("/_authenticated/history")({
   head: () => ({ meta: [{ title: "Histórico · Simbi" }] }),
@@ -10,6 +12,8 @@ export const Route = createFileRoute("/_authenticated/history")({
 });
 
 function HistoryPage() {
+  const [search, setSearch] = useState("");
+
   const { data: proposals = [] } = useQuery({
     queryKey: ["history"],
     queryFn: async () => {
@@ -20,10 +24,30 @@ function HistoryPage() {
     },
   });
 
+  const filteredProposals = proposals.filter((p: any) => {
+    const term = search.toLowerCase();
+    const titleMatch = p.title?.toLowerCase().includes(term);
+    const clientMatch = p.clients?.name?.toLowerCase().includes(term);
+    return titleMatch || clientMatch;
+  });
+
   return (
     <div className="mx-auto max-w-5xl px-5 py-8">
-      <h1 className="text-2xl font-bold tracking-tight">Histórico</h1>
-      <p className="mt-1 text-sm text-muted-foreground">Todas as suas propostas em um só lugar.</p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Histórico</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Todas as suas propostas em um só lugar.</p>
+        </div>
+        <div className="relative w-full sm:w-64">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input 
+            placeholder="Buscar por título ou cliente..." 
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-9 rounded-full bg-card"
+          />
+        </div>
+      </div>
 
       <div className="mt-6 rounded-2xl border border-border bg-card shadow-soft">
         {proposals.length === 0 ? (
@@ -32,9 +56,11 @@ function HistoryPage() {
             <h3 className="mt-3 font-semibold">Sem histórico</h3>
             <p className="mt-1 text-sm text-muted-foreground">Quando você enviar propostas, elas aparecerão aqui.</p>
           </div>
+        ) : filteredProposals.length === 0 ? (
+          <div className="p-8 text-center text-sm text-muted-foreground">Nenhuma proposta encontrada na busca.</div>
         ) : (
           <ul className="divide-y divide-border">
-            {proposals.map(p => (
+            {filteredProposals.map(p => (
               <li key={p.id}>
                 <Link to="/proposals/$id" params={{ id: p.id }} className="flex items-center gap-4 px-5 py-3 hover:bg-muted/40">
                   <div className="flex-1 truncate">

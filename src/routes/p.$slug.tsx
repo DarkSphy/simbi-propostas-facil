@@ -40,7 +40,7 @@ function PublicProposal() {
       }
 
       const { data: prof } = await supabase.from("profiles")
-        .select("full_name,company_name,whatsapp,logo_url,theme_color,header_texture,font_family,item_layout,instagram_url,linkedin_url,website_url")
+        .select("full_name,company_name,whatsapp,logo_url,theme_color,background_color,background_image_url,header_texture,font_family,item_layout,instagram_url,linkedin_url,website_url")
         .eq("id", prop.user_id).single();
         
       setData({ ...prop, profiles: prof || {} });
@@ -90,6 +90,16 @@ function PublicProposal() {
     };
   }
 
+  if (profile.background_image_url) {
+    customStyles = {
+      ...customStyles,
+      backgroundImage: `url(${profile.background_image_url})`,
+      backgroundSize: "cover",
+      backgroundAttachment: "fixed",
+      backgroundPosition: "center",
+    };
+  }
+
   // Resolve tipografia
   const fontClass = profile.font_family === "playfair" ? "font-serif" 
                   : profile.font_family === "quicksand" ? "font-[Quicksand]" 
@@ -113,11 +123,13 @@ function PublicProposal() {
   }
 
   const isCards = profile.item_layout === "cards";
+  const hasImages = items.some((it: any) => !!it.image_url);
 
   return (
     <div className={`min-h-screen py-10 transition-colors relative ${fontClass}`} style={customStyles}>
       
       {/* Texture Background Layer */}
+      {profile.background_image_url && <div className="absolute inset-0 z-0 pointer-events-none bg-black/40 backdrop-blur-[2px]" />}
       <div className={`absolute inset-0 z-0 pointer-events-none ${textureClass}`} style={profile.header_texture === "waves" ? textureStyle : {}} />
       <div className={`absolute inset-0 z-0 pointer-events-none ${profile.header_texture !== "waves" ? textureClass : ""}`} style={profile.header_texture !== "waves" ? textureStyle : {}} />
 
@@ -151,6 +163,13 @@ function PublicProposal() {
 
             <div className="mt-10">
               <h3 className="text-lg font-bold mb-4">Investimento</h3>
+
+              {hasImages && (
+                <div className="mb-5 rounded-2xl bg-blue-500/10 border border-blue-500/20 px-5 py-3 text-sm text-foreground/80 flex items-center gap-3">
+                  <ZoomIn className="h-5 w-5 text-blue-500 shrink-0" />
+                  <span>💡 <strong>Dica:</strong> Clique nas fotos dos itens abaixo para ampliá-las e ver mais detalhes.</span>
+                </div>
+              )}
               
               {isCards ? (
                 <div className="space-y-4">
@@ -181,7 +200,7 @@ function PublicProposal() {
                       <div className="text-left sm:text-right mt-3 sm:mt-0 pt-3 sm:pt-0 border-t border-border/50 sm:border-0 flex justify-between sm:block items-center">
                         <div className="text-sm font-semibold text-muted-foreground sm:hidden">Subtotal:</div>
                         <div>
-                          <div className="font-bold text-lg">{formatBRL(it.quantity * it.unit_price)}</div>
+                          <div className="font-bold text-lg text-emerald-600">{formatBRL(it.quantity * it.unit_price)}</div>
                           <div className="text-xs text-muted-foreground">{formatBRL(it.unit_price)} un</div>
                         </div>
                       </div>
@@ -215,16 +234,16 @@ function PublicProposal() {
                             <div className="mt-0.5 text-xs text-muted-foreground">{it.quantity} × {formatBRL(it.unit_price)}</div>
                           </div>
                         </div>
-                        <div className="font-bold text-base sm:text-right self-end sm:self-auto mt-1 sm:mt-0">{formatBRL(it.quantity * it.unit_price)}</div>
+                        <div className="font-bold text-base sm:text-right self-end sm:self-auto mt-1 sm:mt-0 text-emerald-600">{formatBRL(it.quantity * it.unit_price)}</div>
                       </li>
                     ))}
                   </ul>
                 </div>
               )}
               
-              <div className="mt-6 flex flex-col sm:flex-row sm:items-center justify-between rounded-2xl bg-primary/5 border border-primary/10 px-6 py-5">
-                <span className="text-sm font-bold uppercase tracking-wider text-primary">Total do Orçamento</span>
-                <span className="text-3xl font-black text-primary mt-1 sm:mt-0">{formatBRL(Number(data.total))}</span>
+              <div className="mt-6 flex flex-col sm:flex-row sm:items-center justify-between rounded-2xl bg-emerald-500/10 border border-emerald-500/20 px-6 py-5">
+                <span className="text-sm font-bold uppercase tracking-wider text-emerald-700">Total do Orçamento</span>
+                <span className="text-3xl font-black text-emerald-600 mt-1 sm:mt-0">{formatBRL(Number(data.total))}</span>
               </div>
             </div>
 
@@ -241,10 +260,10 @@ function PublicProposal() {
             <div className="mt-10 space-y-3">
               {!finalized && (
                 <div className="grid gap-3 sm:grid-cols-2">
-                  <Button variant="outline" className="h-14 rounded-2xl border-2 hover:bg-destructive/5 hover:text-destructive hover:border-destructive/30 transition-all text-base font-semibold" onClick={() => setStatus("rejected")}>
+                  <Button variant="outline" className="h-14 rounded-2xl border-2 hover:bg-destructive/5 hover:text-destructive hover:border-destructive/30 transition-all text-base font-semibold bg-card" onClick={() => setStatus("rejected")}>
                     <X className="mr-2 h-5 w-5" /> Recusar
                   </Button>
-                  <Button className="h-14 rounded-2xl shadow-xl shadow-primary/30 glow-primary transition-all hover:bg-primary/90 hover:glow-primary-hover hover:-translate-y-1 text-base font-bold" onClick={() => setStatus("approved")}>
+                  <Button className="h-14 rounded-2xl shadow-xl shadow-emerald-600/30 bg-emerald-600 hover:bg-emerald-700 transition-all hover:-translate-y-1 text-base font-bold text-white border-0" onClick={() => setStatus("approved")}>
                     <Check className="mr-2 h-5 w-5" /> Aceitar Proposta
                   </Button>
                 </div>
