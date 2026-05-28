@@ -3,10 +3,13 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Plus, FileText, CheckCircle2, Percent, DollarSign } from "lucide-react";
 import { formatBRL, statusBadge } from "@/lib/format";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from "recharts";
 import { format, parseISO, subMonths } from "date-fns";
+import { useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { ptBR } from "date-fns/locale";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
@@ -16,8 +19,18 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 
 function Dashboard() {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
 
-  const { data: proposals = [] } = useQuery({
+  const { data: catalogCount = 0 } = useQuery({
+    queryKey: ["catalogCount", user?.id],
+    queryFn: async () => {
+      const { count } = await supabase.from("catalog").select("*", { count: "exact", head: true });
+      return count ?? 0;
+    },
+    enabled: !!user,
+  });
+
+  const { data: proposals = [], isLoading: isLoadingProposals } = useQuery({
     queryKey: ["proposals", user?.id],
     queryFn: async () => {
       const { data, error } = await supabase.from("proposals")
@@ -28,6 +41,37 @@ function Dashboard() {
     },
     enabled: !!user,
   });
+
+  // Onboarding: Inject dummy data if it's a new account
+  useEffect(() => {
+    if (!user || isLoadingProposals || proposals.length > 0 || sessionStorage.getItem("dummyInjected")) return;
+    
+    async function injectDummyData() {
+      sessionStorage.setItem("dummyInjected", "true");
+      try {
+        const { data: client } = await supabase.from("clients").insert({
+          user_id: user!.id, name: "João Silva (Exemplo)", email: "joao.exemplo@email.com",
+          phone: "11999999999", document: "123.456.789-00", address: "Rua Exemplo, 123 - Centro"
+        }).select().single();
+        if (!client) return;
+
+        const { data: proposal } = await supabase.from("proposals").insert({
+          user_id: user!.id, client_id: client.id, title: "Proposta Exemplo - Revisão Completa",
+          description: "Essa é uma proposta de exemplo. Sinta-se livre para excluí-la depois.",
+          status: "approved", total: 1350.00
+        }).select().single();
+        if (!proposal) return;
+
+        await supabase.from("proposal_items").insert([
+          { proposal_id: proposal.id, title: "Troca de Óleo + Filtro", quantity: 1, price: 150.00, order_index: 0 },
+          { proposal_id: proposal.id, title: "Kit Correia Dentada (Peça e Mão de Obra)", quantity: 1, price: 1200.00, order_index: 1 }
+        ]);
+
+        queryClient.invalidateQueries({ queryKey: ["proposals"] });
+      } catch (e) {}
+    }
+    injectDummyData();
+  }, [user, isLoadingProposals, proposals.length, queryClient]);
 
   const isWon = (status: string) => ["approved", "paid", "finished"].includes(status);
   const sent = proposals.length;
@@ -50,17 +94,40 @@ function Dashboard() {
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-8">
-      <div className="flex flex-wrap items-end justify-between gap-3">
+      <div className="flex flex-wrap items-end justify-between gap-3 mb-8">
         <div>
           <p className="text-sm font-medium tracking-wide text-primary">Olá 👋</p>
           <h1 className="mt-1 text-3xl font-bold tracking-tight">Bem-vindo de volta!</h1>
         </div>
-        <Button asChild className="rounded-full shadow-lg shadow-primary/30 glow-primary transition-all hover:bg-primary/90 hover:glow-primary-hover hover:-translate-y-0.5">
-          <Link to="/proposals/new"><Plus className="mr-1.5 h-4 w-4" /> Nova proposta</Link>
-        </Button>
+        <div className="relative">
+          <TooltipProvider delayDuration={0}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div>
+                  {(proposals.length === 0 || proposals.length === 1) && !isLoadingProposals && (
+                    <>
+                      <div className="absolute -top-1 -right-1 z-10 h-3 w-3 rounded-full bg-blue-500 animate-ping opacity-75" />
+                      <div className="absolute -top-1 -right-1 z-10 h-3 w-3 rounded-full bg-blue-500" />
+                    </>
+                  )}
+                  <Button asChild className="rounded-full shadow-lg shadow-primary/30 glow-primary transition-all hover:bg-primary/90 hover:glow-primary-hover hover:-translate-y-0.5">
+                    <Link to="/proposals/new"><Plus className="mr-1.5 h-4 w-4" /> Nova proposta</Link>
+                  </Button>
+                </div>
+              </TooltipTrigger>
+              {(proposals.length === 0 || proposals.length === 1) && !isLoadingProposals && (
+                <TooltipContent side="bottom" align="end" className="bg-blue-600 text-white max-w-[200px] text-xs p-3 font-medium">
+                  Dica: Crie sua primeira proposta oficial e envie para o WhatsApp do cliente.
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
+        </div>
       </div>
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <OnboardingChecklist proposalsCount={proposals.length} catalogCount={catalogCount} />
+
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Stat icon={FileText} label="Propostas enviadas" value={String(sent)} />
         <Stat icon={CheckCircle2} label="Aprovadas" value={String(approved)} />
         <Stat icon={Percent} label="Taxa de aprovação" value={`${rate}%`} />
@@ -76,7 +143,7 @@ function Dashboard() {
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} dy={10} />
                 <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} tickFormatter={(val) => `R$ ${val}`} />
-                <Tooltip 
+                <RechartsTooltip 
                   formatter={(value: number) => [formatBRL(value), "Faturamento"]}
                   contentStyle={{ borderRadius: '1rem', border: '1px solid hsl(var(--border))', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
                 />
@@ -140,9 +207,45 @@ function EmptyState() {
       </div>
       <h3 className="mt-4 text-lg font-semibold">Nenhuma proposta ainda</h3>
       <p className="mt-1 text-sm text-muted-foreground">Sua primeira venda está a um clique de distância.</p>
-      <Button asChild className="mt-6 rounded-full shadow-lg shadow-primary/20 glow-primary hover:glow-primary-hover hover:-translate-y-0.5">
-        <Link to="/proposals/new"><Plus className="mr-1.5 h-4 w-4" /> Criar primeira proposta</Link>
+      <Button asChild className="mt-6 rounded-full shadow-lg shadow-primary/20 glow-primary hover:glow-primary-hover hover:-translate-y-0.5 relative">
+        <Link to="/proposals/new">
+          <div className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-blue-500 animate-ping opacity-75" />
+          <div className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-blue-500" />
+          <Plus className="mr-1.5 h-4 w-4" /> Criar primeira proposta
+        </Link>
       </Button>
+    </div>
+  );
+}
+
+function OnboardingChecklist({ proposalsCount, catalogCount }: { proposalsCount: number, catalogCount: number }) {
+  const steps = [
+    { title: "Conta criada com sucesso", desc: "Seja bem-vindo ao Simbi!", done: true, href: "#" },
+    { title: "Adicionar serviço ao catálogo", desc: "Salve um serviço comum para não precisar digitar de novo.", done: catalogCount > 0, href: "/catalog" },
+    { title: "Criar sua primeira proposta (real)", desc: "Faça um orçamento de verdade e envie para um cliente.", done: proposalsCount > 1, href: "/proposals/new" },
+  ];
+  
+  const progress = steps.filter(s => s.done).length;
+  if (progress === steps.length) return null;
+
+  return (
+    <div className="mb-8 overflow-hidden rounded-3xl border border-blue-200 bg-blue-50/50 p-6 shadow-sm">
+      <h2 className="text-lg font-bold text-gray-900 mb-2">Primeiros Passos ({progress}/{steps.length})</h2>
+      <p className="text-sm text-gray-600 mb-6">Complete estas ações para ver o poder do Simbi na prática.</p>
+      
+      <div className="space-y-3">
+        {steps.map((step, idx) => (
+          <Link key={idx} to={step.href as any} className={`flex items-center gap-4 p-4 rounded-xl border transition-all ${step.done ? 'bg-green-50 border-green-200' : 'bg-white border-blue-100 hover:border-blue-300 hover:shadow-sm'}`}>
+            <div className={`flex items-center justify-center h-8 w-8 rounded-full shrink-0 ${step.done ? 'bg-green-500 text-white' : 'bg-blue-100 text-blue-600'}`}>
+              {step.done ? <CheckCircle2 className="h-5 w-5" /> : <span className="font-bold text-sm">{idx + 1}</span>}
+            </div>
+            <div>
+              <div className={`font-semibold ${step.done ? 'text-green-800 line-through opacity-70' : 'text-gray-900'}`}>{step.title}</div>
+              <div className={`text-xs ${step.done ? 'text-green-600/70' : 'text-gray-500'}`}>{step.desc}</div>
+            </div>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }

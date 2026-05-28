@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Plus, Trash2, Package, Search, Pencil } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { formatBRL } from "@/lib/format";
 import { toast } from "sonner";
 
@@ -137,9 +138,30 @@ function Catalog() {
             />
           </div>
           <Dialog open={open} onOpenChange={(val) => { if (!val) resetForm(); else setOpen(true); }}>
-            <DialogTrigger asChild>
-              <Button className="rounded-full whitespace-nowrap" onClick={() => resetForm()}><Plus className="mr-1 h-4 w-4" /> Novo item</Button>
-            </DialogTrigger>
+            <TooltipProvider delayDuration={0}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <DialogTrigger asChild>
+                    <div className="relative inline-block cursor-pointer">
+                      {items.length === 0 && !isLoading && (
+                        <>
+                          <div className="absolute -top-1 -right-1 z-10 h-3 w-3 rounded-full bg-blue-500 animate-ping opacity-75" />
+                          <div className="absolute -top-1 -right-1 z-10 h-3 w-3 rounded-full bg-blue-500" />
+                        </>
+                      )}
+                      <Button className="rounded-full whitespace-nowrap" onClick={() => resetForm()}>
+                        <Plus className="mr-1 h-4 w-4" /> Novo item
+                      </Button>
+                    </div>
+                  </DialogTrigger>
+                </TooltipTrigger>
+                {items.length === 0 && !isLoading && (
+                  <TooltipContent side="bottom" align="end" className="bg-blue-600 text-white max-w-[200px] text-xs p-3 font-medium">
+                    Dica: Cadastre suas peças ou serviços mais usados aqui para montar orçamentos muito mais rápido.
+                  </TooltipContent>
+                )}
+              </Tooltip>
+            </TooltipProvider>
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>{editingId ? "Editar Item" : "Adicionar ao Catálogo"}</DialogTitle>
