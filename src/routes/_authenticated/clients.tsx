@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, Users, Trash2, Search, Pencil } from "lucide-react";
+import { Plus, Users, Trash2, Search, Pencil, MapPin, FileText } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/clients")({
@@ -21,12 +21,16 @@ function ClientsPage() {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [name, setName] = useState(""); const [email, setEmail] = useState(""); const [phone, setPhone] = useState("");
+  const [name, setName] = useState(""); 
+  const [email, setEmail] = useState(""); 
+  const [phone, setPhone] = useState("");
+  const [document, setDocument] = useState("");
+  const [address, setAddress] = useState("");
 
   const { data: clients = [], isLoading } = useQuery({
     queryKey: ["clients"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("clients").select("*").order("created_at", { ascending: false });
+      const { data, error } = await supabase.from("clients").select("*, proposals(status, created_at)").order("created_at", { ascending: false });
       if (error) throw error; return data ?? [];
     },
   });
@@ -39,12 +43,21 @@ function ClientsPage() {
 
   async function saveClient() {
     if (!name.trim() || !user) return;
+    
+    const payload = { 
+      name, 
+      email: email || null, 
+      phone: phone || null,
+      document: document || null,
+      address: address || null
+    };
+
     if (editingId) {
-      const { error } = await supabase.from("clients").update({ name, email: email || null, phone: phone || null }).eq("id", editingId);
+      const { error } = await supabase.from("clients").update(payload).eq("id", editingId);
       if (error) { toast.error(error.message); return; }
       toast.success("Cliente atualizado");
     } else {
-      const { error } = await supabase.from("clients").insert({ user_id: user.id, name, email: email || null, phone: phone || null });
+      const { error } = await supabase.from("clients").insert({ user_id: user.id, ...payload });
       if (error) { toast.error(error.message); return; }
       toast.success("Cliente adicionado");
     }
@@ -53,7 +66,7 @@ function ClientsPage() {
   }
 
   function resetForm() {
-    setName(""); setEmail(""); setPhone(""); setEditingId(null); setOpen(false);
+    setName(""); setEmail(""); setPhone(""); setDocument(""); setAddress(""); setEditingId(null); setOpen(false);
   }
 
   function editClient(c: any) {
@@ -61,6 +74,8 @@ function ClientsPage() {
     setName(c.name);
     setEmail(c.email || "");
     setPhone(c.phone || "");
+    setDocument(c.document || "");
+    setAddress(c.address || "");
     setOpen(true);
   }
 
@@ -93,6 +108,8 @@ function ClientsPage() {
                 <div><Label>Nome</Label><Input value={name} onChange={(e) => setName(e.target.value)} /></div>
                 <div><Label>E-mail</Label><Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} /></div>
                 <div><Label>WhatsApp</Label><Input value={phone} onChange={(e) => setPhone(e.target.value)} /></div>
+                <div><Label>CPF/CNPJ</Label><Input value={document} onChange={(e) => setDocument(e.target.value)} /></div>
+                <div><Label>Endereço</Label><Input value={address} onChange={(e) => setAddress(e.target.value)} /></div>
               </div>
               <DialogFooter><Button onClick={saveClient}>Salvar</Button></DialogFooter>
             </DialogContent>
@@ -113,18 +130,42 @@ function ClientsPage() {
           <div className="p-8 text-center text-sm text-muted-foreground">Nenhum cliente encontrado.</div>
         ) : (
           <ul className="divide-y divide-border">
-            {filteredClients.map(c => (
-              <li key={c.id} className="flex items-center justify-between gap-4 px-5 py-3 hover:bg-muted/30">
+            {filteredClients.map(c => {
+              const approvedProposals = c.proposals?.filter((p: any) => p.status === 'approved') || [];
+              let lastPurchaseBadge = <span className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">Nunca comprou</span>;
+              
+              if (approvedProposals.length > 0) {
+                const lastDate = new Date(Math.max(...approvedProposals.map((p: any) => new Date(p.created_at).getTime())));
+                const daysAgo = Math.floor((new Date().getTime() - lastDate.getTime()) / (1000 * 3600 * 24));
+                if (daysAgo === 0) lastPurchaseBadge = <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">Comprou hoje</span>;
+                else if (daysAgo < 30) lastPurchaseBadge = <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">Há {daysAgo} dias</span>;
+                else if (daysAgo < 60) lastPurchaseBadge = <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-700">Há 1 mês</span>;
+                else {
+                  const months = Math.floor(daysAgo / 30);
+                  lastPurchaseBadge = <span className="inline-flex items-center rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-semibold text-red-700">Sem comprar há {months} meses</span>;
+                }
+              }
+
+              return (
+              <li key={c.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-5 py-4 hover:bg-muted/30">
                 <div className="min-w-0 flex-1">
-                  <div className="truncate font-medium">{c.name}</div>
-                  <div className="truncate text-xs text-muted-foreground">{[c.email, c.phone].filter(Boolean).join(" · ") || "—"}</div>
+                  <div className="flex items-center gap-3">
+                    <div className="truncate font-bold text-base">{c.name}</div>
+                    {lastPurchaseBadge}
+                  </div>
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1 text-sm text-muted-foreground">
+                    {[c.email, c.phone].filter(Boolean).join(" · ") || "Nenhum contato"}
+                    {c.document && <span className="flex items-center gap-1"><FileText className="h-3 w-3" /> {c.document}</span>}
+                    {c.address && <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> {c.address}</span>}
+                  </div>
                 </div>
                 <div className="flex items-center gap-1">
                   <Button variant="ghost" size="icon" onClick={() => editClient(c)}><Pencil className="h-4 w-4 text-muted-foreground" /></Button>
                   <Button variant="ghost" size="icon" onClick={() => remove(c.id)}><Trash2 className="h-4 w-4 text-muted-foreground" /></Button>
                 </div>
               </li>
-            ))}
+              );
+            })}
           </ul>
         )}
       </div>

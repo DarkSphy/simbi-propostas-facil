@@ -22,6 +22,7 @@ function Landing() {
       <Features />
       <HowItWorks />
       <Testimonials />
+      <Pricing />
       <CTA />
       <Footer />
     </div>
@@ -37,6 +38,7 @@ function Header() {
           <a href="#recursos" className="transition-colors hover:text-white">Recursos</a>
           <a href="#como-funciona" className="transition-colors hover:text-white">Como funciona</a>
           <a href="#depoimentos" className="transition-colors hover:text-white">Depoimentos</a>
+          <a href="#planos" className="transition-colors hover:text-white">Planos</a>
         </nav>
         <div className="flex items-center gap-4">
           <Link to="/login" className="hidden text-sm font-semibold text-white transition-colors hover:text-white/80 sm:block">Log in</Link>
@@ -75,7 +77,7 @@ function Hero() {
 
         <div className="relative mx-auto mt-20 max-w-5xl">
           <div className="rounded-2xl bg-white/5 p-2 ring-1 ring-white/10 backdrop-blur-sm lg:rounded-3xl lg:p-4">
-            <MockDashboard />
+            <MockProposalHero />
           </div>
         </div>
       </div>
@@ -85,8 +87,8 @@ function Hero() {
 
 function InfiniteLogos() {
   const brands = [
-    "Studio Vértice", "Marina Arquitetura", "Fix Reformas", "Bloom Decor", "Garoa Studio", 
-    "Nova Marketing", "Léo Fotografias", "Doces da Maria", "Consultoria 360", "Evento.co"
+    "Oficina do João", "Marcenaria Silva", "TechFix Assistência", "Construtora Alfa", "Mecânica Souza", 
+    "Refrigeração Costa", "Eletro Service", "Serralheria Arte Ferro", "Mestre das Obras", "Resolve Assistência"
   ];
   // Duplicar a lista para o efeito infinito suave
   const infiniteBrands = [...brands, ...brands];
@@ -113,19 +115,19 @@ function InfiniteLogos() {
 
 function Features() {
   const items = [
-    { icon: Share2, title: "Link de Alto Impacto", desc: "Esqueça PDFs pesados. Envie um link elegante que se adapta perfeitamente à tela do celular do cliente." },
-    { icon: Zap, title: "Aprovação em um clique", desc: "O cliente lê a proposta e clica em 'Aprovar'. Simples assim. Menos atrito significa mais fechamentos." },
-    { icon: MessageCircle, title: "Feito para o WhatsApp", desc: "Integração nativa com a forma que o brasileiro faz negócios. Compartilhe no WhatsApp com um toque." },
-    { icon: FileText, title: "Catálogo Inteligente", desc: "Salve seus produtos e serviços frequentes. Monte orçamentos complexos em poucos segundos." },
+    { icon: Share2, title: "O fim do 'orçamento de boca'", desc: "Antes: você mandava um áudio confuso ou foto de caderno. Depois: o cliente clica num link e vê um orçamento com sua logo, impecável." },
+    { icon: Zap, title: "Aprovação em um clique", desc: "Chega de 'vou pensar e te aviso'. O cliente lê no celular, aperta um botão verde de 'Aprovar' e você já pode começar o serviço." },
+    { icon: MessageCircle, title: "Direto no WhatsApp", desc: "O cliente não precisa baixar nenhum aplicativo, nem abrir PDF pesado. Ele clica no link e já vê tudo ali mesmo, rapidinho." },
+    { icon: FileText, title: "Preços na ponta do dedo", desc: "Não perca tempo calculando tudo de novo do zero. Salve os serviços e peças mais usados e monte um orçamento em 2 minutos." },
   ];
 
   return (
     <section id="recursos" className="bg-background py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-base font-semibold leading-7 text-primary">Tudo o que você precisa</h2>
-          <p className="mt-2 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">Design que converte.</p>
-          <p className="mt-4 text-lg text-muted-foreground">O Simbi não é apenas um gerador de orçamentos. É uma ferramenta de vendas focada em impressionar o seu cliente.</p>
+          <h2 className="text-base font-semibold leading-7 text-primary">Feito para quem bota a mão na massa</h2>
+          <p className="mt-2 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">Do papel amassado para o digital.</p>
+          <p className="mt-4 text-lg text-muted-foreground">O Simbi transforma a forma como você passa preço. Mostre que o seu serviço não é um 'quebra-galho', é um trabalho profissional.</p>
         </div>
         
         <div className="mx-auto mt-16 max-w-5xl sm:mt-20">
@@ -180,25 +182,25 @@ function HowItWorks() {
           <div className="relative">
             {/* Dark mode mock */}
             <div className="rounded-3xl border border-white/10 bg-[#111] p-6 shadow-2xl">
-              <div className="flex items-center gap-3 border-b border-white/10 pb-4">
-                <div className="h-8 w-8 rounded bg-primary/20 flex items-center justify-center text-primary font-bold">M</div>
+                <div className="flex items-center gap-3 border-b border-white/10 pb-4">
+                <div className="h-8 w-8 rounded bg-primary/20 flex items-center justify-center text-primary font-bold">O</div>
                 <div>
-                  <div className="text-sm font-semibold text-white">Marina Arquitetura</div>
-                  <div className="text-xs text-white/50">Proposta #1024</div>
+                  <div className="text-sm font-semibold text-white">Oficina do João</div>
+                  <div className="text-xs text-white/50">Orçamento #1024</div>
                 </div>
               </div>
               <div className="mt-6 space-y-4">
                 <div className="flex justify-between items-center rounded-lg bg-white/5 p-3">
-                  <span className="text-white/80 text-sm">Consultoria Inicial</span>
-                  <span className="text-white font-medium">R$ 800,00</span>
+                  <span className="text-white/80 text-sm">Revisão e Troca de Óleo</span>
+                  <span className="text-white font-medium">R$ 450,00</span>
                 </div>
                 <div className="flex justify-between items-center rounded-lg bg-white/5 p-3">
-                  <span className="text-white/80 text-sm">Projeto 3D Completo</span>
-                  <span className="text-white font-medium">R$ 4.200,00</span>
+                  <span className="text-white/80 text-sm">Troca da Correia Dentada</span>
+                  <span className="text-white font-medium">R$ 1.200,00</span>
                 </div>
                 <div className="flex justify-between items-center border-t border-white/10 pt-4 mt-2">
                   <span className="text-white font-semibold">Total</span>
-                  <span className="text-white text-xl font-bold text-primary">R$ 5.000,00</span>
+                  <span className="text-white text-xl font-bold text-primary">R$ 1.650,00</span>
                 </div>
                 <div className="mt-6">
                   <div className="w-full rounded-xl bg-primary py-3 text-center text-sm font-semibold text-primary-foreground">
@@ -216,9 +218,9 @@ function HowItWorks() {
 
 function Testimonials() {
   const reviews = [
-    { body: "Antes eu perdia 40 minutos montando um PDF no Canva para cada cliente. Com o Simbi, eu puxo os itens do catálogo e mando em 2 minutos. Os clientes amam.", author: "Diego M.", role: "Designer Gráfico" },
-    { body: "O design do link que o cliente recebe é absurdamente limpo. Passa muita autoridade. Consegui aumentar meus preços e a taxa de aprovação subiu.", author: "Camila R.", role: "Arquiteta" },
-    { body: "A integração visual da proposta lida no celular mudou o jogo pra mim. Envio pelo WhatsApp e eles fecham na hora, sem precisar baixar arquivo nenhum.", author: "Felipe T.", role: "Fotógrafo" },
+    { body: "Antes eu perdia um tempão fazendo orçamento no bloco de notas para cada cliente. Com o Simbi, eu puxo os serviços do catálogo e mando pro cliente no zap em 2 minutos. Os clientes dão mais credibilidade e fecham mais rápido.", author: "Diego M.", role: "Mecânico Automotivo" },
+    { body: "A apresentação do link que o cliente recebe passa muita credibilidade. Consegui aumentar o valor do meu metro quadrado de móveis planejados e a taxa de aprovação subiu muito.", author: "Camila R.", role: "Marceneira" },
+    { body: "A facilidade do cliente ler o orçamento do conserto direto no celular mudou o jogo pra mim. Envio pelo WhatsApp e eles aprovam na hora, sem precisar baixar arquivo PDF nenhum.", author: "Felipe T.", role: "Técnico de Refrigeração" },
   ];
 
   return (
@@ -253,6 +255,69 @@ function Testimonials() {
   );
 }
 
+function Pricing() {
+  return (
+    <section id="planos" className="bg-background py-24 sm:py-32 border-t border-border">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="mx-auto max-w-2xl text-center">
+          <h2 className="text-base font-semibold leading-7 text-primary">Preços justos e transparentes</h2>
+          <p className="mt-2 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">Comece de graça, cresça com o Simbi.</p>
+          <p className="mt-4 text-lg text-muted-foreground">Planos pensados para caber no bolso do profissional autônomo e pequeno empreendedor.</p>
+        </div>
+        
+        <div className="mx-auto mt-16 grid max-w-lg grid-cols-1 gap-8 md:max-w-4xl md:grid-cols-2 items-center">
+          {/* Free Plan */}
+          <div className="flex flex-col justify-between rounded-3xl bg-card border border-border p-8 shadow-sm">
+            <div>
+              <h3 className="text-2xl font-bold text-foreground">Básico</h3>
+              <p className="mt-4 text-sm leading-6 text-muted-foreground">Perfeito para quem está começando e precisa de agilidade nos orçamentos.</p>
+              <div className="mt-6 flex items-baseline gap-x-1">
+                <span className="text-5xl font-bold tracking-tight text-foreground">Grátis</span>
+                <span className="text-sm font-semibold leading-6 text-muted-foreground">para sempre</span>
+              </div>
+              <ul className="mt-8 space-y-3 text-sm leading-6 text-muted-foreground">
+                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-primary" /> Até 5 propostas por mês</li>
+                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-primary" /> Catálogo com 10 itens</li>
+                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-primary" /> Cadastro de até 10 clientes</li>
+                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-primary" /> Compartilhamento via WhatsApp</li>
+              </ul>
+            </div>
+            <Button asChild variant="outline" className="mt-8 w-full rounded-full h-12">
+              <Link to="/register">Começar grátis</Link>
+            </Button>
+          </div>
+
+          {/* Pro Plan */}
+          <div className="flex flex-col justify-between rounded-3xl bg-primary p-8 shadow-2xl ring-1 ring-primary relative overflow-hidden">
+            <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-white/10 blur-2xl"></div>
+            <div>
+              <div className="flex items-center justify-between gap-x-4">
+                <h3 className="text-2xl font-bold text-primary-foreground">Profissional</h3>
+                <span className="rounded-full bg-white/20 px-2.5 py-1 text-xs font-semibold leading-5 text-primary-foreground">Mais popular</span>
+              </div>
+              <p className="mt-4 text-sm leading-6 text-primary-foreground/80">Acesso ilimitado a todas as funcionalidades de vendas e gestão.</p>
+              <div className="mt-6 flex items-baseline gap-x-1">
+                <span className="text-5xl font-bold tracking-tight text-primary-foreground">R$ 39,90</span>
+                <span className="text-sm font-semibold leading-6 text-primary-foreground/80">/mês</span>
+              </div>
+              <ul className="mt-8 space-y-3 text-sm leading-6 text-primary-foreground/90">
+                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-primary-foreground" /> <strong>Propostas ilimitadas</strong></li>
+                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-primary-foreground" /> Catálogo e clientes <strong>ilimitados</strong></li>
+                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-primary-foreground" /> Personalização completa com sua logo e cores</li>
+                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-primary-foreground" /> URL Personalizada (simbi.com/p/sua-marca)</li>
+                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-primary-foreground" /> Integração com botão de pagamento</li>
+              </ul>
+            </div>
+            <Button asChild className="mt-8 w-full rounded-full h-12 bg-white text-primary hover:bg-white/90 shadow-lg font-bold">
+              <Link to="/register">Assinar plano Profissional</Link>
+            </Button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function CTA() {
   return (
     <section className="relative isolate overflow-hidden bg-primary px-6 py-24 text-center sm:py-32 lg:px-8">
@@ -273,10 +338,49 @@ function CTA() {
 
 function Footer() {
   return (
-    <footer className="bg-background py-12 border-t border-border">
-      <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-6 sm:flex-row lg:px-8">
-        <Logo />
-        <p className="text-sm text-muted-foreground">© {new Date().getFullYear()} Simbi. Feito para criativos de alto nível.</p>
+    <footer className="bg-background py-16 border-t border-border">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="space-y-4">
+            <Logo />
+            <p className="text-sm text-muted-foreground">
+              Propostas comerciais que encantam seus clientes e fecham negócios mais rápido.
+            </p>
+            <p className="text-xs text-muted-foreground">
+              CNPJ: 65.615.316/0001-33
+            </p>
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-foreground">Produto</h3>
+            <ul className="mt-4 space-y-3 text-sm text-muted-foreground">
+              <li><a href="#recursos" className="hover:text-primary transition-colors">Recursos</a></li>
+              <li><a href="#como-funciona" className="hover:text-primary transition-colors">Como funciona</a></li>
+              <li><a href="#planos" className="hover:text-primary transition-colors">Planos e Preços</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-foreground">Suporte</h3>
+            <ul className="mt-4 space-y-3 text-sm text-muted-foreground">
+              <li><a href="https://wa.me/5531973175882" target="_blank" rel="noreferrer" className="hover:text-primary transition-colors flex items-center gap-2"><MessageCircle className="h-4 w-4" /> (31) 97317-5882</a></li>
+              <li><a href="mailto:contato@simbi.com" className="hover:text-primary transition-colors">Falar com a equipe</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-foreground">Legal</h3>
+            <ul className="mt-4 space-y-3 text-sm text-muted-foreground">
+              <li><Link to="/" className="hover:text-primary transition-colors">Termos de Uso</Link></li>
+              <li><Link to="/" className="hover:text-primary transition-colors">Política de Privacidade</Link></li>
+            </ul>
+          </div>
+        </div>
+        <div className="mt-16 border-t border-border pt-8 text-center sm:flex sm:items-center sm:justify-between sm:text-left">
+          <p className="text-sm text-muted-foreground">
+            © {new Date().getFullYear()} Simbi. Todos os direitos reservados.
+          </p>
+          <p className="mt-4 text-sm text-muted-foreground sm:mt-0">
+            Feito para profissionais e prestadores de serviços.
+          </p>
+        </div>
       </div>
     </footer>
   );
@@ -284,58 +388,95 @@ function Footer() {
 
 /* ---------------- Mockups ---------------- */
 
-function MockDashboard() {
+function MockProposalHero() {
   return (
-    <div className="overflow-hidden rounded-xl bg-card shadow-2xl">
-      <div className="flex items-center gap-2 border-b border-border bg-muted/40 px-4 py-3">
+    <div className="overflow-hidden rounded-xl bg-[#fafafa] text-left shadow-2xl relative border border-white/20">
+      {/* Browser bar */}
+      <div className="flex items-center gap-2 border-b border-border/5 bg-[#f5f5f5] px-4 py-3">
         <div className="flex gap-1.5">
-          <div className="h-3 w-3 rounded-full bg-destructive/80" />
-          <div className="h-3 w-3 rounded-full bg-warning/80" />
-          <div className="h-3 w-3 rounded-full bg-success/80" />
+          <div className="h-3 w-3 rounded-full bg-red-400" />
+          <div className="h-3 w-3 rounded-full bg-amber-400" />
+          <div className="h-3 w-3 rounded-full bg-green-400" />
         </div>
-        <div className="ml-4 flex h-6 flex-1 items-center rounded-md bg-background px-3 text-[10px] font-medium text-muted-foreground ring-1 ring-border sm:text-xs">
-          simbi.app/dashboard
+        <div className="ml-4 flex h-6 flex-1 items-center rounded-md bg-white px-3 text-[10px] font-medium text-gray-400 shadow-sm sm:text-xs">
+          simbi.com/p/oficina-do-joao/orcamento-civic
         </div>
       </div>
-      <div className="flex">
-        <div className="hidden w-48 flex-col gap-2 border-r border-border bg-muted/20 p-4 sm:flex">
-          <div className="rounded-md bg-primary/10 px-3 py-2 text-sm font-semibold text-primary">Visão Geral</div>
-          <div className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground">Propostas</div>
-          <div className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground">Catálogo</div>
-          <div className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground">Clientes</div>
-        </div>
-        <div className="flex-1 p-6">
-          <div className="mb-6 flex items-center justify-between">
-            <h3 className="text-lg font-bold">Dashboard</h3>
-            <div className="rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-primary-foreground">Nova proposta</div>
+      
+      {/* Proposal Content */}
+      <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6 relative">
+        <div className="absolute inset-0 z-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-40"></div>
+        
+        <div className="relative z-10">
+          <div className="mb-8 flex flex-col items-center text-center">
+            <div className="h-20 w-20 flex items-center justify-center rounded-2xl bg-blue-600 text-3xl font-bold text-white shadow-xl mb-4 border-4 border-white">
+              O
+            </div>
+            <h2 className="text-2xl font-black tracking-tight text-gray-900">Oficina do João</h2>
+            <div className="mt-2 rounded-full bg-blue-100 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-blue-700 border border-blue-200">Orçamento</div>
           </div>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
-              <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Enviadas</div>
-              <div className="mt-2 text-2xl font-bold">24</div>
+
+          <div className="rounded-3xl border border-gray-200 bg-white shadow-xl overflow-hidden">
+            <div className="h-2 w-full bg-blue-600" />
+            <div className="border-b border-gray-100 bg-gray-50/50 px-6 py-4 flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Status</span>
+                <span className="rounded-full bg-blue-100/50 px-2.5 py-1 text-xs font-bold text-blue-700 border border-blue-200">Enviada</span>
+              </div>
             </div>
-            <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
-              <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Aceitas</div>
-              <div className="mt-2 text-2xl font-bold">18</div>
-            </div>
-            <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
-              <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Taxa de Conversão</div>
-              <div className="mt-2 text-2xl font-bold text-success">75%</div>
-            </div>
-          </div>
-          <div className="mt-6 rounded-xl border border-border bg-card shadow-sm">
-            <div className="border-b border-border p-4 text-sm font-bold">Atividade Recente</div>
-            <div className="divide-y divide-border">
-              {[
-                { n: "Identidade Visual Vértice", s: "Aceita", c: "text-success bg-success/10" },
-                { n: "Redesign Site Institucional", s: "Visualizada", c: "text-blue-600 bg-blue-500/10" },
-                { n: "Consultoria Mensal", s: "Enviada", c: "text-muted-foreground bg-muted" }
-              ].map((item, i) => (
-                <div key={i} className="flex items-center justify-between p-4 text-sm">
-                  <span className="font-medium">{item.n}</span>
-                  <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${item.c}`}>{item.s}</span>
+            
+            <div className="p-6 sm:p-8">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">Revisão Completa - Honda Civic</h1>
+              <p className="mt-2 text-sm text-gray-500 font-medium">Preparado para <span className="font-bold text-blue-600">Carlos Eduardo</span></p>
+              
+              <div className="mt-8 space-y-3">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center rounded-2xl border border-gray-100 p-4 hover:border-blue-100 transition-colors gap-3">
+                  <div>
+                    <div className="font-bold text-gray-900 text-base">Troca de Óleo e Filtros</div>
+                    <div className="flex items-center gap-2 mt-1.5">
+                      <span className="rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-bold text-gray-600">Qtd: 1</span>
+                      <span className="text-xs text-gray-500 font-medium">Óleo Sintético 5W30 + Filtro de Óleo/Ar</span>
+                    </div>
+                  </div>
+                  <div className="text-left sm:text-right font-black text-gray-900 text-lg">R$ 450,00</div>
                 </div>
-              ))}
+                
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center rounded-2xl border border-gray-100 p-4 hover:border-blue-100 transition-colors gap-3">
+                  <div>
+                    <div className="font-bold text-gray-900 text-base">Kit Correia Dentada</div>
+                    <div className="flex items-center gap-2 mt-1.5">
+                      <span className="rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-bold text-gray-600">Qtd: 1</span>
+                      <span className="text-xs text-gray-500 font-medium">Peça Original + Mão de Obra</span>
+                    </div>
+                  </div>
+                  <div className="text-left sm:text-right font-black text-gray-900 text-lg">R$ 1.200,00</div>
+                </div>
+                
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center rounded-2xl border border-gray-100 p-4 hover:border-blue-100 transition-colors gap-3">
+                  <div>
+                    <div className="font-bold text-gray-900 text-base">Alinhamento e Balanceamento</div>
+                    <div className="flex items-center gap-2 mt-1.5">
+                      <span className="rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-bold text-gray-600">Qtd: 1</span>
+                      <span className="text-xs text-gray-500 font-medium">Geometria 3D Computadorizada</span>
+                    </div>
+                  </div>
+                  <div className="text-left sm:text-right font-black text-gray-900 text-lg">R$ 180,00</div>
+                </div>
+              </div>
+              
+              <div className="mt-8 flex flex-col sm:flex-row sm:items-center justify-between rounded-2xl bg-blue-50 px-6 py-5 border border-blue-100/50">
+                <span className="text-sm font-bold uppercase tracking-wider text-blue-800">Total do Orçamento</span>
+                <span className="text-3xl font-black text-blue-600 mt-1 sm:mt-0">R$ 1.830,00</span>
+              </div>
+              
+              <div className="mt-8 grid gap-3 sm:grid-cols-2">
+                <div className="h-14 flex cursor-pointer items-center justify-center rounded-2xl border-2 border-gray-200 bg-white font-bold text-gray-400 transition-colors hover:border-red-200 hover:text-red-500">
+                  <span className="mr-2">✕</span> Recusar
+                </div>
+                <div className="h-14 flex cursor-pointer items-center justify-center rounded-2xl bg-green-600 font-bold text-white shadow-xl shadow-green-600/20 transition-all hover:-translate-y-1 hover:shadow-green-600/40">
+                  <span className="mr-2">✓</span> Aprovar Orçamento
+                </div>
+              </div>
             </div>
           </div>
         </div>

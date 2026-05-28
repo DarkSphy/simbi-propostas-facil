@@ -18,6 +18,7 @@ function SettingsPage() {
   const { user } = useAuth();
   const [fullName, setFullName] = useState(""); 
   const [companyName, setCompanyName] = useState(""); 
+  const [profileSlug, setProfileSlug] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [logoUrl, setLogoUrl] = useState("");
   const [themeColor, setThemeColor] = useState("#8b5cf6");
@@ -44,6 +45,7 @@ function SettingsPage() {
       if (data) { 
         setFullName(data.full_name ?? ""); 
         setCompanyName(data.company_name ?? ""); 
+        setProfileSlug(data.profile_slug ?? "");
         setWhatsapp(data.whatsapp ?? ""); 
         setLogoUrl(data.logo_url ?? "");
         setThemeColor(data.theme_color ?? "#8b5cf6");
@@ -83,10 +85,33 @@ function SettingsPage() {
       finalTexture = "none";
     }
 
+    if (profileSlug) {
+      const formattedSlug = profileSlug.toLowerCase().trim();
+      const slugRegex = /^[a-z0-9-]+$/;
+      if (!slugRegex.test(formattedSlug)) {
+        toast.error("A URL Personalizada deve conter apenas letras minúsculas, números e traços.");
+        setSaving(false);
+        return;
+      }
+      
+      const { data: existing } = await supabase.from("profiles")
+        .select("id")
+        .eq("profile_slug", formattedSlug)
+        .neq("id", user.id)
+        .maybeSingle();
+        
+      if (existing) {
+        toast.error("Esta URL já está em uso por outro profissional.");
+        setSaving(false);
+        return;
+      }
+    }
+
     const { error } = await supabase.from("profiles").upsert({ 
       id: user.id, 
       full_name: fullName, 
       company_name: companyName, 
+      profile_slug: profileSlug ? profileSlug.toLowerCase().trim() : null,
       whatsapp, 
       logo_url: logoUrl,
       theme_color: themeColor,
@@ -149,8 +174,9 @@ function SettingsPage() {
         <div className="grid gap-6 sm:grid-cols-2">
           <div className="space-y-2"><Label className="text-muted-foreground font-semibold">Nome</Label><Input value={fullName} onChange={(e) => setFullName(e.target.value)} /></div>
           <div className="space-y-2"><Label className="text-muted-foreground font-semibold">Empresa / marca</Label><Input value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="Aparece nas propostas" /></div>
+          <div className="space-y-2"><Label className="text-muted-foreground font-semibold">URL Personalizada / Slug</Label><Input value={profileSlug} onChange={(e) => setProfileSlug(e.target.value)} placeholder="ex: marina-arquiteta" /><p className="text-[11px] text-muted-foreground mt-1">Ex: simbi.com/p/<b>{profileSlug || 'seu-nome'}</b>/codigo</p></div>
           <div className="space-y-2"><Label className="text-muted-foreground font-semibold">WhatsApp</Label><Input value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} placeholder="(11) 99999-9999" /></div>
-          <div className="space-y-2"><Label className="text-muted-foreground font-semibold">E-mail</Label><Input value={user?.email ?? ""} disabled /></div>
+          <div className="space-y-2 sm:col-span-2"><Label className="text-muted-foreground font-semibold">E-mail</Label><Input value={user?.email ?? ""} disabled /></div>
         </div>
 
         <hr className="border-border" />

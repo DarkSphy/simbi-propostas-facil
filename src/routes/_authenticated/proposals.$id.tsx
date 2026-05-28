@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Share2, MessageCircle, Trash2, Copy } from "lucide-react";
 import { formatBRL, statusBadge } from "@/lib/format";
+import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/proposals/$id")({
@@ -16,6 +17,8 @@ function ProposalDetail() {
   const navigate = useNavigate();
   const qc = useQueryClient();
 
+  const { user } = useAuth();
+
   const { data, isLoading } = useQuery({
     queryKey: ["proposal", id],
     queryFn: async () => {
@@ -23,13 +26,21 @@ function ProposalDetail() {
         .select("*,clients(name,phone),proposal_items(*)")
         .eq("id", id).single();
       if (error) throw error;
-      return data;
+      
+      let profileSlug = null;
+      if (user) {
+        const { data: prof } = await supabase.from("profiles").select("profile_slug").eq("id", user.id).single();
+        profileSlug = prof?.profile_slug;
+      }
+      return { ...data, profile_slug: profileSlug };
     },
   });
 
   if (isLoading || !data) return <div className="p-8 text-sm text-muted-foreground">Carregando…</div>;
 
-  const publicUrl = `${window.location.origin}/p/${data.public_slug}`;
+  const publicUrl = data.profile_slug 
+    ? `${window.location.origin}/p/${data.profile_slug}/${data.public_slug}`
+    : `${window.location.origin}/p/${data.public_slug}`;
   const client = (data as any).clients;
   const items = (data as any).proposal_items ?? [];
 

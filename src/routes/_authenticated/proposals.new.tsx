@@ -29,6 +29,8 @@ function NewProposal() {
   const [clientId, setClientId] = useState<string>("");
   const [newClientName, setNewClientName] = useState("");
   const [newClientPhone, setNewClientPhone] = useState("");
+  const [newClientDocument, setNewClientDocument] = useState("");
+  const [newClientAddress, setNewClientAddress] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [notes, setNotes] = useState("");
@@ -127,7 +129,13 @@ function NewProposal() {
       let finalClientId = clientId || null;
       if (!finalClientId && newClientName && newClientName.trim()) {
         const { data, error } = await supabase.from("clients")
-          .insert({ user_id: user.id, name: newClientName.trim(), phone: newClientPhone.trim() || null })
+          .insert({ 
+            user_id: user.id, 
+            name: newClientName.trim(), 
+            phone: newClientPhone.trim() || null,
+            document: newClientDocument.trim() || null,
+            address: newClientAddress.trim() || null
+          })
           .select("id").single();
         if (error) throw error;
         finalClientId = data.id;
@@ -194,8 +202,10 @@ function NewProposal() {
           )}
           {!clientId && (
             <div className="grid gap-3 sm:grid-cols-2">
-              <div className="space-y-1.5"><Label>Nome do cliente</Label><Input value={newClientName} onChange={(e) => setNewClientName(e.target.value)} placeholder="Marina Arquitetura" /></div>
+              <div className="space-y-1.5 sm:col-span-2"><Label>Nome do cliente</Label><Input value={newClientName} onChange={(e) => setNewClientName(e.target.value)} placeholder="Ex: Marina Arquitetura" /></div>
               <div className="space-y-1.5"><Label>WhatsApp</Label><Input value={newClientPhone} onChange={(e) => setNewClientPhone(e.target.value)} placeholder="(11) 99999-9999" /></div>
+              <div className="space-y-1.5"><Label>CPF/CNPJ</Label><Input value={newClientDocument} onChange={(e) => setNewClientDocument(e.target.value)} placeholder="000.000.000-00" /></div>
+              <div className="space-y-1.5 sm:col-span-2"><Label>Endereço</Label><Input value={newClientAddress} onChange={(e) => setNewClientAddress(e.target.value)} placeholder="Rua exemplo, 123 - Cidade" /></div>
             </div>
           )}
         </Section>
