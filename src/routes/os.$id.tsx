@@ -35,7 +35,7 @@ function OSPrintPage() {
         .from("proposal_items")
         .select("*")
         .eq("proposal_id", id)
-        .order("order_index");
+        .order("sort_order");
       if (itemsError) throw itemsError;
 
       return { ...data, items };
