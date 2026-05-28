@@ -19,18 +19,22 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PSlugRouteImport } from './routes/p.$slug'
 import { Route as OsIdRouteImport } from './routes/os.$id'
+import { Route as CContractSlugRouteImport } from './routes/c.$contractSlug'
 import { Route as AuthenticatedWorkOrdersRouteImport } from './routes/_authenticated/work-orders'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
 import { Route as AuthenticatedHistoryRouteImport } from './routes/_authenticated/history'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedContractsRouteImport } from './routes/_authenticated/contracts'
 import { Route as AuthenticatedClientsRouteImport } from './routes/_authenticated/clients'
 import { Route as AuthenticatedCatalogRouteImport } from './routes/_authenticated/catalog'
 import { Route as AuthenticatedCalculatorRouteImport } from './routes/_authenticated/calculator'
+import { Route as AuthenticatedAgendaRouteImport } from './routes/_authenticated/agenda'
 import { Route as AuthenticatedProposalsIndexRouteImport } from './routes/_authenticated/proposals.index'
 import { Route as PProfileSlugProposalSlugRouteImport } from './routes/p.$profileSlug.$proposalSlug'
 import { Route as AuthenticatedProposalsNewRouteImport } from './routes/_authenticated/proposals.new'
 import { Route as AuthenticatedProposalsIdRouteImport } from './routes/_authenticated/proposals.$id'
+import { Route as AuthenticatedContractIdRouteImport } from './routes/_authenticated/contract.$id'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
@@ -81,6 +85,11 @@ const OsIdRoute = OsIdRouteImport.update({
   path: '/os/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CContractSlugRoute = CContractSlugRouteImport.update({
+  id: '/c/$contractSlug',
+  path: '/c/$contractSlug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedWorkOrdersRoute = AuthenticatedWorkOrdersRouteImport.update({
   id: '/work-orders',
   path: '/work-orders',
@@ -106,6 +115,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedContractsRoute = AuthenticatedContractsRouteImport.update({
+  id: '/contracts',
+  path: '/contracts',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedClientsRoute = AuthenticatedClientsRouteImport.update({
   id: '/clients',
   path: '/clients',
@@ -119,6 +133,11 @@ const AuthenticatedCatalogRoute = AuthenticatedCatalogRouteImport.update({
 const AuthenticatedCalculatorRoute = AuthenticatedCalculatorRouteImport.update({
   id: '/calculator',
   path: '/calculator',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedAgendaRoute = AuthenticatedAgendaRouteImport.update({
+  id: '/agenda',
+  path: '/agenda',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedProposalsIndexRoute =
@@ -145,6 +164,11 @@ const AuthenticatedProposalsIdRoute =
     path: '/proposals/$id',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedContractIdRoute = AuthenticatedContractIdRouteImport.update({
+  id: '/contract/$id',
+  path: '/contract/$id',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -154,16 +178,20 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
+  '/agenda': typeof AuthenticatedAgendaRoute
   '/calculator': typeof AuthenticatedCalculatorRoute
   '/catalog': typeof AuthenticatedCatalogRoute
   '/clients': typeof AuthenticatedClientsRoute
+  '/contracts': typeof AuthenticatedContractsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/history': typeof AuthenticatedHistoryRoute
   '/reports': typeof AuthenticatedReportsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/work-orders': typeof AuthenticatedWorkOrdersRoute
+  '/c/$contractSlug': typeof CContractSlugRoute
   '/os/$id': typeof OsIdRoute
   '/p/$slug': typeof PSlugRoute
+  '/contract/$id': typeof AuthenticatedContractIdRoute
   '/proposals/$id': typeof AuthenticatedProposalsIdRoute
   '/proposals/new': typeof AuthenticatedProposalsNewRoute
   '/p/$profileSlug/$proposalSlug': typeof PProfileSlugProposalSlugRoute
@@ -177,16 +205,20 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
+  '/agenda': typeof AuthenticatedAgendaRoute
   '/calculator': typeof AuthenticatedCalculatorRoute
   '/catalog': typeof AuthenticatedCatalogRoute
   '/clients': typeof AuthenticatedClientsRoute
+  '/contracts': typeof AuthenticatedContractsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/history': typeof AuthenticatedHistoryRoute
   '/reports': typeof AuthenticatedReportsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/work-orders': typeof AuthenticatedWorkOrdersRoute
+  '/c/$contractSlug': typeof CContractSlugRoute
   '/os/$id': typeof OsIdRoute
   '/p/$slug': typeof PSlugRoute
+  '/contract/$id': typeof AuthenticatedContractIdRoute
   '/proposals/$id': typeof AuthenticatedProposalsIdRoute
   '/proposals/new': typeof AuthenticatedProposalsNewRoute
   '/p/$profileSlug/$proposalSlug': typeof PProfileSlugProposalSlugRoute
@@ -202,16 +234,20 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
+  '/_authenticated/agenda': typeof AuthenticatedAgendaRoute
   '/_authenticated/calculator': typeof AuthenticatedCalculatorRoute
   '/_authenticated/catalog': typeof AuthenticatedCatalogRoute
   '/_authenticated/clients': typeof AuthenticatedClientsRoute
+  '/_authenticated/contracts': typeof AuthenticatedContractsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/history': typeof AuthenticatedHistoryRoute
   '/_authenticated/reports': typeof AuthenticatedReportsRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/work-orders': typeof AuthenticatedWorkOrdersRoute
+  '/c/$contractSlug': typeof CContractSlugRoute
   '/os/$id': typeof OsIdRoute
   '/p/$slug': typeof PSlugRoute
+  '/_authenticated/contract/$id': typeof AuthenticatedContractIdRoute
   '/_authenticated/proposals/$id': typeof AuthenticatedProposalsIdRoute
   '/_authenticated/proposals/new': typeof AuthenticatedProposalsNewRoute
   '/p/$profileSlug/$proposalSlug': typeof PProfileSlugProposalSlugRoute
@@ -227,16 +263,20 @@ export interface FileRouteTypes {
     | '/register'
     | '/reset-password'
     | '/terms'
+    | '/agenda'
     | '/calculator'
     | '/catalog'
     | '/clients'
+    | '/contracts'
     | '/dashboard'
     | '/history'
     | '/reports'
     | '/settings'
     | '/work-orders'
+    | '/c/$contractSlug'
     | '/os/$id'
     | '/p/$slug'
+    | '/contract/$id'
     | '/proposals/$id'
     | '/proposals/new'
     | '/p/$profileSlug/$proposalSlug'
@@ -250,16 +290,20 @@ export interface FileRouteTypes {
     | '/register'
     | '/reset-password'
     | '/terms'
+    | '/agenda'
     | '/calculator'
     | '/catalog'
     | '/clients'
+    | '/contracts'
     | '/dashboard'
     | '/history'
     | '/reports'
     | '/settings'
     | '/work-orders'
+    | '/c/$contractSlug'
     | '/os/$id'
     | '/p/$slug'
+    | '/contract/$id'
     | '/proposals/$id'
     | '/proposals/new'
     | '/p/$profileSlug/$proposalSlug'
@@ -274,16 +318,20 @@ export interface FileRouteTypes {
     | '/register'
     | '/reset-password'
     | '/terms'
+    | '/_authenticated/agenda'
     | '/_authenticated/calculator'
     | '/_authenticated/catalog'
     | '/_authenticated/clients'
+    | '/_authenticated/contracts'
     | '/_authenticated/dashboard'
     | '/_authenticated/history'
     | '/_authenticated/reports'
     | '/_authenticated/settings'
     | '/_authenticated/work-orders'
+    | '/c/$contractSlug'
     | '/os/$id'
     | '/p/$slug'
+    | '/_authenticated/contract/$id'
     | '/_authenticated/proposals/$id'
     | '/_authenticated/proposals/new'
     | '/p/$profileSlug/$proposalSlug'
@@ -299,6 +347,7 @@ export interface RootRouteChildren {
   RegisterRoute: typeof RegisterRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   TermsRoute: typeof TermsRoute
+  CContractSlugRoute: typeof CContractSlugRoute
   OsIdRoute: typeof OsIdRoute
   PSlugRoute: typeof PSlugRoute
   PProfileSlugProposalSlugRoute: typeof PProfileSlugProposalSlugRoute
@@ -376,6 +425,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/c/$contractSlug': {
+      id: '/c/$contractSlug'
+      path: '/c/$contractSlug'
+      fullPath: '/c/$contractSlug'
+      preLoaderRoute: typeof CContractSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/work-orders': {
       id: '/_authenticated/work-orders'
       path: '/work-orders'
@@ -411,6 +467,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/contracts': {
+      id: '/_authenticated/contracts'
+      path: '/contracts'
+      fullPath: '/contracts'
+      preLoaderRoute: typeof AuthenticatedContractsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/clients': {
       id: '/_authenticated/clients'
       path: '/clients'
@@ -430,6 +493,13 @@ declare module '@tanstack/react-router' {
       path: '/calculator'
       fullPath: '/calculator'
       preLoaderRoute: typeof AuthenticatedCalculatorRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/agenda': {
+      id: '/_authenticated/agenda'
+      path: '/agenda'
+      fullPath: '/agenda'
+      preLoaderRoute: typeof AuthenticatedAgendaRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/proposals/': {
@@ -460,32 +530,45 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProposalsIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/contract/$id': {
+      id: '/_authenticated/contract/$id'
+      path: '/contract/$id'
+      fullPath: '/contract/$id'
+      preLoaderRoute: typeof AuthenticatedContractIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
 interface AuthenticatedRouteChildren {
+  AuthenticatedAgendaRoute: typeof AuthenticatedAgendaRoute
   AuthenticatedCalculatorRoute: typeof AuthenticatedCalculatorRoute
   AuthenticatedCatalogRoute: typeof AuthenticatedCatalogRoute
   AuthenticatedClientsRoute: typeof AuthenticatedClientsRoute
+  AuthenticatedContractsRoute: typeof AuthenticatedContractsRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedHistoryRoute: typeof AuthenticatedHistoryRoute
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedWorkOrdersRoute: typeof AuthenticatedWorkOrdersRoute
+  AuthenticatedContractIdRoute: typeof AuthenticatedContractIdRoute
   AuthenticatedProposalsIdRoute: typeof AuthenticatedProposalsIdRoute
   AuthenticatedProposalsNewRoute: typeof AuthenticatedProposalsNewRoute
   AuthenticatedProposalsIndexRoute: typeof AuthenticatedProposalsIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedAgendaRoute: AuthenticatedAgendaRoute,
   AuthenticatedCalculatorRoute: AuthenticatedCalculatorRoute,
   AuthenticatedCatalogRoute: AuthenticatedCatalogRoute,
   AuthenticatedClientsRoute: AuthenticatedClientsRoute,
+  AuthenticatedContractsRoute: AuthenticatedContractsRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedHistoryRoute: AuthenticatedHistoryRoute,
   AuthenticatedReportsRoute: AuthenticatedReportsRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedWorkOrdersRoute: AuthenticatedWorkOrdersRoute,
+  AuthenticatedContractIdRoute: AuthenticatedContractIdRoute,
   AuthenticatedProposalsIdRoute: AuthenticatedProposalsIdRoute,
   AuthenticatedProposalsNewRoute: AuthenticatedProposalsNewRoute,
   AuthenticatedProposalsIndexRoute: AuthenticatedProposalsIndexRoute,
@@ -504,6 +587,7 @@ const rootRouteChildren: RootRouteChildren = {
   RegisterRoute: RegisterRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   TermsRoute: TermsRoute,
+  CContractSlugRoute: CContractSlugRoute,
   OsIdRoute: OsIdRoute,
   PSlugRoute: PSlugRoute,
   PProfileSlugProposalSlugRoute: PProfileSlugProposalSlugRoute,

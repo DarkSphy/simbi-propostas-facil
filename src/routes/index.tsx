@@ -335,7 +335,21 @@ function Pricing() {
 function CTA() {
   return (
     <section className="relative isolate overflow-hidden bg-primary px-6 py-24 text-center sm:py-32 lg:px-8">
-      <div className="mx-auto max-w-2xl">
+      {/* Animated Wave Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="absolute top-0 left-0 w-[200%] h-full animate-wave">
+          <svg viewBox="0 0 1200 400" preserveAspectRatio="none" className="w-full h-full text-white/5" fill="none" stroke="currentColor" strokeWidth="200" strokeLinecap="round">
+            <path d="M0,200 C300,100 300,300 600,200 C900,100 900,300 1200,200 C1500,100 1500,300 1800,200 C2100,100 2100,300 2400,200"></path>
+          </svg>
+        </div>
+        <div className="absolute top-10 left-0 w-[200%] h-full animate-wave-slow">
+          <svg viewBox="0 0 1200 400" preserveAspectRatio="none" className="w-full h-full text-white/10" fill="none" stroke="currentColor" strokeWidth="250" strokeLinecap="round">
+            <path d="M0,250 C300,150 300,350 600,250 C900,150 900,350 1200,250 C1500,150 1500,350 1800,250 C2100,150 2100,350 2400,250"></path>
+          </svg>
+        </div>
+      </div>
+
+      <div className="mx-auto max-w-2xl relative z-10">
         <h2 className="text-4xl font-bold tracking-tight text-primary-foreground sm:text-5xl">Pronto para impressionar?</h2>
         <p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-primary-foreground/80">
           Crie sua primeira proposta em menos de 2 minutos. Comece gratuitamente hoje mesmo.
