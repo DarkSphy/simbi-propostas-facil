@@ -17,6 +17,7 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PSlugRouteImport } from './routes/p.$slug'
 import { Route as OsIdRouteImport } from './routes/os.$id'
+import { Route as ApiOgRouteImport } from './routes/api/og'
 import { Route as AuthenticatedWorkOrdersRouteImport } from './routes/_authenticated/work-orders'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
@@ -67,6 +68,11 @@ const PSlugRoute = PSlugRouteImport.update({
 const OsIdRoute = OsIdRouteImport.update({
   id: '/os/$id',
   path: '/os/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiOgRoute = ApiOgRouteImport.update({
+  id: '/api/og',
+  path: '/api/og',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedWorkOrdersRoute = AuthenticatedWorkOrdersRouteImport.update({
@@ -148,6 +154,7 @@ export interface FileRoutesByFullPath {
   '/reports': typeof AuthenticatedReportsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/work-orders': typeof AuthenticatedWorkOrdersRoute
+  '/api/og': typeof ApiOgRoute
   '/os/$id': typeof OsIdRoute
   '/p/$slug': typeof PSlugRoute
   '/proposals/$id': typeof AuthenticatedProposalsIdRoute
@@ -169,6 +176,7 @@ export interface FileRoutesByTo {
   '/reports': typeof AuthenticatedReportsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/work-orders': typeof AuthenticatedWorkOrdersRoute
+  '/api/og': typeof ApiOgRoute
   '/os/$id': typeof OsIdRoute
   '/p/$slug': typeof PSlugRoute
   '/proposals/$id': typeof AuthenticatedProposalsIdRoute
@@ -192,6 +200,7 @@ export interface FileRoutesById {
   '/_authenticated/reports': typeof AuthenticatedReportsRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/work-orders': typeof AuthenticatedWorkOrdersRoute
+  '/api/og': typeof ApiOgRoute
   '/os/$id': typeof OsIdRoute
   '/p/$slug': typeof PSlugRoute
   '/_authenticated/proposals/$id': typeof AuthenticatedProposalsIdRoute
@@ -215,6 +224,7 @@ export interface FileRouteTypes {
     | '/reports'
     | '/settings'
     | '/work-orders'
+    | '/api/og'
     | '/os/$id'
     | '/p/$slug'
     | '/proposals/$id'
@@ -236,6 +246,7 @@ export interface FileRouteTypes {
     | '/reports'
     | '/settings'
     | '/work-orders'
+    | '/api/og'
     | '/os/$id'
     | '/p/$slug'
     | '/proposals/$id'
@@ -258,6 +269,7 @@ export interface FileRouteTypes {
     | '/_authenticated/reports'
     | '/_authenticated/settings'
     | '/_authenticated/work-orders'
+    | '/api/og'
     | '/os/$id'
     | '/p/$slug'
     | '/_authenticated/proposals/$id'
@@ -273,6 +285,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  ApiOgRoute: typeof ApiOgRoute
   OsIdRoute: typeof OsIdRoute
   PSlugRoute: typeof PSlugRoute
   PProfileSlugProposalSlugRoute: typeof PProfileSlugProposalSlugRoute
@@ -334,6 +347,13 @@ declare module '@tanstack/react-router' {
       path: '/os/$id'
       fullPath: '/os/$id'
       preLoaderRoute: typeof OsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/og': {
+      id: '/api/og'
+      path: '/api/og'
+      fullPath: '/api/og'
+      preLoaderRoute: typeof ApiOgRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/work-orders': {
@@ -462,6 +482,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  ApiOgRoute: ApiOgRoute,
   OsIdRoute: OsIdRoute,
   PSlugRoute: PSlugRoute,
   PProfileSlugProposalSlugRoute: PProfileSlugProposalSlugRoute,

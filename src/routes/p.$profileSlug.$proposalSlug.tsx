@@ -8,7 +8,39 @@ import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/p/$profileSlug/$proposalSlug")({
-  head: () => ({ meta: [{ title: "Proposta · Simbi" }] }),
+  loader: async ({ params }) => {
+    try {
+      const { data: prop } = await supabase.from("proposals")
+        .select("title,profiles(logo_url,theme_color)")
+        .eq("public_slug", params.proposalSlug).single();
+      return { prop };
+    } catch (e) {
+      return { prop: null };
+    }
+  },
+  head: ({ loaderData }) => {
+    if (!loaderData?.prop) return { meta: [{ title: "Proposta · Simbi" }] };
+    const title = loaderData.prop.title || "Orçamento";
+    const logo = (loaderData.prop.profiles as any)?.logo_url || "";
+    const color = ((loaderData.prop.profiles as any)?.theme_color || "#2563eb").replace("#", "%23");
+    
+    // As URLs de OG Image precisam ser absolutas na maioria das redes sociais,
+    // mas se não soubermos o domínio aqui, podemos tentar usar o caminho relativo,
+    // ou se o usuário compartilhar, a rede pode tentar resolver. Para ter certeza,
+    // o ideal seria passar o VITE_APP_URL, mas vamos usar um caminho absoluto baseado no host da req se possível.
+    // Como estamos no router, vamos mandar o caminho:
+    const ogImageUrl = `/api/og?title=${encodeURIComponent(title)}&logo=${encodeURIComponent(logo)}&color=${color}`;
+
+    return {
+      meta: [
+        { title: `${title} · Simbi` },
+        { property: "og:title", content: title },
+        { property: "og:image", content: ogImageUrl },
+        { property: "twitter:card", content: "summary_large_image" },
+        { property: "twitter:image", content: ogImageUrl },
+      ]
+    };
+  },
   component: PublicProposal,
 });
 

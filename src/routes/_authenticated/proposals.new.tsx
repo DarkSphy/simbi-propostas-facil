@@ -143,6 +143,13 @@ function NewProposal() {
         finalClientId = data.id;
       }
 
+      let validUntil = null;
+      if (validDays && !isNaN(Number(validDays))) {
+        const d = new Date();
+        d.setDate(d.getDate() + Number(validDays));
+        validUntil = d.toISOString();
+      }
+
       let propId = editingId;
       let pSlug = "";
 
