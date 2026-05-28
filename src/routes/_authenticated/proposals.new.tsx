@@ -19,7 +19,7 @@ export const Route = createFileRoute("/_authenticated/proposals/new")({
   component: NewProposal,
 });
 
-type Item = { description: string; quantity: number; unit_price: number; image_url?: string };
+type Item = { description: string; quantity: number | string; unit_price: number | string; image_url?: string };
 type Client = { id: string; name: string };
 
 function NewProposal() {
@@ -36,7 +36,7 @@ function NewProposal() {
   const [description, setDescription] = useState("");
   const [notes, setNotes] = useState("");
   const [validDays, setValidDays] = useState<string>("");
-  const [items, setItems] = useState<Item[]>([{ description: "", quantity: 1, unit_price: 0 }]);
+  const [items, setItems] = useState<Item[]>([{ description: "", quantity: 1, unit_price: "" }]);
   const [saving, setSaving] = useState(false);
   const [catalogOpen, setCatalogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -83,7 +83,7 @@ function NewProposal() {
   function updateItem(i: number, patch: Partial<Item>) {
     setItems(items.map((it, idx) => idx === i ? { ...it, ...patch } : it));
   }
-  function addItem() { setItems([...items, { description: "", quantity: 1, unit_price: 0 }]); }
+  function addItem() { setItems([...items, { description: "", quantity: 1, unit_price: "" }]); }
   function addFromCatalog(catItem: any) {
     const newIt = { description: catItem.name, quantity: 1, unit_price: catItem.unit_price, image_url: catItem.image_url };
     if (items.length === 1 && !items[0].description) {
@@ -235,8 +235,13 @@ function NewProposal() {
                 <div className="flex-1 space-y-2">
                   <Input placeholder="Descrição do item" value={it.description} onChange={(e) => updateItem(i, { description: e.target.value })} className="font-medium" />
                   <div className="flex gap-2">
-                    <Input className="w-20" type="number" min="0" step="0.01" placeholder="Qtd" value={it.quantity} onChange={(e) => updateItem(i, { quantity: +e.target.value })} />
-                    <Input className="flex-1" type="number" min="0" step="0.01" placeholder="Valor unitário" value={it.unit_price} onChange={(e) => updateItem(i, { unit_price: +e.target.value })} />
+                    <Input className="w-20" type="number" min="0" step="0.01" placeholder="Qtd" value={it.quantity} onChange={(e) => updateItem(i, { quantity: e.target.value === '' ? '' : +e.target.value })} />
+                    <div className="relative flex-1">
+                      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                        <span className="text-muted-foreground text-sm">R$</span>
+                      </div>
+                      <Input className="pl-8" type="number" min="0" step="0.01" placeholder="0,00" value={it.unit_price} onChange={(e) => updateItem(i, { unit_price: e.target.value === '' ? '' : +e.target.value })} />
+                    </div>
                   </div>
                 </div>
                 <div className="flex flex-col items-center gap-2">
