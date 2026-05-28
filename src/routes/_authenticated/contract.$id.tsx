@@ -5,7 +5,7 @@ import { useAuth } from "@/lib/auth";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Save, Printer, Share2, CheckCircle2, FileSignature, Edit } from "lucide-react";
+import { ArrowLeft, Save, Printer, Share2, CheckCircle2, FileSignature, Edit, Lock } from "lucide-react";
 import { toast } from "sonner";
 import { SignatureCanvas } from "@/components/SignatureCanvas";
 
@@ -128,10 +128,15 @@ function ContractDetailsPage() {
              contract.status === 'sent' ? <span className="text-blue-600">Aguardando Cliente</span> : 
              <span className="text-amber-600">Rascunho (Não enviado)</span>}
           </div>
-          {!isEditing && contract.status !== 'signed' && (
+          {!isEditing && !isSignedByPro && !isSignedByClient ? (
             <Button variant="secondary" size="sm" onClick={() => setIsEditing(true)} className="w-full sm:w-auto shadow-sm border border-border/50 bg-white hover:bg-gray-50 text-gray-700 font-semibold">
               <Edit className="mr-2 h-4 w-4 text-blue-500" /> Editar e Personalizar Texto
             </Button>
+          ) : (
+            <div className="flex items-center text-xs text-muted-foreground bg-muted/50 px-3 py-1.5 rounded-md border border-border/50">
+              <Lock className="mr-2 h-3 w-3" />
+              Documento bloqueado para edição (Assinaturas iniciadas)
+            </div>
           )}
         </div>
 

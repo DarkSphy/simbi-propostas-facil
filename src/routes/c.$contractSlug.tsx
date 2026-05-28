@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Printer, FileSignature, CheckCircle2 } from "lucide-react";
+import { Printer, FileSignature, CheckCircle2, Lock } from "lucide-react";
 import { toast } from "sonner";
 import { SignatureCanvas } from "@/components/SignatureCanvas";
 
@@ -85,10 +85,14 @@ function PublicContractPage() {
       <div className="mx-auto max-w-4xl bg-white shadow-xl sm:rounded-lg overflow-hidden print:shadow-none print:rounded-none">
         
         {/* Document Status Banner */}
-        {isSignedByClient && (
-          <div className="bg-emerald-50 border-b border-emerald-100 px-8 py-4 flex flex-col sm:flex-row items-center justify-center gap-3 text-emerald-800 print:hidden">
-            <CheckCircle2 className="h-6 w-6" />
-            <span className="font-semibold text-center">Este contrato foi assinado digitalmente e possui validade legal.</span>
+        {(isSignedByClient || isSignedByPro) && (
+          <div className={`${isSignedByClient ? 'bg-emerald-50 border-emerald-100 text-emerald-800' : 'bg-blue-50 border-blue-100 text-blue-800'} border-b px-8 py-4 flex flex-col sm:flex-row items-center justify-center gap-3 print:hidden`}>
+            {isSignedByClient ? <CheckCircle2 className="h-6 w-6 shrink-0" /> : <Lock className="h-6 w-6 shrink-0" />}
+            <span className="font-medium text-sm text-center">
+              {isSignedByClient 
+                ? "Este contrato foi assinado digitalmente e possui validade legal. O documento está bloqueado para edições." 
+                : "Este documento já recebeu assinaturas e está bloqueado para alterações, garantindo a segurança jurídica das partes."}
+            </span>
           </div>
         )}
 
