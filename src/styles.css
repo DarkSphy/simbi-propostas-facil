@@ -149,6 +149,17 @@
   .animate-marquee:hover {
     animation-play-state: paused;
   }
+
+  @keyframes wave {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
+  }
+  .animate-wave {
+    animation: wave 15s linear infinite;
+  }
+  .animate-wave-slow {
+    animation: wave 25s linear infinite reverse;
+  }
   
   .bg-hero-gradient {
     background: linear-gradient(180deg, oklch(0.18 0.02 260) 0%, oklch(0.22 0.05 260) 100%);

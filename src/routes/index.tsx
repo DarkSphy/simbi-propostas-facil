@@ -54,9 +54,23 @@ function Header() {
 function Hero() {
   return (
     <section className="bg-hero-gradient relative overflow-hidden pt-32 pb-24 lg:pt-48 lg:pb-32">
+      {/* Animated Wave Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20 mix-blend-screen">
+        <div className="absolute top-0 left-0 w-[200%] h-full flex flex-col justify-center animate-wave">
+          <svg viewBox="0 0 1200 400" preserveAspectRatio="none" className="w-full h-[600px] fill-primary/40">
+            <path d="M0,200 C300,100 300,300 600,200 C900,100 900,300 1200,200 C1500,100 1500,300 1800,200 C2100,100 2100,300 2400,200 L2400,0 L0,0 Z"></path>
+          </svg>
+        </div>
+        <div className="absolute top-10 left-0 w-[200%] h-full flex flex-col justify-center animate-wave-slow">
+          <svg viewBox="0 0 1200 400" preserveAspectRatio="none" className="w-full h-[600px] fill-primary/20">
+            <path d="M0,250 C300,150 300,350 600,250 C900,150 900,350 1200,250 C1500,150 1500,350 1800,250 C2100,150 2100,350 2400,250 L2400,0 L0,0 Z"></path>
+          </svg>
+        </div>
+      </div>
+
       {/* Decorative background glow */}
       <div className="absolute top-0 left-1/2 -ml-[30rem] w-[60rem] max-w-none -translate-y-1/2 sm:-ml-[40rem] sm:w-[80rem]">
-        <div className="aspect-[2/1] bg-gradient-to-b from-primary/50 to-transparent blur-3xl opacity-70 glow-primary" />
+        <div className="aspect-[2/1] bg-gradient-to-b from-primary/50 to-transparent blur-3xl opacity-50 glow-primary pointer-events-none" />
       </div>
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
