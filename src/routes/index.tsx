@@ -57,13 +57,13 @@ function Hero() {
       {/* Animated Wave Background */}
       <div className="absolute top-0 left-0 w-full h-[600px] overflow-hidden pointer-events-none">
         <div className="absolute top-0 left-0 w-[200%] h-full animate-wave">
-          <svg viewBox="0 0 1200 400" preserveAspectRatio="none" className="w-full h-full fill-blue-500/10">
-            <path d="M0,200 C300,100 300,300 600,200 C900,100 900,300 1200,200 C1500,100 1500,300 1800,200 C2100,100 2100,300 2400,200 L2400,400 L0,400 Z"></path>
+          <svg viewBox="0 0 1200 400" preserveAspectRatio="none" className="w-full h-full text-blue-500/10" fill="none" stroke="currentColor" strokeWidth="200" strokeLinecap="round">
+            <path d="M0,200 C300,100 300,300 600,200 C900,100 900,300 1200,200 C1500,100 1500,300 1800,200 C2100,100 2100,300 2400,200"></path>
           </svg>
         </div>
         <div className="absolute top-10 left-0 w-[200%] h-full animate-wave-slow">
-          <svg viewBox="0 0 1200 400" preserveAspectRatio="none" className="w-full h-full fill-cyan-400/10">
-            <path d="M0,250 C300,150 300,350 600,250 C900,150 900,350 1200,250 C1500,150 1500,350 1800,250 C2100,150 2100,350 2400,250 L2400,400 L0,400 Z"></path>
+          <svg viewBox="0 0 1200 400" preserveAspectRatio="none" className="w-full h-full text-cyan-400/10" fill="none" stroke="currentColor" strokeWidth="250" strokeLinecap="round">
+            <path d="M0,250 C300,150 300,350 600,250 C900,150 900,350 1200,250 C1500,150 1500,350 1800,250 C2100,150 2100,350 2400,250"></path>
           </svg>
         </div>
       </div>
