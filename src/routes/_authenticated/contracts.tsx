@@ -109,7 +109,7 @@ function ContractsPage() {
       content = content.replace(/{{PROPOSAL_TITLE}}/g, proposal.title || "Proposta");
       content = content.replace(/{{PROPOSAL_TOTAL}}/g, formatBRL(Number(proposal.total)));
 
-      const itemsList = proposal.proposal_items?.map((i: any) => `- ${i.quantity}x ${i.title} (${formatBRL(Number(i.price))})`).join("\\n") || "Nenhum item.";
+      const itemsList = proposal.proposal_items?.map((i: any) => `- ${i.quantity}x ${i.description} (${formatBRL(Number(i.unit_price))})`).join("\n") || "Nenhum item.";
       content = content.replace(/{{PROPOSAL_ITEMS}}/g, itemsList);
 
       const { data, error } = await supabase.from("contracts").insert({
