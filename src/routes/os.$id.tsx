@@ -83,8 +83,10 @@ function OSPrintPage() {
             <p className="text-sm font-semibold text-gray-500 mt-1">OS N°: {proposal.id.split("-")[0].toUpperCase()}</p>
           </div>
           <div className="text-right">
-            <h2 className="text-xl font-bold text-gray-900">{(proposal.profiles as any)?.full_name ?? "Profissional"}</h2>
-            <p className="text-sm text-gray-500 mt-1">Gerada em: {new Date().toLocaleDateString("pt-BR")}</p>
+            <h2 className="text-xl font-bold text-gray-900">{(proposal.profiles as any)?.full_name || (proposal.profiles as any)?.company_name || "Profissional"}</h2>
+            {(proposal.profiles as any)?.document && <p className="text-sm text-gray-600 mt-1">CPF/CNPJ: {(proposal.profiles as any).document}</p>}
+            {(proposal.profiles as any)?.address && <p className="text-sm text-gray-500 max-w-[250px] truncate ml-auto">{(proposal.profiles as any).address}</p>}
+            <p className="text-xs text-gray-400 mt-2">Gerada em: {new Date().toLocaleDateString("pt-BR")}</p>
           </div>
         </div>
 

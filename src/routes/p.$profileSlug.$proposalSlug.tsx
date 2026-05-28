@@ -184,6 +184,8 @@ function PublicProposal() {
             </div>
           )}
           <h2 className={`text-2xl font-extrabold tracking-tight ${profile.background_image_url ? 'text-card-foreground' : ''}`}>{profile.company_name ?? profile.full_name ?? "Profissional"}</h2>
+          {profile.document && <p className={`text-sm mt-1 opacity-80 font-medium ${profile.background_image_url ? 'text-card-foreground' : ''}`}>CPF/CNPJ: {profile.document}</p>}
+          {profile.address && <p className={`text-sm mt-1 opacity-70 max-w-[80%] mx-auto ${profile.background_image_url ? 'text-card-foreground' : ''}`}>{profile.address}</p>}
           <div className="mt-3 inline-flex items-center justify-center rounded-full bg-primary/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-primary border border-primary/20">
             Orçamento
           </div>
