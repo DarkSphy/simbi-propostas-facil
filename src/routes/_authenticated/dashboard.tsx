@@ -173,17 +173,24 @@ function Dashboard() {
 
       <OnboardingChecklist proposalsCount={proposals.length} catalogCount={catalogCount} />
 
-      {appointments.length > 0 && (
-        <div className="mb-8 overflow-hidden rounded-3xl border border-blue-200 bg-blue-50/50 p-6 shadow-sm">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
-            <div className="flex items-center gap-2">
-              <CalendarDays className="h-6 w-6 text-blue-500" />
-              <h2 className="text-lg font-bold text-blue-900">Sua Agenda</h2>
-            </div>
-            <Button size="sm" variant="outline" className="bg-white" asChild>
-              <Link to="/agenda">Abrir Calendário</Link>
-            </Button>
+      <div className="mb-8 overflow-hidden rounded-3xl border border-blue-200 bg-blue-50/50 p-6 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+          <div className="flex items-center gap-2">
+            <CalendarDays className="h-6 w-6 text-blue-500" />
+            <h2 className="text-lg font-bold text-blue-900">Sua Agenda</h2>
           </div>
+          <Button size="sm" variant="outline" className="bg-white" asChild>
+            <Link to="/agenda">Abrir Calendário</Link>
+          </Button>
+        </div>
+        
+        {appointments.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-6 text-center">
+            <CalendarDays className="h-10 w-10 text-blue-300 mb-2 opacity-50" />
+            <p className="text-sm font-medium text-blue-800">Sua agenda está livre!</p>
+            <p className="text-xs text-blue-600/70 mt-1 max-w-sm">Use o calendário para marcar datas de entrega, reuniões com clientes ou visitas técnicas.</p>
+          </div>
+        ) : (
           <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
             {appointments.map(apt => {
               const isTodayApt = apt.date === format(new Date(), "yyyy-MM-dd");
@@ -201,8 +208,8 @@ function Dashboard() {
               );
             })}
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {pendingFollowups.length > 0 && (
         <div className="mb-8 overflow-hidden rounded-3xl border border-amber-200 bg-amber-50/50 p-6 shadow-sm">

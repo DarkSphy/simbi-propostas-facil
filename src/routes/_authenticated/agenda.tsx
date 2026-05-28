@@ -104,8 +104,8 @@ function AgendaPage() {
         description: description || null,
         date: format(selectedDate, "yyyy-MM-dd"),
         time: time || null,
-        client_id: clientId || null,
-        proposal_id: proposalId || null,
+        client_id: clientId === "none" || !clientId ? null : clientId,
+        proposal_id: proposalId === "none" || !proposalId ? null : proposalId,
         status: "scheduled"
       });
       
@@ -380,7 +380,7 @@ function AgendaPage() {
                     <SelectValue placeholder="Selecione um cliente" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Nenhum cliente</SelectItem>
+                    <SelectItem value="none">Nenhum cliente</SelectItem>
                     {clients.map((c: any) => (
                       <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
                     ))}
@@ -388,7 +388,7 @@ function AgendaPage() {
                 </Select>
               </div>
 
-              {clientId && proposals.some((p:any) => p.clients?.name === clients.find((c:any) => c.id === clientId)?.name) && (
+              {clientId && clientId !== "none" && proposals.some((p:any) => p.clients?.name === clients.find((c:any) => c.id === clientId)?.name) && (
                 <div className="space-y-2">
                   <Label>Vincular a uma Proposta (Opcional)</Label>
                   <Select value={proposalId} onValueChange={setProposalId}>
@@ -396,7 +396,7 @@ function AgendaPage() {
                       <SelectValue placeholder="Selecione uma proposta" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Nenhuma proposta</SelectItem>
+                      <SelectItem value="none">Nenhuma proposta</SelectItem>
                       {proposals.filter((p:any) => p.clients?.name === clients.find((c:any) => c.id === clientId)?.name).map((p: any) => (
                         <SelectItem key={p.id} value={p.id}>{p.title}</SelectItem>
                       ))}
