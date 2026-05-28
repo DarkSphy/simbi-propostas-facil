@@ -25,7 +25,7 @@ function OSPrintPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("proposals")
-        .select("*, clients(*), profiles(*)")
+        .select("*, clients(*)")
         .eq("id", id)
         .eq("user_id", user?.id)
         .single();
@@ -34,6 +34,13 @@ function OSPrintPage() {
         throw error;
       }
       
+      // Fetch profile separately since there is no direct foreign key
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user?.id)
+        .single();
+      
       const { data: items, error: itemsError } = await supabase
         .from("proposal_items")
         .select("*")
@@ -41,7 +48,7 @@ function OSPrintPage() {
         .order("sort_order");
       if (itemsError) throw itemsError;
 
-      return { ...data, items };
+      return { ...data, profiles: profile, items };
     },
     enabled: !!user,
   });
