@@ -24,12 +24,9 @@ export const Route = createFileRoute("/p/$profileSlug/$proposalSlug")({
     const logo = (loaderData.prop.profiles as any)?.logo_url || "";
     const color = ((loaderData.prop.profiles as any)?.theme_color || "#2563eb").replace("#", "%23");
     
-    // As URLs de OG Image precisam ser absolutas na maioria das redes sociais,
-    // mas se não soubermos o domínio aqui, podemos tentar usar o caminho relativo,
-    // ou se o usuário compartilhar, a rede pode tentar resolver. Para ter certeza,
-    // o ideal seria passar o VITE_APP_URL, mas vamos usar um caminho absoluto baseado no host da req se possível.
-    // Como estamos no router, vamos mandar o caminho:
-    const ogImageUrl = `/api/og?title=${encodeURIComponent(title)}&logo=${encodeURIComponent(logo)}&color=${color}`;
+    // Como não temos mais a API local por conflitos de build, 
+    // vamos usar o placehold.co como fallback temporário para pelo menos mostrar o título com a cor
+    const ogImageUrl = `https://placehold.co/1200x630/${color.replace('%23', '')}/FFF?text=${encodeURIComponent(title)}`;
 
     return {
       meta: [
