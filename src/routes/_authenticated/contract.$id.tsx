@@ -5,7 +5,7 @@ import { useAuth } from "@/lib/auth";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Save, Printer, Share2, CheckCircle2, FileSignature } from "lucide-react";
+import { ArrowLeft, Save, Printer, Share2, CheckCircle2, FileSignature, Edit } from "lucide-react";
 import { toast } from "sonner";
 import { SignatureCanvas } from "@/components/SignatureCanvas";
 
@@ -121,13 +121,18 @@ function ContractDetailsPage() {
       <div className="bg-white border border-border shadow-sm rounded-xl overflow-hidden print:border-none print:shadow-none">
         
         {/* Status Bar */}
-        <div className="bg-muted/30 px-6 py-3 border-b border-border flex items-center gap-4 text-sm print:hidden">
+        <div className="bg-muted/30 px-6 py-3 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-sm print:hidden">
           <div className="flex items-center gap-2 font-medium">
             Status: 
             {contract.status === 'signed' ? <span className="text-emerald-600 flex items-center"><CheckCircle2 className="h-4 w-4 mr-1" /> Assinado</span> : 
              contract.status === 'sent' ? <span className="text-blue-600">Aguardando Cliente</span> : 
              <span className="text-amber-600">Rascunho (Não enviado)</span>}
           </div>
+          {!isEditing && contract.status !== 'signed' && (
+            <Button variant="secondary" size="sm" onClick={() => setIsEditing(true)} className="w-full sm:w-auto shadow-sm border border-border/50 bg-white hover:bg-gray-50 text-gray-700 font-semibold">
+              <Edit className="mr-2 h-4 w-4 text-blue-500" /> Editar e Personalizar Texto
+            </Button>
+          )}
         </div>
 
         <div className="p-8 sm:p-12 print:p-0">
@@ -147,10 +152,6 @@ function ContractDetailsPage() {
           ) : (
             <div className="prose prose-sm sm:prose-base max-w-none text-gray-800">
               <div className="whitespace-pre-wrap leading-relaxed text-justify" dangerouslySetInnerHTML={{ __html: content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
-              
-              <div className="mt-6 flex justify-end print:hidden">
-                <Button variant="outline" size="sm" onClick={() => setIsEditing(true)}>Editar Texto do Contrato</Button>
-              </div>
             </div>
           )}
 
