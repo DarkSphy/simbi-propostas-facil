@@ -158,24 +158,7 @@ function OSPrintPage() {
             <div className="w-full h-32 border-2 border-dashed border-gray-300 rounded-lg"></div>
           </div>
 
-          {/* Assinaturas */}
-          <div className="mt-16 grid grid-cols-2 gap-16 pt-8">
-            <div className="text-center">
-              <div className="border-t border-gray-900 pt-2">
-                <p className="font-bold text-sm text-gray-900">{(proposal.profiles as any)?.full_name ?? "Profissional Responsável"}</p>
-                <p className="text-xs text-gray-500">Assinatura do Profissional</p>
-                <p className="text-xs text-gray-400 mt-4">Data: ___/___/20___</p>
-              </div>
-            </div>
-            <div className="text-center">
-              <div className="border-t border-gray-900 pt-2">
-                <p className="font-bold text-sm text-gray-900">{(proposal.clients as any)?.name ?? "Cliente"}</p>
-                <p className="text-xs text-gray-500">Aceite e Aprovação</p>
-                <p className="text-xs text-gray-400 mt-4">Data: ___/___/20___</p>
-              </div>
-            </div>
           </div>
-
         </div>
       </div>
     </div>
