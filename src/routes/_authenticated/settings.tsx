@@ -18,6 +18,8 @@ function SettingsPage() {
   const { user } = useAuth();
   const [fullName, setFullName] = useState(""); 
   const [companyName, setCompanyName] = useState(""); 
+  const [document, setDocument] = useState("");
+  const [address, setAddress] = useState("");
   const [profileSlug, setProfileSlug] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [logoUrl, setLogoUrl] = useState("");
@@ -45,6 +47,8 @@ function SettingsPage() {
       if (data) { 
         setFullName(data.full_name ?? ""); 
         setCompanyName(data.company_name ?? ""); 
+        setDocument(data.document ?? "");
+        setAddress(data.address ?? "");
         setProfileSlug(data.profile_slug ?? "");
         setWhatsapp(data.whatsapp ?? ""); 
         setLogoUrl(data.logo_url ?? "");
@@ -111,6 +115,8 @@ function SettingsPage() {
       id: user.id, 
       full_name: fullName, 
       company_name: companyName, 
+      document,
+      address,
       profile_slug: profileSlug ? profileSlug.toLowerCase().trim() : null,
       whatsapp, 
       logo_url: logoUrl,
@@ -174,9 +180,11 @@ function SettingsPage() {
         <div className="grid gap-6 sm:grid-cols-2">
           <div className="space-y-2"><Label className="text-muted-foreground font-semibold">Nome</Label><Input value={fullName} onChange={(e) => setFullName(e.target.value)} /></div>
           <div className="space-y-2"><Label className="text-muted-foreground font-semibold">Empresa / marca</Label><Input value={companyName} onChange={(e) => setCompanyName(e.target.value)} placeholder="Aparece nas propostas" /></div>
-          <div className="space-y-2"><Label className="text-muted-foreground font-semibold">URL Personalizada / Slug</Label><Input value={profileSlug} onChange={(e) => setProfileSlug(e.target.value)} placeholder="ex: marina-arquiteta" /><p className="text-[11px] text-muted-foreground mt-1">Ex: simbi.com/p/<b>{profileSlug || 'seu-nome'}</b>/codigo</p></div>
+          <div className="space-y-2"><Label className="text-muted-foreground font-semibold">CPF ou CNPJ</Label><Input value={document} onChange={(e) => setDocument(e.target.value)} placeholder="000.000.000-00" /></div>
           <div className="space-y-2"><Label className="text-muted-foreground font-semibold">WhatsApp</Label><Input value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} placeholder="(11) 99999-9999" /></div>
-          <div className="space-y-2 sm:col-span-2"><Label className="text-muted-foreground font-semibold">E-mail</Label><Input value={user?.email ?? ""} disabled /></div>
+          <div className="space-y-2 sm:col-span-2"><Label className="text-muted-foreground font-semibold">Endereço Completo</Label><Input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Rua das Flores, 123 - São Paulo, SP" /></div>
+          <div className="space-y-2"><Label className="text-muted-foreground font-semibold">URL Personalizada / Slug</Label><Input value={profileSlug} onChange={(e) => setProfileSlug(e.target.value)} placeholder="ex: marina-arquiteta" /><p className="text-[11px] text-muted-foreground mt-1">Ex: simbi.com/p/<b>{profileSlug || 'seu-nome'}</b>/codigo</p></div>
+          <div className="space-y-2"><Label className="text-muted-foreground font-semibold">E-mail</Label><Input value={user?.email ?? ""} disabled /></div>
         </div>
 
         <hr className="border-border" />

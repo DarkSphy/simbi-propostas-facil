@@ -157,8 +157,6 @@ function OSPrintPage() {
             <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">Observações Técnicas / Relatório</h3>
             <div className="w-full h-32 border-2 border-dashed border-gray-300 rounded-lg"></div>
           </div>
-
-          </div>
         </div>
       </div>
     </div>
