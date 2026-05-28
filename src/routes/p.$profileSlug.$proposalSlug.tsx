@@ -19,14 +19,8 @@ export const Route = createFileRoute("/p/$profileSlug/$proposalSlug")({
     }
   },
   head: ({ loaderData }) => {
-    if (!loaderData?.prop) return { meta: [{ title: "Proposta · Simbi" }] };
-    const title = loaderData.prop.title || "Orçamento";
-    const logo = (loaderData.prop.profiles as any)?.logo_url || "";
-    const color = ((loaderData.prop.profiles as any)?.theme_color || "#2563eb").replace("#", "%23");
-    
-    // Como não temos mais a API local por conflitos de build, 
-    // vamos usar o placehold.co como fallback temporário para pelo menos mostrar o título com a cor
-    const ogImageUrl = `https://placehold.co/1200x630/${color.replace('%23', '')}/FFF?text=${encodeURIComponent(title)}`;
+    const title = loaderData?.prop?.title || "Orçamento";
+    const ogImageUrl = `https://simbi-propostas-facil.lovable.app/og-proposal.png`;
 
     return {
       meta: [
