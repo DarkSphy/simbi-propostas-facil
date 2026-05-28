@@ -3,7 +3,7 @@ import {
   Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarHeader,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar,
 } from "@/components/ui/sidebar";
-import { LayoutDashboard, FileText, FileSignature, Users, History, Settings, LogOut, Package, ClipboardList, Calculator, BarChart3 } from "lucide-react";
+import { LayoutDashboard, FileText, FileSignature, Users, History, Settings, LogOut, Package, ClipboardList, Calculator, BarChart3, CalendarDays, Grid } from "lucide-react";
 import { Logo } from "./Logo";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
@@ -12,9 +12,10 @@ const items = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Propostas", url: "/proposals", icon: FileText },
   { title: "Contratos", url: "/contracts", icon: FileSignature },
-  { title: "Catálogo", url: "/catalog", icon: Package },
+  { title: "Ordem de Serviço", url: "/os", icon: ClipboardList },
+  { title: "Agenda", url: "/agenda", icon: CalendarDays },
   { title: "Clientes", url: "/clients", icon: Users },
-  { title: "Gerar OS", url: "/work-orders", icon: ClipboardList },
+  { title: "Catálogo", url: "/catalog", icon: Grid },
   { title: "Calculadora", url: "/calculator", icon: Calculator },
   { title: "Relatórios", url: "/reports", icon: BarChart3 },
   { title: "Histórico", url: "/history", icon: History },

@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Plus, FileText, CheckCircle2, Percent, DollarSign } from "lucide-react";
+import { Plus, FileText, CheckCircle2, Percent, DollarSign, CalendarDays } from "lucide-react";
 import { formatBRL, statusBadge } from "@/lib/format";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from "recharts";
 import { format, parseISO, subMonths, differenceInDays } from "date-fns";
@@ -51,6 +51,25 @@ function Dashboard() {
     queryFn: async () => {
       const { data } = await supabase.from("profiles").select("profile_slug").eq("id", user?.id).single();
       return data;
+    },
+    enabled: !!user,
+  });
+
+  const { data: appointments = [] } = useQuery({
+    queryKey: ["appointments", "dashboard", user?.id],
+    queryFn: async () => {
+      const todayStr = format(new Date(), "yyyy-MM-dd");
+      const { data, error } = await supabase
+        .from("appointments")
+        .select("id, title, date, time, status, clients(name)")
+        .eq("user_id", user?.id)
+        .gte("date", todayStr)
+        .neq("status", "canceled")
+        .order("date", { ascending: true })
+        .order("time", { ascending: true })
+        .limit(3);
+      if (error) throw error;
+      return data || [];
     },
     enabled: !!user,
   });
@@ -153,6 +172,37 @@ function Dashboard() {
       </div>
 
       <OnboardingChecklist proposalsCount={proposals.length} catalogCount={catalogCount} />
+
+      {appointments.length > 0 && (
+        <div className="mb-8 overflow-hidden rounded-3xl border border-blue-200 bg-blue-50/50 p-6 shadow-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+            <div className="flex items-center gap-2">
+              <CalendarDays className="h-6 w-6 text-blue-500" />
+              <h2 className="text-lg font-bold text-blue-900">Sua Agenda</h2>
+            </div>
+            <Button size="sm" variant="outline" className="bg-white" asChild>
+              <Link to="/agenda">Abrir Calendário</Link>
+            </Button>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
+            {appointments.map(apt => {
+              const isTodayApt = apt.date === format(new Date(), "yyyy-MM-dd");
+              return (
+                <div key={apt.id} className={`p-4 rounded-xl border bg-white flex flex-col justify-between gap-2 ${isTodayApt ? 'border-blue-300 ring-1 ring-blue-100 shadow-md' : 'border-blue-100'}`}>
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      {isTodayApt && <span className="bg-red-100 text-red-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider animate-pulse">Hoje</span>}
+                      <span className="text-xs font-semibold text-blue-600">{format(parseISO(apt.date), "dd 'de' MMM", { locale: ptBR })} {apt.time && `às ${apt.time.substring(0,5)}`}</span>
+                    </div>
+                    <div className="font-semibold text-gray-900 line-clamp-1" title={apt.title}>{apt.title}</div>
+                    {(apt.clients as any)?.name && <div className="text-xs text-gray-500 mt-1 line-clamp-1">Cliente: {(apt.clients as any).name}</div>}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {pendingFollowups.length > 0 && (
         <div className="mb-8 overflow-hidden rounded-3xl border border-amber-200 bg-amber-50/50 p-6 shadow-sm">
