@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -25,6 +25,7 @@ type Client = { id: string; name: string };
 function NewProposal() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [clients, setClients] = useState<Client[]>([]);
   const [clientId, setClientId] = useState<string>("");
   const [newClientName, setNewClientName] = useState("");
@@ -41,7 +42,7 @@ function NewProposal() {
   const [editingId, setEditingId] = useState<string | null>(null);
 
   useEffect(() => {
-    supabase.from("clients").select("id,name").order("name").then(({ data }) => setClients(data ?? []));
+    if (user) supabase.from("clients").select("id,name").eq("user_id", user.id).order("name").then(({ data }) => setClients(data ?? []));
     
     // Check for duplicate or edit actions
     const cloneStr = sessionStorage.getItem("cloneProposal");
@@ -70,10 +71,11 @@ function NewProposal() {
   const { data: catalogItems = [] } = useQuery({
     queryKey: ["catalog-items"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("catalog_items").select("*").order("name");
+      const { data, error } = await supabase.from("catalog_items").select("*").eq("user_id", user?.id).order("name");
       if (error) throw error;
       return data ?? [];
-    }
+    },
+    enabled: !!user
   });
 
   const total = items.reduce((s, it) => s + Number(it.quantity || 0) * Number(it.unit_price || 0), 0);
@@ -171,6 +173,7 @@ function NewProposal() {
         if (iErr) throw iErr;
       }
       
+      queryClient.invalidateQueries({ queryKey: ["proposals"] });
       toast.success(editingId ? "Proposta atualizada!" : "Proposta criada!");
       navigate({ to: "/proposals/$id", params: { id: pSlug } });
     } catch (e: any) {

@@ -39,6 +39,7 @@ function Catalog() {
     queryFn: async () => {
       const { data, error } = await supabase.from("catalog_items")
         .select("*")
+        .eq("user_id", user?.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data ?? [];
@@ -75,6 +76,7 @@ function Catalog() {
       }
       resetForm();
       qc.invalidateQueries({ queryKey: ["catalog-items"] });
+      qc.invalidateQueries({ queryKey: ["catalogCount"] });
     } catch (e: any) {
       toast.error(e.message || "Erro ao salvar.");
     } finally {
@@ -108,6 +110,7 @@ function Catalog() {
     if (error) { toast.error(error.message); return; }
     toast.success("Item excluído.");
     qc.invalidateQueries({ queryKey: ["catalog-items"] });
+    qc.invalidateQueries({ queryKey: ["catalogCount"] });
   }
 
   async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {

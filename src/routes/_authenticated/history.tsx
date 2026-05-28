@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/auth";
 import { formatBRL, statusBadge } from "@/lib/format";
 import { History, Search, Copy, Pencil } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -15,6 +16,7 @@ export const Route = createFileRoute("/_authenticated/history")({
 });
 
 function HistoryPage() {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [actionLoading, setActionLoading] = useState<string | null>(null);
@@ -38,9 +40,11 @@ function HistoryPage() {
     queryFn: async () => {
       const { data, error } = await supabase.from("proposals")
         .select("id,title,total,status,created_at,clients(name)")
+        .eq("user_id", user?.id)
         .order("created_at", { ascending: false });
       if (error) throw error; return data ?? [];
     },
+    enabled: !!user,
   });
 
   const filteredProposals = proposals.filter((p: any) => {

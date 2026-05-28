@@ -24,7 +24,9 @@ function ProposalDetail() {
     queryFn: async () => {
       const { data, error } = await supabase.from("proposals")
         .select("*,clients(name,phone),proposal_items(*)")
-        .eq("id", id).single();
+        .eq("id", id)
+        .eq("user_id", user?.id)
+        .single();
       if (error) throw error;
       
       let profileSlug = null;
@@ -34,6 +36,7 @@ function ProposalDetail() {
       }
       return { ...data, profile_slug: profileSlug };
     },
+    enabled: !!user,
   });
 
   if (isLoading || !data) return <div className="p-8 text-sm text-muted-foreground">Carregando…</div>;

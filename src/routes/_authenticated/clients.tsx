@@ -30,7 +30,10 @@ function ClientsPage() {
   const { data: clients = [], isLoading } = useQuery({
     queryKey: ["clients"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("clients").select("*, proposals(status, created_at)").order("created_at", { ascending: false });
+      const { data, error } = await supabase.from("clients")
+        .select("*, proposals(status, created_at)")
+        .eq("user_id", user?.id)
+        .order("created_at", { ascending: false });
       if (error) throw error; return data ?? [];
     },
   });

@@ -24,7 +24,9 @@ function Dashboard() {
   const { data: catalogCount = 0 } = useQuery({
     queryKey: ["catalogCount", user?.id],
     queryFn: async () => {
-      const { count } = await supabase.from("catalog").select("*", { count: "exact", head: true });
+      const { count } = await supabase.from("catalog_items")
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", user?.id);
       return count ?? 0;
     },
     enabled: !!user,
@@ -35,6 +37,7 @@ function Dashboard() {
     queryFn: async () => {
       const { data, error } = await supabase.from("proposals")
         .select("id,title,total,status,created_at,client_id,clients(name)")
+        .eq("user_id", user?.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data ?? [];
@@ -44,10 +47,10 @@ function Dashboard() {
 
   // Onboarding: Inject dummy data if it's a new account
   useEffect(() => {
-    if (!user || isLoadingProposals || proposals.length > 0 || sessionStorage.getItem("dummyInjected")) return;
+    if (!user || isLoadingProposals || proposals.length > 0 || localStorage.getItem("dummyInjected_" + user.id)) return;
     
     async function injectDummyData() {
-      sessionStorage.setItem("dummyInjected", "true");
+      localStorage.setItem("dummyInjected_" + user.id, "true");
       try {
         const { data: client } = await supabase.from("clients").insert({
           user_id: user!.id, name: "João Silva (Exemplo)", email: "joao.exemplo@email.com",

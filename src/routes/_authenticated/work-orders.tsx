@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/auth";
 import { formatBRL, statusBadge } from "@/lib/format";
 import { ClipboardList, Printer, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -13,6 +14,7 @@ export const Route = createFileRoute("/_authenticated/work-orders")({
 });
 
 function WorkOrdersPage() {
+  const { user } = useAuth();
   const [search, setSearch] = useState("");
 
   const { data: proposals = [] } = useQuery({
@@ -21,9 +23,11 @@ function WorkOrdersPage() {
       const { data, error } = await supabase.from("proposals")
         .select("id,title,total,status,created_at,clients(name)")
         .eq("status", "in_progress")
+        .eq("user_id", user?.id)
         .order("created_at", { ascending: false });
       if (error) throw error; return data ?? [];
     },
+    enabled: !!user,
   });
 
   const filteredProposals = proposals.filter((p: any) => {
