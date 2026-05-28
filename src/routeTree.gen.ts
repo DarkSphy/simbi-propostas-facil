@@ -16,11 +16,16 @@ import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PSlugRouteImport } from './routes/p.$slug'
+import { Route as OsIdRouteImport } from './routes/os.$id'
+import { Route as AuthenticatedWorkOrdersRouteImport } from './routes/_authenticated/work-orders'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
-import { Route as AuthenticatedProposalsRouteImport } from './routes/_authenticated/proposals'
 import { Route as AuthenticatedHistoryRouteImport } from './routes/_authenticated/history'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedClientsRouteImport } from './routes/_authenticated/clients'
+import { Route as AuthenticatedCatalogRouteImport } from './routes/_authenticated/catalog'
+import { Route as AuthenticatedCalculatorRouteImport } from './routes/_authenticated/calculator'
+import { Route as AuthenticatedProposalsIndexRouteImport } from './routes/_authenticated/proposals.index'
+import { Route as PProfileSlugProposalSlugRouteImport } from './routes/p.$profileSlug.$proposalSlug'
 import { Route as AuthenticatedProposalsNewRouteImport } from './routes/_authenticated/proposals.new'
 import { Route as AuthenticatedProposalsIdRouteImport } from './routes/_authenticated/proposals.$id'
 
@@ -58,14 +63,19 @@ const PSlugRoute = PSlugRouteImport.update({
   path: '/p/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OsIdRoute = OsIdRouteImport.update({
+  id: '/os/$id',
+  path: '/os/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedWorkOrdersRoute = AuthenticatedWorkOrdersRouteImport.update({
+  id: '/work-orders',
+  path: '/work-orders',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedProposalsRoute = AuthenticatedProposalsRouteImport.update({
-  id: '/proposals',
-  path: '/proposals',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedHistoryRoute = AuthenticatedHistoryRouteImport.update({
@@ -83,17 +93,39 @@ const AuthenticatedClientsRoute = AuthenticatedClientsRouteImport.update({
   path: '/clients',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedCatalogRoute = AuthenticatedCatalogRouteImport.update({
+  id: '/catalog',
+  path: '/catalog',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedCalculatorRoute = AuthenticatedCalculatorRouteImport.update({
+  id: '/calculator',
+  path: '/calculator',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedProposalsIndexRoute =
+  AuthenticatedProposalsIndexRouteImport.update({
+    id: '/proposals/',
+    path: '/proposals/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const PProfileSlugProposalSlugRoute =
+  PProfileSlugProposalSlugRouteImport.update({
+    id: '/p/$profileSlug/$proposalSlug',
+    path: '/p/$profileSlug/$proposalSlug',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedProposalsNewRoute =
   AuthenticatedProposalsNewRouteImport.update({
-    id: '/new',
-    path: '/new',
-    getParentRoute: () => AuthenticatedProposalsRoute,
+    id: '/proposals/new',
+    path: '/proposals/new',
+    getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedProposalsIdRoute =
   AuthenticatedProposalsIdRouteImport.update({
-    id: '/$id',
-    path: '/$id',
-    getParentRoute: () => AuthenticatedProposalsRoute,
+    id: '/proposals/$id',
+    path: '/proposals/$id',
+    getParentRoute: () => AuthenticatedRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -102,14 +134,19 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/calculator': typeof AuthenticatedCalculatorRoute
+  '/catalog': typeof AuthenticatedCatalogRoute
   '/clients': typeof AuthenticatedClientsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/history': typeof AuthenticatedHistoryRoute
-  '/proposals': typeof AuthenticatedProposalsRouteWithChildren
   '/settings': typeof AuthenticatedSettingsRoute
+  '/work-orders': typeof AuthenticatedWorkOrdersRoute
+  '/os/$id': typeof OsIdRoute
   '/p/$slug': typeof PSlugRoute
   '/proposals/$id': typeof AuthenticatedProposalsIdRoute
   '/proposals/new': typeof AuthenticatedProposalsNewRoute
+  '/p/$profileSlug/$proposalSlug': typeof PProfileSlugProposalSlugRoute
+  '/proposals/': typeof AuthenticatedProposalsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -117,14 +154,19 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/calculator': typeof AuthenticatedCalculatorRoute
+  '/catalog': typeof AuthenticatedCatalogRoute
   '/clients': typeof AuthenticatedClientsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/history': typeof AuthenticatedHistoryRoute
-  '/proposals': typeof AuthenticatedProposalsRouteWithChildren
   '/settings': typeof AuthenticatedSettingsRoute
+  '/work-orders': typeof AuthenticatedWorkOrdersRoute
+  '/os/$id': typeof OsIdRoute
   '/p/$slug': typeof PSlugRoute
   '/proposals/$id': typeof AuthenticatedProposalsIdRoute
   '/proposals/new': typeof AuthenticatedProposalsNewRoute
+  '/p/$profileSlug/$proposalSlug': typeof PProfileSlugProposalSlugRoute
+  '/proposals': typeof AuthenticatedProposalsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -134,14 +176,19 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/_authenticated/calculator': typeof AuthenticatedCalculatorRoute
+  '/_authenticated/catalog': typeof AuthenticatedCatalogRoute
   '/_authenticated/clients': typeof AuthenticatedClientsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/history': typeof AuthenticatedHistoryRoute
-  '/_authenticated/proposals': typeof AuthenticatedProposalsRouteWithChildren
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/work-orders': typeof AuthenticatedWorkOrdersRoute
+  '/os/$id': typeof OsIdRoute
   '/p/$slug': typeof PSlugRoute
   '/_authenticated/proposals/$id': typeof AuthenticatedProposalsIdRoute
   '/_authenticated/proposals/new': typeof AuthenticatedProposalsNewRoute
+  '/p/$profileSlug/$proposalSlug': typeof PProfileSlugProposalSlugRoute
+  '/_authenticated/proposals/': typeof AuthenticatedProposalsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -151,14 +198,19 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/reset-password'
+    | '/calculator'
+    | '/catalog'
     | '/clients'
     | '/dashboard'
     | '/history'
-    | '/proposals'
     | '/settings'
+    | '/work-orders'
+    | '/os/$id'
     | '/p/$slug'
     | '/proposals/$id'
     | '/proposals/new'
+    | '/p/$profileSlug/$proposalSlug'
+    | '/proposals/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -166,14 +218,19 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/reset-password'
+    | '/calculator'
+    | '/catalog'
     | '/clients'
     | '/dashboard'
     | '/history'
-    | '/proposals'
     | '/settings'
+    | '/work-orders'
+    | '/os/$id'
     | '/p/$slug'
     | '/proposals/$id'
     | '/proposals/new'
+    | '/p/$profileSlug/$proposalSlug'
+    | '/proposals'
   id:
     | '__root__'
     | '/'
@@ -182,14 +239,19 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/reset-password'
+    | '/_authenticated/calculator'
+    | '/_authenticated/catalog'
     | '/_authenticated/clients'
     | '/_authenticated/dashboard'
     | '/_authenticated/history'
-    | '/_authenticated/proposals'
     | '/_authenticated/settings'
+    | '/_authenticated/work-orders'
+    | '/os/$id'
     | '/p/$slug'
     | '/_authenticated/proposals/$id'
     | '/_authenticated/proposals/new'
+    | '/p/$profileSlug/$proposalSlug'
+    | '/_authenticated/proposals/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -199,7 +261,9 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  OsIdRoute: typeof OsIdRoute
   PSlugRoute: typeof PSlugRoute
+  PProfileSlugProposalSlugRoute: typeof PProfileSlugProposalSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -253,18 +317,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/os/$id': {
+      id: '/os/$id'
+      path: '/os/$id'
+      fullPath: '/os/$id'
+      preLoaderRoute: typeof OsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/work-orders': {
+      id: '/_authenticated/work-orders'
+      path: '/work-orders'
+      fullPath: '/work-orders'
+      preLoaderRoute: typeof AuthenticatedWorkOrdersRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/settings': {
       id: '/_authenticated/settings'
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/proposals': {
-      id: '/_authenticated/proposals'
-      path: '/proposals'
-      fullPath: '/proposals'
-      preLoaderRoute: typeof AuthenticatedProposalsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/history': {
@@ -288,53 +359,75 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedClientsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/catalog': {
+      id: '/_authenticated/catalog'
+      path: '/catalog'
+      fullPath: '/catalog'
+      preLoaderRoute: typeof AuthenticatedCatalogRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/calculator': {
+      id: '/_authenticated/calculator'
+      path: '/calculator'
+      fullPath: '/calculator'
+      preLoaderRoute: typeof AuthenticatedCalculatorRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/proposals/': {
+      id: '/_authenticated/proposals/'
+      path: '/proposals'
+      fullPath: '/proposals/'
+      preLoaderRoute: typeof AuthenticatedProposalsIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/p/$profileSlug/$proposalSlug': {
+      id: '/p/$profileSlug/$proposalSlug'
+      path: '/p/$profileSlug/$proposalSlug'
+      fullPath: '/p/$profileSlug/$proposalSlug'
+      preLoaderRoute: typeof PProfileSlugProposalSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/proposals/new': {
       id: '/_authenticated/proposals/new'
-      path: '/new'
+      path: '/proposals/new'
       fullPath: '/proposals/new'
       preLoaderRoute: typeof AuthenticatedProposalsNewRouteImport
-      parentRoute: typeof AuthenticatedProposalsRoute
+      parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/proposals/$id': {
       id: '/_authenticated/proposals/$id'
-      path: '/$id'
+      path: '/proposals/$id'
       fullPath: '/proposals/$id'
       preLoaderRoute: typeof AuthenticatedProposalsIdRouteImport
-      parentRoute: typeof AuthenticatedProposalsRoute
+      parentRoute: typeof AuthenticatedRoute
     }
   }
 }
 
-interface AuthenticatedProposalsRouteChildren {
-  AuthenticatedProposalsIdRoute: typeof AuthenticatedProposalsIdRoute
-  AuthenticatedProposalsNewRoute: typeof AuthenticatedProposalsNewRoute
-}
-
-const AuthenticatedProposalsRouteChildren: AuthenticatedProposalsRouteChildren =
-  {
-    AuthenticatedProposalsIdRoute: AuthenticatedProposalsIdRoute,
-    AuthenticatedProposalsNewRoute: AuthenticatedProposalsNewRoute,
-  }
-
-const AuthenticatedProposalsRouteWithChildren =
-  AuthenticatedProposalsRoute._addFileChildren(
-    AuthenticatedProposalsRouteChildren,
-  )
-
 interface AuthenticatedRouteChildren {
+  AuthenticatedCalculatorRoute: typeof AuthenticatedCalculatorRoute
+  AuthenticatedCatalogRoute: typeof AuthenticatedCatalogRoute
   AuthenticatedClientsRoute: typeof AuthenticatedClientsRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedHistoryRoute: typeof AuthenticatedHistoryRoute
-  AuthenticatedProposalsRoute: typeof AuthenticatedProposalsRouteWithChildren
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedWorkOrdersRoute: typeof AuthenticatedWorkOrdersRoute
+  AuthenticatedProposalsIdRoute: typeof AuthenticatedProposalsIdRoute
+  AuthenticatedProposalsNewRoute: typeof AuthenticatedProposalsNewRoute
+  AuthenticatedProposalsIndexRoute: typeof AuthenticatedProposalsIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedCalculatorRoute: AuthenticatedCalculatorRoute,
+  AuthenticatedCatalogRoute: AuthenticatedCatalogRoute,
   AuthenticatedClientsRoute: AuthenticatedClientsRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedHistoryRoute: AuthenticatedHistoryRoute,
-  AuthenticatedProposalsRoute: AuthenticatedProposalsRouteWithChildren,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedWorkOrdersRoute: AuthenticatedWorkOrdersRoute,
+  AuthenticatedProposalsIdRoute: AuthenticatedProposalsIdRoute,
+  AuthenticatedProposalsNewRoute: AuthenticatedProposalsNewRoute,
+  AuthenticatedProposalsIndexRoute: AuthenticatedProposalsIndexRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
@@ -348,18 +441,10 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  OsIdRoute: OsIdRoute,
   PSlugRoute: PSlugRoute,
+  PProfileSlugProposalSlugRoute: PProfileSlugProposalSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
