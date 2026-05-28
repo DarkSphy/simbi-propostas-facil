@@ -25,11 +25,14 @@ function OSPrintPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("proposals")
-        .select("*, clients(name, email, phone, document, address), profiles(full_name, avatar_url, profile_slug)")
+        .select("*, clients(*), profiles(*)")
         .eq("id", id)
         .eq("user_id", user?.id)
         .single();
-      if (error) throw error;
+      if (error) {
+        console.error("OS Supabase Error:", error);
+        throw error;
+      }
       
       const { data: items, error: itemsError } = await supabase
         .from("proposal_items")
