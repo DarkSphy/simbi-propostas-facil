@@ -7,6 +7,8 @@ import { Plus, FileText, Search } from "lucide-react";
 import { formatBRL, statusBadge } from "@/lib/format";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { differenceInDays, parseISO } from "date-fns";
+import { MessageCircle } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/proposals/")({
   head: () => ({ meta: [{ title: "Propostas · Simbi" }] }),
@@ -21,11 +23,20 @@ function ProposalsList() {
     queryKey: ["proposals-list"],
     queryFn: async () => {
       const { data, error } = await supabase.from("proposals")
-        .select("id,title,total,status,created_at,clients(name)")
+        .select("id,title,total,status,created_at,public_slug,clients(name,phone)")
         .eq("user_id", user?.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data ?? [];
+    },
+    enabled: !!user,
+  });
+
+  const { data: profile } = useQuery({
+    queryKey: ["profile", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase.from("profiles").select("profile_slug").eq("id", user?.id).single();
+      return data;
     },
     enabled: !!user,
   });
@@ -36,6 +47,20 @@ function ProposalsList() {
     const clientMatch = p.clients?.name?.toLowerCase().includes(term);
     return titleMatch || clientMatch;
   });
+
+  function handleFollowUp(e: React.MouseEvent, p: any) {
+    e.preventDefault(); // Prevent navigating to the proposal
+    const publicUrl = profile?.profile_slug 
+      ? `${window.location.origin}/p/${profile.profile_slug}/${p.public_slug}`
+      : `${window.location.origin}/p/${p.public_slug}`;
+    const phone = (p.clients as any)?.phone?.replace(/\D/g, "") ?? "";
+    if (!phone) {
+      alert("Este cliente não tem telefone cadastrado.");
+      return;
+    }
+    const msg = encodeURIComponent(`Olá, ${(p.clients as any)?.name.split(" ")[0]}! Tudo bem?\nSó passando para ver se conseguiu analisar o orçamento que te enviei. Qualquer dúvida, estou à disposição!\n\nLink: ${publicUrl}`);
+    window.open(`https://wa.me/${phone}?text=${msg}`, "_blank");
+  }
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-8">
@@ -83,7 +108,14 @@ function ProposalsList() {
                     <div className="mt-0.5 truncate text-sm text-muted-foreground">{(p as any).clients?.name ?? "Sem cliente"} · {new Date(p.created_at).toLocaleDateString("pt-BR")}</div>
                   </div>
                   <div className="w-28 text-right text-base font-medium">{formatBRL(Number(p.total))}</div>
-                  <div className="w-28 text-right">{statusBadge(p.status)}</div>
+                  <div className="w-28 flex flex-col items-end gap-2">
+                    {statusBadge(p.status)}
+                    {p.status === 'sent' && differenceInDays(new Date(), parseISO(p.created_at)) >= 3 && (
+                      <Button size="sm" variant="outline" className="h-7 text-xs bg-emerald-50 text-emerald-600 border-emerald-200 hover:bg-emerald-100 hover:text-emerald-700 px-2" onClick={(e) => handleFollowUp(e, p)}>
+                        <MessageCircle className="mr-1 h-3 w-3" /> Lembrar
+                      </Button>
+                    )}
+                  </div>
                 </Link>
               </li>
             ))}

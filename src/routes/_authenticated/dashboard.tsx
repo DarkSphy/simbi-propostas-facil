@@ -7,10 +7,11 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Plus, FileText, CheckCircle2, Percent, DollarSign } from "lucide-react";
 import { formatBRL, statusBadge } from "@/lib/format";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from "recharts";
-import { format, parseISO, subMonths } from "date-fns";
+import { format, parseISO, subMonths, differenceInDays } from "date-fns";
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { ptBR } from "date-fns/locale";
+import { MessageCircle, AlertTriangle } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard · Simbi" }] }),
@@ -36,11 +37,20 @@ function Dashboard() {
     queryKey: ["proposals", user?.id],
     queryFn: async () => {
       const { data, error } = await supabase.from("proposals")
-        .select("id,title,total,status,created_at,client_id,clients(name)")
+        .select("id,title,total,status,created_at,public_slug,client_id,clients(name,phone)")
         .eq("user_id", user?.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data ?? [];
+    },
+    enabled: !!user,
+  });
+
+  const { data: profile } = useQuery({
+    queryKey: ["profile", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase.from("profiles").select("profile_slug").eq("id", user?.id).single();
+      return data;
     },
     enabled: !!user,
   });
@@ -82,7 +92,6 @@ function Dashboard() {
   const rate = sent ? Math.round((approved / sent) * 100) : 0;
   const total = proposals.filter(p => isWon(p.status)).reduce((s, p) => s + Number(p.total), 0);
 
-  // Generate chart data for the last 6 months
   const chartData = Array.from({ length: 6 }).map((_, i) => {
     const d = subMonths(new Date(), 5 - i);
     const monthStr = format(d, 'MMM', { locale: ptBR });
@@ -94,6 +103,21 @@ function Dashboard() {
     const revenue = monthApproved.reduce((sum, p) => sum + Number(p.total), 0);
     return { name: monthStr.toUpperCase(), revenue };
   });
+
+  const pendingFollowups = proposals.filter(p => p.status === 'sent' && differenceInDays(new Date(), parseISO(p.created_at)) >= 3);
+
+  function handleFollowUp(p: any) {
+    const publicUrl = profile?.profile_slug 
+      ? `${window.location.origin}/p/${profile.profile_slug}/${p.public_slug}`
+      : `${window.location.origin}/p/${p.public_slug}`;
+    const phone = (p.clients as any)?.phone?.replace(/\D/g, "") ?? "";
+    if (!phone) {
+      alert("Este cliente não tem telefone cadastrado.");
+      return;
+    }
+    const msg = encodeURIComponent(`Olá, ${(p.clients as any)?.name.split(" ")[0]}! Tudo bem?\nSó passando para ver se conseguiu analisar o orçamento que te enviei. Qualquer dúvida, estou à disposição!\n\nLink: ${publicUrl}`);
+    window.open(`https://wa.me/${phone}?text=${msg}`, "_blank");
+  }
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-8">
@@ -129,6 +153,34 @@ function Dashboard() {
       </div>
 
       <OnboardingChecklist proposalsCount={proposals.length} catalogCount={catalogCount} />
+
+      {pendingFollowups.length > 0 && (
+        <div className="mb-8 overflow-hidden rounded-3xl border border-amber-200 bg-amber-50/50 p-6 shadow-sm">
+          <div className="flex items-center gap-2 mb-4">
+            <AlertTriangle className="h-6 w-6 text-amber-500" />
+            <h2 className="text-lg font-bold text-amber-900">Acompanhamento Pendente</h2>
+          </div>
+          <p className="text-sm text-amber-800 mb-5">Você tem {pendingFollowups.length === 1 ? "1 orçamento enviado" : `${pendingFollowups.length} orçamentos enviados`} há mais de 3 dias sem resposta. Lembre os clientes para não perder a venda!</p>
+          <div className="space-y-3">
+            {pendingFollowups.slice(0, 3).map(p => (
+              <div key={p.id} className="flex items-center justify-between p-4 rounded-xl border border-amber-100 bg-white">
+                <div>
+                  <div className="font-semibold text-gray-900">{p.title}</div>
+                  <div className="text-xs text-gray-500">{(p.clients as any)?.name ?? "Cliente"} · Há {differenceInDays(new Date(), parseISO(p.created_at))} dias</div>
+                </div>
+                <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full whitespace-nowrap px-4" onClick={() => handleFollowUp(p)}>
+                  <MessageCircle className="mr-2 h-4 w-4" /> Lembrar Cliente
+                </Button>
+              </div>
+            ))}
+            {pendingFollowups.length > 3 && (
+              <Button variant="link" className="text-amber-700 p-0 h-auto" asChild>
+                <Link to="/proposals">Ver todos os pendentes</Link>
+              </Button>
+            )}
+          </div>
+        </div>
+      )}
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Stat icon={FileText} label="Propostas enviadas" value={String(sent)} />
