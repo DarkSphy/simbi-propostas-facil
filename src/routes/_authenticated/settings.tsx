@@ -206,7 +206,25 @@ function SettingsPage() {
           <div className="space-y-2"><Label className="text-muted-foreground font-semibold">CPF ou CNPJ</Label><Input value={document} onChange={(e) => setDocument(e.target.value)} placeholder="000.000.000-00" /></div>
           <div className="space-y-2"><Label className="text-muted-foreground font-semibold">WhatsApp</Label><Input value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} placeholder="(11) 99999-9999" /></div>
           <div className="space-y-2 sm:col-span-2"><Label className="text-muted-foreground font-semibold">Endereço Completo</Label><Input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Rua das Flores, 123 - São Paulo, SP" /></div>
-          <div className="space-y-2"><Label className="text-muted-foreground font-semibold">URL Personalizada / Slug</Label><Input value={profileSlug} onChange={(e) => setProfileSlug(e.target.value)} placeholder="ex: marina-arquiteta" /><p className="text-[11px] text-muted-foreground mt-1">Ex: simbi.com/p/<b>{profileSlug || 'seu-nome'}</b>/codigo</p></div>
+          <div className="space-y-2">
+            <Label className="text-muted-foreground font-semibold">URL Personalizada / Slug</Label>
+            <Input value={profileSlug} onChange={(e) => setProfileSlug(e.target.value)} placeholder="ex: marina-arquiteta" />
+            <p className="text-[11px] text-muted-foreground mt-1">Ex: simbi.com/p/<b>{profileSlug || 'seu-nome'}</b>/codigo</p>
+            {profileSlug && (
+              <div className="mt-3 bg-primary/5 p-3 rounded-xl border border-primary/20">
+                <Label className="text-[10px] uppercase font-bold text-primary tracking-wider mb-1.5 block">Seu Link Público (Vitrine)</Label>
+                <div className="flex items-center gap-2 bg-background border border-border/50 rounded-lg p-1.5 pl-3">
+                  <a href={`/u/${profileSlug}`} target="_blank" rel="noreferrer" className="text-sm font-medium text-blue-600 hover:underline flex-1 truncate">
+                    {window.location.origin}/u/{profileSlug}
+                  </a>
+                  <Button type="button" variant="secondary" size="sm" className="h-7 text-xs rounded-md" onClick={() => {
+                    navigator.clipboard.writeText(`${window.location.origin}/u/${profileSlug}`);
+                    toast.success("Link da vitrine copiado!");
+                  }}>Copiar</Button>
+                </div>
+              </div>
+            )}
+          </div>
           <div className="space-y-2"><Label className="text-muted-foreground font-semibold">E-mail</Label><Input value={user?.email ?? ""} disabled /></div>
         </div>
 
