@@ -30,6 +30,7 @@ function PublicProposal() {
   const { user } = useAuth();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [selectedOptionalItems, setSelectedOptionalItems] = useState<Record<string, boolean>>({});
 
   const defaultPrintSettings: PrintSettings = {
     margin: 'default',
@@ -70,6 +71,18 @@ function PublicProposal() {
         .eq("id", prop.user_id).single();
         
       setData({ ...prop, profiles: prof || {} });
+      
+      const initialOptionalSelection: Record<string, boolean> = {};
+      if (prop.proposal_items) {
+        const isFinal = prop.status === 'approved' || prop.status === 'rejected';
+        prop.proposal_items.forEach((it: any) => {
+          if (it.is_optional) {
+            initialOptionalSelection[it.id] = isFinal ? it.selected_by_client : false;
+          }
+        });
+      }
+      setSelectedOptionalItems(initialOptionalSelection);
+      
       setLoading(false);
 
       // Registrar o log de visualização
@@ -82,8 +95,17 @@ function PublicProposal() {
   }, [slug]);
 
   async function setStatus(status: "approved" | "rejected") {
-    const { error } = await supabase.rpc("update_proposal_status", { p_slug: slug, p_status: status });
-    if (error) { toast.error(error.message); return; }
+    let errorMsg = null;
+    if (status === "approved") {
+      const selectedIds = Object.keys(selectedOptionalItems).filter(id => selectedOptionalItems[id]);
+      const { error } = await supabase.rpc("accept_proposal_with_options", { p_slug: slug, p_selected_item_ids: selectedIds });
+      errorMsg = error?.message;
+    } else {
+      const { error } = await supabase.rpc("update_proposal_status", { p_slug: slug, p_status: status });
+      errorMsg = error?.message;
+    }
+    
+    if (errorMsg) { toast.error(errorMsg); return; }
     
     // Registrar o log de aprovação ou rejeição
     logProposalEvent({ 
@@ -92,7 +114,7 @@ function PublicProposal() {
       userId: data.user_id 
     });
 
-    setData({ ...data, status });
+    setData({ ...data, status, total: status === "approved" ? calculateDynamicTotal() : data.total });
     toast.success(status === "approved" ? "Proposta aprovada!" : "Proposta recusada.");
   }
 
@@ -104,6 +126,23 @@ function PublicProposal() {
   const finalized = data.status === "approved" || data.status === "rejected";
   const whatsapp = (profile.whatsapp ?? "").replace(/\D/g, "");
   
+  const calculateDynamicTotal = () => {
+    if (finalized) return Number(data.total);
+    let sum = 0;
+    items.forEach((it: any) => {
+      if (!it.is_optional || selectedOptionalItems[it.id]) {
+        sum += (it.quantity * it.unit_price);
+      }
+    });
+    return sum;
+  };
+  const displayTotal = calculateDynamicTotal();
+
+  function toggleOptional(id: string) {
+    if (finalized) return;
+    setSelectedOptionalItems(prev => ({ ...prev, [id]: !prev[id] }));
+  }
+
   // Expiration logic
   const validDate = data.valid_until ? new Date(data.valid_until) : null;
   // Use UTC to prevent timezone offsets making it off by 1 day
@@ -280,8 +319,13 @@ function PublicProposal() {
               {isCards ? (
                 <div className="space-y-4">
                   {items.sort((a: any, b: any) => a.sort_order - b.sort_order).map((it: any) => (
-                    <div key={it.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-5 gap-4 rounded-2xl border border-border bg-card shadow-sm hover:border-primary/30 transition-colors">
+                    <div key={it.id} className={`flex flex-col sm:flex-row sm:items-center justify-between p-5 gap-4 rounded-2xl border bg-card shadow-sm transition-colors ${it.is_optional ? (selectedOptionalItems[it.id] ? 'border-primary ring-1 ring-primary/20' : 'border-border border-dashed opacity-80') : 'border-border hover:border-primary/30'}`}>
                       <div className="flex items-center gap-4">
+                        {it.is_optional && (
+                          <div className="flex shrink-0 items-center justify-center">
+                            <input type="checkbox" checked={selectedOptionalItems[it.id] || false} onChange={() => toggleOptional(it.id)} disabled={finalized} className="h-5 w-5 rounded-md border-gray-300 text-primary focus:ring-primary cursor-pointer disabled:cursor-default disabled:opacity-50" />
+                          </div>
+                        )}
                         {it.image_url && (
                           <Dialog>
                             <DialogTrigger asChild>
@@ -299,7 +343,10 @@ function PublicProposal() {
                           </Dialog>
                         )}
                         <div>
-                          <div className="font-semibold text-base leading-tight">{it.description}</div>
+                          <div className="font-semibold text-base leading-tight flex items-center gap-2">
+                            {it.description}
+                            {it.is_optional && <span className="text-[10px] uppercase font-bold bg-muted text-muted-foreground px-2 py-0.5 rounded-md">Opcional</span>}
+                          </div>
                           <div className="mt-1.5 inline-flex items-center rounded-md bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary border border-primary/10">
                             Qtd: {it.quantity}
                           </div>
@@ -308,7 +355,7 @@ function PublicProposal() {
                       <div className="text-left sm:text-right mt-3 sm:mt-0 pt-3 sm:pt-0 border-t border-border/50 sm:border-0 flex justify-between sm:block items-center">
                         <div className="text-sm font-semibold text-muted-foreground sm:hidden">Subtotal:</div>
                         <div>
-                          <div className="font-bold text-lg text-emerald-600">{formatBRL(it.quantity * it.unit_price)}</div>
+                          <div className={`font-bold text-lg ${it.is_optional && !selectedOptionalItems[it.id] ? 'text-muted-foreground line-through opacity-70' : 'text-emerald-600'}`}>{formatBRL(it.quantity * it.unit_price)}</div>
                           <div className="text-xs text-muted-foreground">{formatBRL(it.unit_price)} un</div>
                         </div>
                       </div>
@@ -319,8 +366,13 @@ function PublicProposal() {
                 <div className="rounded-2xl border border-border overflow-hidden bg-card">
                   <ul className="divide-y divide-border text-sm">
                     {items.sort((a: any, b: any) => a.sort_order - b.sort_order).map((it: any) => (
-                      <li key={it.id} className="flex flex-col sm:flex-row sm:items-center justify-between px-5 py-4 gap-3 sm:gap-4">
+                      <li key={it.id} className={`flex flex-col sm:flex-row sm:items-center justify-between px-5 py-4 gap-3 sm:gap-4 transition-colors ${it.is_optional ? (selectedOptionalItems[it.id] ? 'bg-primary/5' : 'bg-muted/10 opacity-80') : ''}`}>
                         <div className="flex items-center gap-3 sm:gap-4 flex-1">
+                          {it.is_optional && (
+                            <div className="flex shrink-0 items-center justify-center">
+                              <input type="checkbox" checked={selectedOptionalItems[it.id] || false} onChange={() => toggleOptional(it.id)} disabled={finalized} className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer disabled:cursor-default disabled:opacity-50" />
+                            </div>
+                          )}
                           {it.image_url && (
                             <Dialog>
                               <DialogTrigger asChild>
@@ -338,7 +390,10 @@ function PublicProposal() {
                             </Dialog>
                           )}
                           <div className="flex-1">
-                            <div className="font-semibold text-base leading-tight">{it.description}</div>
+                            <div className="font-semibold text-base leading-tight flex items-center gap-2">
+                              {it.description}
+                              {it.is_optional && <span className="text-[10px] uppercase font-bold bg-muted-foreground/20 text-muted-foreground px-1.5 py-0.5 rounded">Opcional</span>}
+                            </div>
                             <div className="mt-1.5 flex items-center gap-2 text-xs">
                               <span className="inline-flex items-center rounded-md bg-primary/10 px-2 py-0.5 font-semibold text-primary border border-primary/10">
                                 Qtd: {it.quantity}
@@ -347,16 +402,18 @@ function PublicProposal() {
                             </div>
                           </div>
                         </div>
-                        <div className="font-bold text-base sm:text-right self-end sm:self-auto mt-1 sm:mt-0 text-emerald-600">{formatBRL(it.quantity * it.unit_price)}</div>
+                        <div className={`font-bold text-base sm:text-right self-end sm:self-auto mt-1 sm:mt-0 ${it.is_optional && !selectedOptionalItems[it.id] ? 'text-muted-foreground line-through opacity-70' : 'text-emerald-600'}`}>
+                          {formatBRL(it.quantity * it.unit_price)}
+                        </div>
                       </li>
                     ))}
                   </ul>
                 </div>
               )}
               
-              <div className="mt-6 flex flex-col sm:flex-row sm:items-center justify-between rounded-2xl bg-emerald-500/10 border border-emerald-500/20 px-6 py-5">
+              <div className="mt-6 flex flex-col sm:flex-row sm:items-center justify-between rounded-2xl bg-emerald-500/10 border border-emerald-500/20 px-6 py-5 transition-all">
                 <span className="text-sm font-bold uppercase tracking-wider text-emerald-700">Total do Orçamento</span>
-                <span className="text-3xl font-black text-emerald-600 mt-1 sm:mt-0">{formatBRL(Number(data.total))}</span>
+                <span className="text-3xl font-black text-emerald-600 mt-1 sm:mt-0">{formatBRL(displayTotal)}</span>
               </div>
             </div>
 

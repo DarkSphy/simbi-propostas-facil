@@ -19,7 +19,7 @@ export const Route = createFileRoute("/_authenticated/proposals/new")({
   component: NewProposal,
 });
 
-type Item = { description: string; quantity: number | string; unit_price: number | string; image_url?: string };
+type Item = { description: string; quantity: number | string; unit_price: number | string; image_url?: string; is_optional?: boolean };
 type Client = { id: string; name: string };
 
 function NewProposal() {
@@ -36,7 +36,7 @@ function NewProposal() {
   const [description, setDescription] = useState("");
   const [notes, setNotes] = useState("");
   const [validDays, setValidDays] = useState<string>("");
-  const [items, setItems] = useState<Item[]>([{ description: "", quantity: 1, unit_price: "" }]);
+  const [items, setItems] = useState<Item[]>([{ description: "", quantity: 1, unit_price: "", is_optional: false }]);
   const [saving, setSaving] = useState(false);
   
   // Dialogs
@@ -69,7 +69,7 @@ function NewProposal() {
       }
       if (d.proposal_items?.length) {
         setItems(d.proposal_items.sort((a: any, b: any) => a.sort_order - b.sort_order).map((i: any) => ({
-          description: i.description, quantity: i.quantity, unit_price: i.unit_price, image_url: i.image_url
+          description: i.description, quantity: i.quantity, unit_price: i.unit_price, image_url: i.image_url, is_optional: i.is_optional || false
         })));
       }
       sessionStorage.removeItem("cloneProposal");
@@ -102,9 +102,9 @@ function NewProposal() {
   function updateItem(i: number, patch: Partial<Item>) {
     setItems(items.map((it, idx) => idx === i ? { ...it, ...patch } : it));
   }
-  function addItem() { setItems([...items, { description: "", quantity: 1, unit_price: "" }]); }
+  function addItem() { setItems([...items, { description: "", quantity: 1, unit_price: "", is_optional: false }]); }
   function addFromCatalog(catItem: any) {
-    const newIt = { description: catItem.name, quantity: 1, unit_price: catItem.unit_price, image_url: catItem.image_url };
+    const newIt = { description: catItem.name, quantity: 1, unit_price: catItem.unit_price, image_url: catItem.image_url, is_optional: false };
     if (items.length === 1 && !items[0].description) {
       setItems([newIt]);
     } else {
@@ -247,7 +247,7 @@ function NewProposal() {
       const cleanItems = items.filter(i => i.description && i.description.trim());
       if (cleanItems.length > 0) {
         const { error: iErr } = await supabase.from("proposal_items").insert(
-          cleanItems.map((it, idx) => ({ proposal_id: propId, description: it.description, quantity: it.quantity, unit_price: it.unit_price, sort_order: idx, image_url: it.image_url || null }))
+          cleanItems.map((it, idx) => ({ proposal_id: propId, description: it.description, quantity: it.quantity, unit_price: it.unit_price, sort_order: idx, image_url: it.image_url || null, is_optional: it.is_optional || false }))
         );
         if (iErr) throw iErr;
       }
@@ -351,7 +351,7 @@ function NewProposal() {
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-col items-center gap-2">
+                <div className="flex flex-col items-center gap-1.5 pt-1">
                   <div className="relative h-20 w-20 shrink-0 rounded-lg border border-border border-dashed bg-card overflow-hidden grid place-items-center">
                     {it.image_url ? (
                       <img src={it.image_url} alt="Item" className="h-full w-full object-cover" />
@@ -359,6 +359,10 @@ function NewProposal() {
                       <span className="text-xs text-muted-foreground text-center px-1">Add Foto</span>
                     )}
                     <input type="file" accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer" onChange={(e) => handleImageUpload(e, i)} title="Adicionar foto ao item" />
+                  </div>
+                  <div className="flex items-center gap-1.5 mt-1 bg-background px-2 py-1 rounded-md border border-border/50 shadow-sm">
+                    <input type="checkbox" id={`opt-${i}`} checked={it.is_optional || false} onChange={e => updateItem(i, { is_optional: e.target.checked })} className="rounded border-border text-primary focus:ring-primary w-3.5 h-3.5 cursor-pointer" />
+                    <label htmlFor={`opt-${i}`} className="text-[10px] text-muted-foreground font-semibold uppercase cursor-pointer">Opcional</label>
                   </div>
                 </div>
                 <Button variant="destructive" size="icon" className="absolute -top-3 -right-3 h-6 w-6 rounded-full" onClick={() => removeItem(i)}><Trash2 className="h-3 w-3" /></Button>
