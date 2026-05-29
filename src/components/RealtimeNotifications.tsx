@@ -51,14 +51,14 @@ export function RealtimeNotifications() {
             queryClient.invalidateQueries({ queryKey: ["dashboard"] });
 
             if (status === "viewed") {
-              toast.info(`👀 O cliente está visualizando a proposta!`);
-              sendNativeNotification("Proposta Visualizada!", `O cliente está analisando: ${title}`);
+              toast.info(`A proposta "${title}" acaba de ser aberta pelo cliente.`);
+              sendNativeNotification("Proposta Aberta", `A proposta "${title}" está sendo visualizada neste momento.`);
             } else if (status === "approved") {
-              toast.success(`🎉 Proposta APROVADA!`);
-              sendNativeNotification("Proposta Aprovada! 🎉", `Boas notícias! O cliente aprovou: ${title}`);
+              toast.success(`A proposta "${title}" foi aprovada.`);
+              sendNativeNotification("Proposta Aprovada", `O cliente aceitou os termos da proposta "${title}".`);
             } else if (status === "refused") {
-              toast.error(`❌ Proposta Recusada.`);
-              sendNativeNotification("Proposta Recusada", `O cliente recusou: ${title}`);
+              toast.error(`A proposta "${title}" foi recusada.`);
+              sendNativeNotification("Proposta Recusada", `A proposta "${title}" foi declinada pelo cliente.`);
             }
           }
         }
