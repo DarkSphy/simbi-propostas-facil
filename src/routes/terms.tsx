@@ -35,7 +35,7 @@ function TermsPage() {
             <p>
               O Simbi é uma plataforma SaaS (Software as a Service) projetada para facilitar a criação, 
               envio e gerenciamento de propostas comerciais e orçamentos para profissionais autônomos 
-              e pequenas empresas. O serviço permite gerenciar clientes, itens de catálogo e acompanhar 
+              e pequenas empresas. O serviço permite gerenciar clientes, produtos e serviços cadastrados e acompanhar 
               o status de aprovação de orçamentos.
             </p>
           </section>

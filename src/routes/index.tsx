@@ -234,7 +234,7 @@ function HowItWorks() {
 
 function Testimonials() {
   const reviews = [
-    { body: "Antes eu perdia um tempão fazendo orçamento no bloco de notas para cada cliente. Com o Simbi, eu puxo os serviços do catálogo e mando pro cliente no zap em 2 minutos. Os clientes dão mais credibilidade e fecham mais rápido.", author: "Diego M.", role: "Mecânico Automotivo" },
+    { body: "Antes eu perdia um tempão fazendo orçamento no bloco de notas para cada cliente. Com o Simbi, eu puxo os produtos e serviços cadastrados e mando pro cliente no zap em 2 minutos. Os clientes dão mais credibilidade e fecham mais rápido.", author: "Diego M.", role: "Mecânico Automotivo" },
     { body: "A apresentação do link que o cliente recebe passa muita credibilidade. Consegui aumentar o valor do meu metro quadrado de móveis planejados e a taxa de aprovação subiu muito.", author: "Camila R.", role: "Marceneira" },
     { body: "A facilidade do cliente ler o orçamento do conserto direto no celular mudou o jogo pra mim. Envio pelo WhatsApp e eles aprovam na hora, sem precisar baixar arquivo PDF nenhum.", author: "Felipe T.", role: "Técnico de Refrigeração" },
   ];
@@ -293,7 +293,7 @@ function Pricing() {
               </div>
               <ul className="mt-8 space-y-3 text-sm leading-6 text-muted-foreground">
                 <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-primary" /> Até 5 propostas por mês</li>
-                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-primary" /> Catálogo com 10 itens</li>
+                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-primary" /> Cadastro de até 10 itens</li>
                 <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-primary" /> Cadastro de até 10 clientes</li>
                 <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-primary" /> Compartilhamento via WhatsApp</li>
               </ul>
@@ -318,7 +318,7 @@ function Pricing() {
               </div>
               <ul className="mt-8 space-y-3 text-sm leading-6 text-primary-foreground/90">
                 <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-primary-foreground" /> <strong>Propostas ilimitadas</strong></li>
-                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-primary-foreground" /> Catálogo e clientes <strong>ilimitados</strong></li>
+                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-primary-foreground" /> Itens e clientes <strong>ilimitados</strong></li>
                 <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-primary-foreground" /> Personalização completa com sua logo e cores</li>
                 <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-primary-foreground" /> URL Personalizada (simbi.com/p/sua-marca)</li>
                 <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-primary-foreground" /> Integração com botão de pagamento</li>

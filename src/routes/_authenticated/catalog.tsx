@@ -15,7 +15,7 @@ import { formatBRL } from "@/lib/format";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/catalog")({
-  head: () => ({ meta: [{ title: "Catálogo · Simbi" }] }),
+  head: () => ({ meta: [{ title: "Produtos & Serviços · Simbi" }] }),
   component: Catalog,
 });
 
@@ -72,7 +72,7 @@ function Catalog() {
       } else {
         const { error } = await supabase.from("catalog_items").insert(payload);
         if (error) throw error;
-        toast.success("Item adicionado ao catálogo!");
+        toast.success("Item cadastrado com sucesso!");
       }
       resetForm();
       qc.invalidateQueries({ queryKey: ["catalog-items"] });
@@ -129,12 +129,12 @@ function Catalog() {
   return (
     <div className="mx-auto max-w-6xl px-5 py-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold tracking-tight">Catálogo</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Produtos & Serviços</h1>
         <div className="flex items-center gap-3">
           <div className="relative w-full sm:w-64">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input 
-              placeholder="Buscar no catálogo..." 
+              placeholder="Buscar itens..." 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="pl-9 rounded-full bg-card"
@@ -167,7 +167,7 @@ function Catalog() {
             </TooltipProvider>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>{editingId ? "Editar Item" : "Adicionar ao Catálogo"}</DialogTitle>
+                <DialogTitle>{editingId ? "Editar Item" : "Cadastrar Produto ou Serviço"}</DialogTitle>
               </DialogHeader>
               <div className="space-y-4 pt-4">
                 <div className="space-y-1.5">
@@ -221,7 +221,7 @@ function Catalog() {
             <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-accent">
               <Package className="h-5 w-5 text-accent-foreground" />
             </div>
-            <h3 className="mt-3 font-semibold">Catálogo vazio</h3>
+            <h3 className="mt-3 font-semibold">Nenhum item cadastrado</h3>
             <p className="mt-1 text-sm text-muted-foreground">Cadastre seus produtos e serviços para usá-los nas propostas.</p>
             <Button onClick={() => setOpen(true)} variant="outline" className="mt-4 rounded-full"><Plus className="mr-1 h-4 w-4" /> Adicionar item</Button>
           </div>

@@ -333,7 +333,7 @@ function EmptyState() {
 function OnboardingChecklist({ proposalsCount, catalogCount }: { proposalsCount: number, catalogCount: number }) {
   const steps = [
     { title: "Conta criada com sucesso", desc: "Seja bem-vindo ao Simbi!", done: true, href: "#" },
-    { title: "Adicionar serviço ao catálogo", desc: "Salve um serviço comum para não precisar digitar de novo.", done: catalogCount > 0, href: "/catalog" },
+    { title: "Cadastrar primeiro produto ou serviço", desc: "Salve seus itens mais comuns para não precisar digitar de novo.", done: catalogCount > 0, href: "/catalog" },
     { title: "Criar sua primeira proposta (real)", desc: "Faça um orçamento de verdade e envie para um cliente.", done: proposalsCount > 1, href: "/proposals/new" },
   ];
   

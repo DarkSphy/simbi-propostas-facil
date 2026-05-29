@@ -261,13 +261,13 @@ function NewProposal() {
               <Button variant="outline" size="sm" className="rounded-full" onClick={addItem}><Plus className="mr-1 h-4 w-4" /> Adicionar manual</Button>
               <Dialog open={catalogOpen} onOpenChange={setCatalogOpen}>
                 <DialogTrigger asChild>
-                  <Button variant="secondary" size="sm" className="rounded-full"><PackagePlus className="mr-1 h-4 w-4" /> Importar do catálogo</Button>
+                  <Button variant="secondary" size="sm" className="rounded-full"><PackagePlus className="mr-1 h-4 w-4" /> Importar item salvo</Button>
                 </DialogTrigger>
                 <DialogContent>
-                  <DialogHeader><DialogTitle>Catálogo de Itens</DialogTitle></DialogHeader>
+                  <DialogHeader><DialogTitle>Produtos & Serviços Cadastrados</DialogTitle></DialogHeader>
                   <div className="max-h-[60vh] overflow-y-auto pt-4">
                     {catalogItems.length === 0 ? (
-                      <p className="text-center text-sm text-muted-foreground">Nenhum item cadastrado no catálogo.</p>
+                      <p className="text-center text-sm text-muted-foreground">Nenhum produto ou serviço cadastrado ainda.</p>
                     ) : (
                       <ul className="divide-y divide-border">
                         {catalogItems.map(c => (

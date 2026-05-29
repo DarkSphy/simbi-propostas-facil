@@ -15,7 +15,7 @@ const items = [
   { title: "Ordem de Serviço", url: "/work-orders", icon: ClipboardList },
   { title: "Agenda", url: "/agenda", icon: CalendarDays },
   { title: "Clientes", url: "/clients", icon: Users },
-  { title: "Catálogo", url: "/catalog", icon: Grid },
+  { title: "Produtos & Serviços", url: "/catalog", icon: Grid },
   { title: "Calculadora", url: "/calculator", icon: Calculator },
   { title: "Relatórios", url: "/reports", icon: BarChart3 },
   { title: "Histórico", url: "/history", icon: History },
