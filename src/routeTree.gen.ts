@@ -22,7 +22,9 @@ import { Route as PSlugRouteImport } from './routes/p.$slug'
 import { Route as OsIdRouteImport } from './routes/os.$id'
 import { Route as CContractSlugRouteImport } from './routes/c.$contractSlug'
 import { Route as AuthenticatedWorkOrdersRouteImport } from './routes/_authenticated/work-orders'
+import { Route as AuthenticatedVitrineSettingsRouteImport } from './routes/_authenticated/vitrine-settings'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedRequestsRouteImport } from './routes/_authenticated/requests'
 import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
 import { Route as AuthenticatedHistoryRouteImport } from './routes/_authenticated/history'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -101,9 +103,20 @@ const AuthenticatedWorkOrdersRoute = AuthenticatedWorkOrdersRouteImport.update({
   path: '/work-orders',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedVitrineSettingsRoute =
+  AuthenticatedVitrineSettingsRouteImport.update({
+    id: '/vitrine-settings',
+    path: '/vitrine-settings',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedRequestsRoute = AuthenticatedRequestsRouteImport.update({
+  id: '/requests',
+  path: '/requests',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedReportsRoute = AuthenticatedReportsRouteImport.update({
@@ -192,7 +205,9 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/history': typeof AuthenticatedHistoryRoute
   '/reports': typeof AuthenticatedReportsRoute
+  '/requests': typeof AuthenticatedRequestsRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/vitrine-settings': typeof AuthenticatedVitrineSettingsRoute
   '/work-orders': typeof AuthenticatedWorkOrdersRoute
   '/c/$contractSlug': typeof CContractSlugRoute
   '/os/$id': typeof OsIdRoute
@@ -220,7 +235,9 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/history': typeof AuthenticatedHistoryRoute
   '/reports': typeof AuthenticatedReportsRoute
+  '/requests': typeof AuthenticatedRequestsRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/vitrine-settings': typeof AuthenticatedVitrineSettingsRoute
   '/work-orders': typeof AuthenticatedWorkOrdersRoute
   '/c/$contractSlug': typeof CContractSlugRoute
   '/os/$id': typeof OsIdRoute
@@ -250,7 +267,9 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/history': typeof AuthenticatedHistoryRoute
   '/_authenticated/reports': typeof AuthenticatedReportsRoute
+  '/_authenticated/requests': typeof AuthenticatedRequestsRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/vitrine-settings': typeof AuthenticatedVitrineSettingsRoute
   '/_authenticated/work-orders': typeof AuthenticatedWorkOrdersRoute
   '/c/$contractSlug': typeof CContractSlugRoute
   '/os/$id': typeof OsIdRoute
@@ -280,7 +299,9 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/history'
     | '/reports'
+    | '/requests'
     | '/settings'
+    | '/vitrine-settings'
     | '/work-orders'
     | '/c/$contractSlug'
     | '/os/$id'
@@ -308,7 +329,9 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/history'
     | '/reports'
+    | '/requests'
     | '/settings'
+    | '/vitrine-settings'
     | '/work-orders'
     | '/c/$contractSlug'
     | '/os/$id'
@@ -337,7 +360,9 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/history'
     | '/_authenticated/reports'
+    | '/_authenticated/requests'
     | '/_authenticated/settings'
+    | '/_authenticated/vitrine-settings'
     | '/_authenticated/work-orders'
     | '/c/$contractSlug'
     | '/os/$id'
@@ -459,11 +484,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedWorkOrdersRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/vitrine-settings': {
+      id: '/_authenticated/vitrine-settings'
+      path: '/vitrine-settings'
+      fullPath: '/vitrine-settings'
+      preLoaderRoute: typeof AuthenticatedVitrineSettingsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/settings': {
       id: '/_authenticated/settings'
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/requests': {
+      id: '/_authenticated/requests'
+      path: '/requests'
+      fullPath: '/requests'
+      preLoaderRoute: typeof AuthenticatedRequestsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/reports': {
@@ -569,7 +608,9 @@ interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedHistoryRoute: typeof AuthenticatedHistoryRoute
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
+  AuthenticatedRequestsRoute: typeof AuthenticatedRequestsRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedVitrineSettingsRoute: typeof AuthenticatedVitrineSettingsRoute
   AuthenticatedWorkOrdersRoute: typeof AuthenticatedWorkOrdersRoute
   AuthenticatedContractIdRoute: typeof AuthenticatedContractIdRoute
   AuthenticatedProposalsIdRoute: typeof AuthenticatedProposalsIdRoute
@@ -586,7 +627,9 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedHistoryRoute: AuthenticatedHistoryRoute,
   AuthenticatedReportsRoute: AuthenticatedReportsRoute,
+  AuthenticatedRequestsRoute: AuthenticatedRequestsRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedVitrineSettingsRoute: AuthenticatedVitrineSettingsRoute,
   AuthenticatedWorkOrdersRoute: AuthenticatedWorkOrdersRoute,
   AuthenticatedContractIdRoute: AuthenticatedContractIdRoute,
   AuthenticatedProposalsIdRoute: AuthenticatedProposalsIdRoute,

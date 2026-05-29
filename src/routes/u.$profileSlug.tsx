@@ -40,12 +40,12 @@ function VitrinePageWrapper() {
       root.className = "";
       root.classList.add(`theme-${profile.ui_color}`);
     }
-    if (profile.ui_theme === "dark") {
+    if (profile.vitrine_skin === "dark" || profile.ui_theme === "dark") {
       root.classList.add("dark");
     } else {
       root.classList.remove("dark");
     }
-  }, [profile.ui_color, profile.ui_theme]);
+  }, [profile.ui_color, profile.ui_theme, profile.vitrine_skin]);
 
   return <VitrinePage />;
 }
@@ -58,6 +58,9 @@ function VitrinePage() {
   const [phone, setPhone] = useState("");
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(false);
+  const [filterType, setFilterType] = useState<"all" | "product" | "service">("all");
+
+  const filteredItems = items.filter(it => filterType === "all" ? true : it.type === filterType);
 
   const cartItems = items.filter(it => cart[it.id]);
   const totalCart = cartItems.reduce((acc, it) => acc + (Number(it.unit_price) * cart[it.id]), 0);
@@ -120,41 +123,108 @@ function VitrinePage() {
     );
   }
 
+  const testimonials = profile.vitrine_testimonials ? 
+    (typeof profile.vitrine_testimonials === 'string' ? JSON.parse(profile.vitrine_testimonials) : profile.vitrine_testimonials) 
+    : [];
+
+  const getYoutubeId = (url: string) => {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  };
+
+  const pitchYoutubeId = profile.vitrine_pitch_video_url ? getYoutubeId(profile.vitrine_pitch_video_url) : null;
+
+  const organicStyle = profile.vitrine_skin === "organic" ? {
+    "--background": "45 30% 96%",
+    "--foreground": "45 10% 20%",
+    "--card": "0 0% 100%",
+    "--card-foreground": "45 10% 20%",
+    "--border": "40 20% 85%",
+    "--muted": "40 20% 90%",
+    "--muted-foreground": "45 5% 40%",
+    "--radius": "1.5rem"
+  } as React.CSSProperties : {};
+
   return (
-    <div className="min-h-screen bg-muted/10 pb-32">
-      {/* Header Profile */}
-      <div className="bg-card border-b border-border shadow-sm">
-        <div className="max-w-4xl mx-auto px-5 py-12 md:py-16 text-center">
+    <div className="min-h-screen bg-background text-foreground pb-32" style={organicStyle}>
+      {/* Header Profile / Hero */}
+      <div className="relative border-b border-border shadow-sm overflow-hidden">
+        {profile.vitrine_hero_type === 'image' && profile.vitrine_hero_url && (
+          <div className="absolute inset-0 z-0">
+            <img src={profile.vitrine_hero_url} alt="Cover" className="w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-background/80 backdrop-blur-sm dark:bg-background/90" />
+          </div>
+        )}
+        {profile.vitrine_hero_type === 'video' && profile.vitrine_hero_url && (
+          <div className="absolute inset-0 z-0">
+            <video src={profile.vitrine_hero_url} autoPlay loop muted playsInline className="w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-background/80 backdrop-blur-sm dark:bg-background/90" />
+          </div>
+        )}
+        
+        <div className="relative z-10 max-w-4xl mx-auto px-5 py-12 md:py-16 text-center">
           {profile.logo_url ? (
-            <img src={profile.logo_url} alt={profile.name} className="h-24 w-24 md:h-32 md:w-32 object-cover rounded-3xl mx-auto mb-6 shadow-lg border-4 border-background" />
+            <img src={profile.logo_url} alt={profile.name} className="h-24 w-24 md:h-32 md:w-32 object-cover rounded-3xl mx-auto mb-6 shadow-xl border-4 border-background/50 backdrop-blur-md" />
           ) : (
-            <div className="h-24 w-24 md:h-32 md:w-32 rounded-3xl bg-primary/10 text-primary mx-auto mb-6 flex items-center justify-center text-4xl font-bold shadow-lg border-4 border-background">
+            <div className="h-24 w-24 md:h-32 md:w-32 rounded-3xl bg-primary text-primary-foreground mx-auto mb-6 flex items-center justify-center text-4xl font-bold shadow-xl border-4 border-background/50 backdrop-blur-md">
               {profile.name?.[0]?.toUpperCase() || 'S'}
             </div>
           )}
-          <h1 className="text-3xl md:text-4xl font-black tracking-tight mb-2">{profile.name}</h1>
+          <h1 className="text-3xl md:text-5xl font-black tracking-tight mb-3 drop-shadow-sm">{profile.name}</h1>
           
-          <div className="flex flex-wrap justify-center gap-3 text-sm text-muted-foreground mb-6">
+          <div className="flex flex-wrap justify-center gap-4 text-sm text-foreground/80 mb-6 font-medium">
             {profile.phone && <span className="flex items-center gap-1.5"><Phone className="h-4 w-4" /> {profile.phone}</span>}
             {profile.email && <span className="flex items-center gap-1.5"><Mail className="h-4 w-4" /> {profile.email}</span>}
           </div>
 
-          <p className="max-w-2xl mx-auto text-muted-foreground/90 text-base md:text-lg leading-relaxed">
+          <p className="max-w-2xl mx-auto text-foreground/70 text-base md:text-lg leading-relaxed">
             Selecione abaixo os produtos ou serviços que você tem interesse e clique em "Solicitar Orçamento" para receber uma proposta personalizada nossa.
           </p>
         </div>
       </div>
 
+      {/* Pitch Section */}
+      {(pitchYoutubeId || profile.vitrine_pitch_text) && (
+        <div className="max-w-4xl mx-auto px-5 py-10 border-b border-border/50">
+          <div className="bg-card rounded-3xl p-6 md:p-8 border border-border shadow-sm flex flex-col md:flex-row gap-8 items-center">
+            {pitchYoutubeId && (
+              <div className="w-full md:w-1/2 aspect-video rounded-2xl overflow-hidden shadow-lg border border-border/50">
+                <iframe 
+                  src={`https://www.youtube.com/embed/${pitchYoutubeId}?rel=0`}
+                  title="YouTube video player"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full"
+                ></iframe>
+              </div>
+            )}
+            <div className={cn("w-full", pitchYoutubeId ? "md:w-1/2" : "text-center")}>
+              <h2 className="text-2xl font-bold mb-4 tracking-tight">Um pouco sobre mim</h2>
+              <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">{profile.vitrine_pitch_text || "Assista ao vídeo para me conhecer melhor e entender como posso te ajudar a alcançar seus objetivos!"}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Catalog Grid */}
       <div className="max-w-4xl mx-auto px-5 py-10">
-        {items.length === 0 ? (
+        
+        <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
+          <Button variant={filterType === 'all' ? 'default' : 'outline'} className="rounded-full shadow-sm" onClick={() => setFilterType('all')}>Todos</Button>
+          <Button variant={filterType === 'service' ? 'default' : 'outline'} className="rounded-full shadow-sm" onClick={() => setFilterType('service')}>Serviços</Button>
+          <Button variant={filterType === 'product' ? 'default' : 'outline'} className="rounded-full shadow-sm" onClick={() => setFilterType('product')}>Produtos</Button>
+        </div>
+
+        {filteredItems.length === 0 ? (
           <div className="text-center p-10 bg-card rounded-3xl border border-border">
             <Package className="h-10 w-10 text-muted-foreground/30 mx-auto mb-3" />
             <p className="text-muted-foreground font-medium">Nenhum serviço disponível no momento.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
-            {items.map(it => {
+            {filteredItems.map(it => {
               const selected = !!cart[it.id];
               return (
                 <div 
@@ -195,6 +265,22 @@ function VitrinePage() {
           </div>
         )}
       </div>
+
+      {/* Testimonials */}
+      {testimonials.length > 0 && (
+        <div className="max-w-4xl mx-auto px-5 py-10 mb-10">
+          <h2 className="text-2xl font-bold text-center mb-8">O que dizem os clientes</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {testimonials.map((t: any, i: number) => (
+              <div key={i} className="bg-card border border-border p-6 rounded-3xl shadow-sm flex flex-col">
+                <div className="flex text-amber-400 mb-3 text-sm">★★★★★</div>
+                <p className="text-sm text-muted-foreground flex-1 italic mb-4">"{t.text}"</p>
+                <div className="font-bold text-sm text-foreground">{t.name}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Floating Cart Button */}
       {cartItems.length > 0 && (
