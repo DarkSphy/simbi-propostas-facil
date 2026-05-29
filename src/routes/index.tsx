@@ -31,16 +31,13 @@ function Landing() {
         href="https://wa.me/5531973175882?text=Ol%C3%A1!%20Vim%20do%20site%20do%20Simbi%20e%20gostaria%20de%20tirar%20algumas%20d%C3%BAvidas."
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-50 flex items-center justify-center bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 border-2 border-black group"
-        style={{ boxShadow: "4px 4px 0 #000" }}
+        className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 bg-primary text-primary-foreground px-5 py-3.5 rounded-full shadow-elevated border border-white/10 hover:-translate-y-0.5 active:scale-95 transition-all duration-300 group hover:glow-primary"
         title="Fale conosco no WhatsApp"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" className="opacity-90 group-hover:opacity-100 transition-opacity">
           <path d="M12.031 0C5.385 0 0 5.385 0 12.031C0 14.673 1.408 17.067 3.237 18.732L2.016 23.21L6.685 22.013C8.36 23.364 10.15 24 12.031 24C18.677 24 24 18.615 24 11.969C24 5.323 18.677 0 12.031 0ZM18.423 16.59C18.158 17.338 16.892 17.962 16.143 18.125C15.553 18.257 14.733 18.366 11.666 17.086C7.755 15.452 5.234 11.455 5.048 11.206C4.861 10.957 3.522 9.18 3.522 7.342C3.522 5.503 4.456 4.601 4.83 4.227C5.14 3.916 5.67 3.76 6.168 3.76C6.324 3.76 6.464 3.768 6.589 3.776C6.963 3.791 7.15 3.822 7.4 4.413C7.68 5.114 8.365 6.794 8.458 6.981C8.552 7.168 8.645 7.385 8.52 7.635C8.396 7.884 8.302 8.008 8.116 8.226C7.929 8.444 7.726 8.615 7.555 8.833C7.368 9.051 7.165 9.284 7.383 9.658C7.601 10.032 8.365 11.277 9.486 12.273C10.932 13.565 12.115 13.97 12.52 14.125C12.925 14.28 13.392 14.25 13.673 13.97C13.953 13.689 14.67 12.833 14.981 12.397C15.292 11.961 15.603 12.023 15.977 12.148C16.35 12.272 18.312 13.237 18.716 13.44C19.121 13.642 19.386 13.735 19.479 13.891C19.573 14.047 19.573 14.779 19.293 15.526L18.423 16.59Z"/>
         </svg>
-        <span className="absolute right-full mr-3 bg-black text-white text-xs font-bold uppercase py-1.5 px-3 rounded shadow-lg border border-neutral-700 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-          Suporte
-        </span>
+        <span className="font-semibold text-sm tracking-tight">Falar com Suporte</span>
       </a>
     </div>
   );
