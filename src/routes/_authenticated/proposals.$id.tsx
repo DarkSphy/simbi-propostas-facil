@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Share2, MessageCircle, Trash2, Copy, Eye, CheckCircle2, XCircle, Laptop, Smartphone, Globe, Calendar } from "lucide-react";
+import { ArrowLeft, Share2, MessageCircle, Trash2, Copy, Eye, CheckCircle2, XCircle, Laptop, Smartphone, Globe, Calendar, FileSignature } from "lucide-react";
 import { formatBRL, statusBadge } from "@/lib/format";
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
