@@ -172,6 +172,29 @@ function SettingsPage() {
     setUploadingBg(false);
   }
 
+  const [notifPermission, setNotifPermission] = useState<NotificationPermission | "unsupported">("default");
+
+  useEffect(() => {
+    if ("Notification" in window) {
+      setNotifPermission(Notification.permission);
+    } else {
+      setNotifPermission("unsupported");
+    }
+  }, []);
+
+  async function requestNotificationPermission() {
+    if ("Notification" in window) {
+      const permission = await Notification.requestPermission();
+      setNotifPermission(permission);
+      if (permission === "granted") {
+        toast.success("Notificações ativadas!");
+        new Notification("Tudo pronto!", { body: "Você será avisado quando seus clientes interagirem com suas propostas." });
+      } else {
+        toast.error("Permissão negada pelo navegador.");
+      }
+    }
+  }
+
   return (
     <div className="mx-auto max-w-4xl px-5 py-8">
       <h1 className="text-3xl font-bold tracking-tight">Configurações</h1>
@@ -350,6 +373,32 @@ function SettingsPage() {
               <Label className="text-muted-foreground font-semibold">Link de Pagamento Padrão</Label>
               <Input value={paymentLink} onChange={(e) => setPaymentLink(e.target.value)} placeholder="Ex: https://mpago.la/..." />
               <p className="text-xs text-muted-foreground mt-1">Ao aprovar a proposta, o cliente verá um botão para pagar usando este link (Mercado Pago, Stripe, etc).</p>
+            </div>
+          </div>
+        </div>
+
+        <hr className="border-border" />
+
+        <div>
+          <h2 className="text-xl font-bold tracking-tight mb-6">Notificações em Tempo Real</h2>
+          <div className="grid gap-6 sm:grid-cols-2">
+            <div className="space-y-4 col-span-full sm:col-span-1 border border-border p-5 rounded-2xl bg-muted/10">
+              <div>
+                <Label className="text-foreground font-bold text-base">Avisos no Celular / Navegador</Label>
+                <p className="text-sm text-muted-foreground mt-1">Receba alertas no seu dispositivo assim que um cliente visualizar ou aprovar uma proposta. (Requer que a aba fique aberta ou em segundo plano).</p>
+              </div>
+              
+              {notifPermission === "unsupported" ? (
+                <div className="text-sm text-destructive font-medium">Seu navegador não suporta notificações.</div>
+              ) : notifPermission === "granted" ? (
+                <div className="flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-500/10 px-4 py-2 rounded-lg w-fit">
+                  ✓ Notificações Ativadas neste aparelho
+                </div>
+              ) : (
+                <Button onClick={requestNotificationPermission} variant="default" className="w-fit">
+                  Habilitar Notificações Nativa
+                </Button>
+              )}
             </div>
           </div>
         </div>

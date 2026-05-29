@@ -50,7 +50,7 @@ function Dashboard() {
   const { data: profile } = useQuery({
     queryKey: ["profile", user?.id],
     queryFn: async () => {
-      const { data } = await supabase.from("profiles").select("profile_slug").eq("id", user?.id).single();
+      const { data } = await supabase.from("profiles").select("full_name, profile_slug").eq("id", user?.id).single();
       return data;
     },
     enabled: !!user,
@@ -181,8 +181,12 @@ function Dashboard() {
     >
       <motion.div variants={itemVariants} className="flex flex-wrap items-end justify-between gap-3 mb-8">
         <div>
-          <p className="text-sm font-medium tracking-wide text-primary">Olá 👋</p>
-          <h1 className="mt-1 text-3xl font-bold tracking-tight">Painel de Diretor</h1>
+          <h1 className="text-3xl font-black tracking-tight text-foreground">
+            {profile?.full_name ? `Olá, ${profile.full_name.split(' ')[0]}.` : "Dashboard."}
+          </h1>
+          <p className="mt-1.5 text-sm font-medium text-muted-foreground">
+            Acompanhe seu desempenho e métricas de vendas.
+          </p>
         </div>
         <div className="relative">
           <TooltipProvider delayDuration={0}>
@@ -215,10 +219,9 @@ function Dashboard() {
       </motion.div>
 
       {/* BIG METRICS (DIRECTOR LEVEL) */}
-      <motion.div variants={itemVariants} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5 mb-8">
+      <motion.div variants={itemVariants} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
         <Stat icon={FileText} label="Propostas" value={String(sentCount)} />
         <Stat icon={CheckCircle2} label="Aprovadas" value={String(approvedCount)} />
-        <Stat icon={Percent} label="Taxa de Conversão" value={`${rate}%`} highlighted={rate >= 50} />
         <Stat icon={TrendingUp} label="Ticket Médio" value={formatBRL(ticketMedio)} />
         <Stat icon={DollarSign} label="Total Aprovado" value={formatBRL(totalRevenue)} primary />
       </motion.div>

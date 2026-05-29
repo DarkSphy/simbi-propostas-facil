@@ -96,12 +96,15 @@ function AuthInvalidator() {
   return null;
 }
 
+import { RealtimeNotifications } from "@/components/RealtimeNotifications";
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <AuthInvalidator />
+        <RealtimeNotifications />
         <Outlet />
         <Toaster position="top-center" richColors />
       </AuthProvider>
