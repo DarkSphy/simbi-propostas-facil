@@ -184,14 +184,14 @@ function ProposalsKanban() {
                               <Draggable key={p.id} draggableId={p.id} index={index}>
                                 {(provided, snapshot) => (
                                   <motion.div
-                                    layout
                                     initial={{ opacity: 0, scale: 0.95 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     exit={{ opacity: 0, scale: 0.95 }}
                                     ref={provided.innerRef}
                                     {...provided.draggableProps}
                                     {...provided.dragHandleProps}
-                                    className={`mb-3 group relative rounded-xl border border-border bg-card p-4 shadow-sm transition-all hover:border-primary/50 hover:shadow-md ${snapshot.isDragging ? 'rotate-2 scale-105 shadow-xl z-50 ring-2 ring-primary border-primary' : ''}`}
+                                    style={provided.draggableProps.style}
+                                    className={`mb-3 group relative rounded-xl border border-border bg-card p-4 shadow-sm transition-shadow hover:border-primary/50 hover:shadow-md ${snapshot.isDragging ? 'rotate-2 scale-105 shadow-xl z-50 ring-2 ring-primary border-primary' : ''}`}
                                   >
                                     <Link to="/proposals/$id" params={{ id: p.id }} className="block">
                                       <div className="flex items-start justify-between gap-2">
