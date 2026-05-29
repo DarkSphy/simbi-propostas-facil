@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Store, Link as LinkIcon, Image as ImageIcon, Video, Youtube, Palette, MessageSquareQuote, Check, Trash2, Plus } from "lucide-react";
+import { Store, Link as LinkIcon, Image as ImageIcon, Video, Youtube, Palette, MessageSquareQuote, Check, Trash2, Plus, Type } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/vitrine-settings")({
@@ -27,6 +27,7 @@ function VitrineSettings() {
   const [pitchVideoUrl, setPitchVideoUrl] = useState("");
   const [pitchText, setPitchText] = useState("");
   const [skin, setSkin] = useState<"minimal" | "dark" | "organic">("minimal");
+  const [marqueeWords, setMarqueeWords] = useState("Inovação, Design Premium, Alta Qualidade, Resultados, Autoridade");
   
   // Depoimentos
   const [testimonials, setTestimonials] = useState<{name: string, text: string}[]>([]);
@@ -48,6 +49,14 @@ function VitrineSettings() {
           } catch(e) {
             setTestimonials([]);
           }
+        }
+        if (data.vitrine_marquee_words) {
+          try {
+            const parsed = typeof data.vitrine_marquee_words === 'string' ? JSON.parse(data.vitrine_marquee_words) : data.vitrine_marquee_words;
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              setMarqueeWords(parsed.join(", "));
+            }
+          } catch (e) {}
         }
       }
       setLoading(false);
@@ -88,7 +97,8 @@ function VitrineSettings() {
       vitrine_pitch_video_url: pitchVideoUrl,
       vitrine_pitch_text: pitchText,
       vitrine_skin: skin,
-      vitrine_testimonials: testimonials
+      vitrine_testimonials: testimonials,
+      vitrine_marquee_words: marqueeWords.split(",").map(w => w.trim()).filter(Boolean)
     }).eq("id", user.id);
 
     setSaving(false);
@@ -250,6 +260,17 @@ function VitrineSettings() {
               <Label className="text-muted-foreground font-semibold">Texto da Apresentação</Label>
               <Textarea value={pitchText} onChange={(e) => setPitchText(e.target.value)} placeholder="Olá! Eu sou especialista em..." className="h-24" />
             </div>
+          </div>
+        </div>
+
+        {/* Marquee Settings */}
+        <div className="bg-card rounded-3xl border border-border/50 p-6 shadow-sm">
+          <h2 className="text-lg font-semibold flex items-center gap-2 mb-4"><Type className="h-5 w-5 text-muted-foreground" /> Letreiro Rotativo (Marquee)</h2>
+          <p className="text-sm text-muted-foreground mb-4">Palavras-chave que ficam rolando infinitamente na vitrine para gerar autoridade.</p>
+          <div className="space-y-2">
+            <Label className="text-muted-foreground font-semibold">Palavras-chave (separadas por vírgula)</Label>
+            <Input value={marqueeWords} onChange={(e) => setMarqueeWords(e.target.value)} placeholder="Inovação, Design, Autoridade..." />
+            <p className="text-xs text-muted-foreground mt-1">Recomendamos de 4 a 6 palavras impactantes sobre o seu negócio.</p>
           </div>
         </div>
 

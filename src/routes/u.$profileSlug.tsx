@@ -17,8 +17,9 @@ function ProgressBar() {
   return <motion.div style={{ scaleX, transformOrigin: "0%" }} className="fixed top-0 left-0 right-0 h-1 bg-primary z-50" />;
 }
 
-function MarqueeBanner() {
-  const words = ["Inovação", "Design Premium", "Alta Qualidade", "Resultados", "Autoridade", "Excelência"];
+function MarqueeBanner({ words }: { words: string[] }) {
+  if (!words || words.length === 0) return null;
+  
   return (
     <div className="overflow-hidden bg-primary/5 border-y border-border py-2.5 flex items-center">
       <div className="flex whitespace-nowrap animate-marquee">
@@ -313,7 +314,11 @@ function VitrinePage() {
       </div>
 
       {/* Marquee Banner */}
-      <MarqueeBanner />
+      <MarqueeBanner words={
+        profile.vitrine_marquee_words 
+        ? (typeof profile.vitrine_marquee_words === 'string' ? JSON.parse(profile.vitrine_marquee_words) : profile.vitrine_marquee_words)
+        : ["Inovação", "Design Premium", "Alta Qualidade", "Resultados", "Autoridade"]
+      } />
 
       {/* Pitch Section */}
       {(pitchYoutubeId || profile.vitrine_pitch_text) && (
