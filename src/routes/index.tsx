@@ -178,7 +178,7 @@ function HowItWorks() {
             
             <div className="mt-10 space-y-8">
               {[
-                { title: "Adicione do Catálogo com Fotos", desc: "Escolha produtos ou serviços cadastrados com fotos e descrições direto para a proposta." },
+                { title: "Adicione Itens Cadastrados", desc: "Escolha produtos ou serviços salvos anteriormente (com fotos e descrições) direto para a proposta." },
                 { title: "Compartilhe o Link", desc: "O cliente recebe uma página com a sua marca, impecável." },
                 { title: "Receba a Notificação", desc: "Mude o status e acompanhe o pagamento no seu dashboard." }
               ].map((step, i) => (
