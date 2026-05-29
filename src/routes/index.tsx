@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
-import { ArrowRight, Check, Smartphone, Share2, Zap, MessageCircle, FileText, BarChart3, Star, Quote, Package, Grid } from "lucide-react";
+import { ArrowRight, Check, Smartphone, Share2, Zap, MessageCircle, FileText, BarChart3, Star, Quote, Package, Grid, Calculator, FileSignature } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -133,6 +133,8 @@ function Features() {
     { icon: Zap, title: "Aprovação em um clique", desc: "Chega de 'vou pensar e te aviso'. O cliente lê no celular, aperta um botão verde de 'Aprovar' e você já pode começar o serviço." },
     { icon: MessageCircle, title: "Direto no WhatsApp", desc: "O cliente não precisa baixar nenhum aplicativo, nem abrir PDF pesado. Ele clica no link e já vê tudo ali mesmo, rapidinho." },
     { icon: Package, title: "Catálogo completo com fotos", desc: "Cadastre seus produtos e serviços com fotos, descrições detalhadas e preços unitários. Puxe qualquer item com um clique e monte orçamentos rápidos." },
+    { icon: Calculator, title: "Calculadora de custo real", desc: "Calcule a margem exata de lucro de cada trabalho. Insira custos de insumos, horas trabalhadas e despesas para nunca mais precificar no prejuízo." },
+    { icon: FileSignature, title: "Contratos instantâneos", desc: "Gere um contrato de prestação de serviços atrelado ao orçamento de forma automática. O cliente assina digitalmente na hora e você garante segurança jurídica." },
   ];
 
   return (
@@ -144,8 +146,8 @@ function Features() {
           <p className="mt-4 text-lg text-muted-foreground">O Simbi transforma a forma como você passa preço. Mostre que o seu serviço não é um 'quebra-galho', é um trabalho profissional.</p>
         </div>
         
-        <div className="mx-auto mt-16 max-w-5xl sm:mt-20">
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+        <div className="mx-auto mt-16 max-w-6xl sm:mt-20">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {items.map(({ icon: Icon, title, desc }) => (
               <div key={title} className="group relative overflow-hidden rounded-3xl border border-border bg-card p-10 transition-all hover:shadow-elevated hover:-translate-y-1 hover:border-primary/30">
                 <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all group-hover:glow-primary">
