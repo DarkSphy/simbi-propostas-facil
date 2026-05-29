@@ -23,6 +23,7 @@ export const Route = createFileRoute("/_authenticated/catalog")({
 function Catalog() {
   const { user } = useAuth();
   const qc = useQueryClient();
+  const [activeTab, setActiveTab] = useState<"items" | "categories">("items");
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -33,6 +34,7 @@ function Catalog() {
   const [imageUrl, setImageUrl] = useState("");
   const [uploading, setUploading] = useState(false);
   const [isPublic, setIsPublic] = useState(true);
+  const [categoryId, setCategoryId] = useState<string>("none");
 
   const [search, setSearch] = useState("");
 
@@ -40,12 +42,25 @@ function Catalog() {
     queryKey: ["catalog-items"],
     queryFn: async () => {
       const { data, error } = await supabase.from("catalog_items")
-        .select("*")
+        .select(`*, catalog_categories(name)`)
         .eq("user_id", user?.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data ?? [];
     },
+  });
+
+  const { data: categories = [] } = useQuery({
+    queryKey: ["catalog-categories"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("catalog_categories")
+        .select("*")
+        .eq("user_id", user?.id)
+        .order("name", { ascending: true });
+      if (error) throw error;
+      return data ?? [];
+    },
+    enabled: !!user
   });
 
   const filteredItems = items.filter((it: any) => 
@@ -66,6 +81,7 @@ function Catalog() {
         unit_price: Number(unitPrice) || 0,
         image_url: imageUrl || null,
         is_public: isPublic,
+        category_id: categoryId === "none" ? null : categoryId,
       };
 
       if (editingId) {
@@ -95,6 +111,7 @@ function Catalog() {
     setImageUrl("");
     setType("product");
     setIsPublic(true);
+    setCategoryId("none");
     setOpen(false);
   }
 
@@ -106,6 +123,7 @@ function Catalog() {
     setImageUrl(it.image_url || "");
     setType(it.type as "product" | "service");
     setIsPublic(it.is_public ?? true);
+    setCategoryId(it.category_id || "none");
     setOpen(true);
   }
 
@@ -133,18 +151,37 @@ function Catalog() {
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-8">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold tracking-tight">Produtos & Serviços</h1>
-        <div className="flex items-center gap-3">
-          <div className="relative w-full sm:w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input 
-              placeholder="Buscar itens..." 
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 rounded-full bg-card"
-            />
-          </div>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2">
+        <h1 className="text-3xl font-bold tracking-tight">Catálogo</h1>
+      </div>
+
+      <div className="flex border-b border-border mb-6">
+        <button 
+          className={cn("px-4 py-2 font-semibold text-sm border-b-2 transition-colors", activeTab === "items" ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground")}
+          onClick={() => setActiveTab("items")}
+        >
+          Produtos & Serviços
+        </button>
+        <button 
+          className={cn("px-4 py-2 font-semibold text-sm border-b-2 transition-colors", activeTab === "categories" ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground")}
+          onClick={() => setActiveTab("categories")}
+        >
+          Categorias
+        </button>
+      </div>
+
+      {activeTab === "items" ? (
+        <>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="relative w-full sm:w-64">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input 
+                placeholder="Buscar itens..." 
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-9 rounded-full bg-card"
+              />
+            </div>
           <Dialog open={open} onOpenChange={(val) => { if (!val) resetForm(); else setOpen(true); }}>
             <TooltipProvider delayDuration={0}>
               <Tooltip>
@@ -186,6 +223,18 @@ function Catalog() {
                   </Select>
                 </div>
                 <div className="space-y-1.5">
+                  <Label>Categoria (Opcional)</Label>
+                  <Select value={categoryId} onValueChange={(v: any) => setCategoryId(v)}>
+                    <SelectTrigger><SelectValue placeholder="Selecione uma categoria" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">Sem categoria</SelectItem>
+                      {categories.map((c: any) => (
+                        <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-1.5">
                   <Label>Nome</Label>
                   <Input value={name} onChange={e => setName(e.target.value)} placeholder="Ex: Criação de Logotipo" />
                 </div>
@@ -222,7 +271,6 @@ function Catalog() {
               </div>
             </DialogContent>
           </Dialog>
-        </div>
       </div>
 
       <div className="mt-6 rounded-2xl border border-border bg-card shadow-soft">
@@ -258,6 +306,11 @@ function Catalog() {
                     <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                       {it.type === "product" ? "Produto" : "Serviço"}
                     </span>
+                    {it.catalog_categories?.name && (
+                      <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold tracking-wider text-primary truncate max-w-[150px]">
+                        {it.catalog_categories.name}
+                      </span>
+                    )}
                     {it.is_public ? (
                       <TooltipProvider delayDuration={0}>
                         <Tooltip>
@@ -293,6 +346,60 @@ function Catalog() {
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+        </>
+      ) : (
+        <CategoriesManager categories={categories} user={user} qc={qc} />
+      )}
+    </div>
+  );
+}
+
+function CategoriesManager({ categories, user, qc }: any) {
+  const [name, setName] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  async function handleAdd() {
+    if (!name.trim() || !user) return;
+    setSaving(true);
+    const { error } = await supabase.from("catalog_categories").insert({ user_id: user.id, name: name.trim() });
+    setSaving(false);
+    if (error) { toast.error(error.message); return; }
+    toast.success("Categoria adicionada");
+    setName("");
+    qc.invalidateQueries({ queryKey: ["catalog-categories"] });
+  }
+
+  async function handleRemove(id: string) {
+    if (!confirm("Excluir esta categoria? Os produtos atrelados a ela ficarão sem categoria.")) return;
+    const { error } = await supabase.from("catalog_categories").delete().eq("id", id);
+    if (error) { toast.error(error.message); return; }
+    toast.success("Categoria excluída");
+    qc.invalidateQueries({ queryKey: ["catalog-categories"] });
+    qc.invalidateQueries({ queryKey: ["catalog-items"] });
+  }
+
+  return (
+    <div className="space-y-6 animate-in fade-in duration-300">
+      <div className="flex gap-2 max-w-md">
+        <Input placeholder="Nome da nova categoria (ex: Ração, Serviços de Limpeza)" value={name} onChange={e => setName(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleAdd()} />
+        <Button onClick={handleAdd} disabled={saving || !name.trim()}>Adicionar</Button>
+      </div>
+      <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
+        {categories.length === 0 ? (
+          <div className="p-10 text-center text-muted-foreground text-sm">Nenhuma categoria criada.</div>
+        ) : (
+          <ul className="divide-y divide-border">
+            {categories.map((c: any) => (
+              <li key={c.id} className="flex items-center justify-between p-4 hover:bg-muted/30">
+                <span className="font-medium">{c.name}</span>
+                <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive" onClick={() => handleRemove(c.id)}>
+                  <Trash2 className="h-4 w-4" />
+                </Button>
               </li>
             ))}
           </ul>
