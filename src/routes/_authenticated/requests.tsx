@@ -23,7 +23,7 @@ function RequestsList() {
     queryKey: ["proposals-list"],
     queryFn: async () => {
       const { data, error } = await supabase.from("proposals")
-        .select("id,title,total,status,created_at,public_slug,clients(name,phone)")
+        .select("id,title,total,status,created_at,public_slug,clients(name,phone),proposal_items(description)")
         .eq("user_id", user?.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
@@ -113,12 +113,20 @@ function RequestsList() {
               <li key={p.id}>
                 <Link to="/proposals/$id" params={{ id: p.id }} className="group flex items-center gap-4 px-6 py-5 transition-all hover:bg-muted/30 relative overflow-hidden">
                   <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary/80"></div>
-                  <div className="flex-1 truncate pl-2">
+                  <div className="flex-1 min-w-0 pl-2">
                     <div className="truncate text-base font-semibold transition-colors group-hover:text-primary">{p.title}</div>
                     <div className="mt-0.5 truncate text-sm text-muted-foreground">{(p as any).clients?.name ?? "Sem cliente"} · {new Date(p.created_at).toLocaleDateString("pt-BR")}</div>
+                    {p.proposal_items && p.proposal_items.length > 0 && (
+                      <div className="mt-3 flex flex-wrap gap-1.5">
+                        {p.proposal_items.map((item: any, i: number) => (
+                          <span key={i} className="inline-flex items-center rounded-md bg-muted/60 border border-border/50 px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
+                            {item.description}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                  <div className="w-28 text-right text-base font-medium">{formatBRL(Number(p.total))}</div>
-                  <div className="w-28 flex flex-col items-end gap-2">
+                  <div className="w-auto min-w-[130px] flex flex-col items-end gap-2 shrink-0">
                     {statusBadge(p.status)}
                     <Button size="sm" variant="default" className="h-8 text-[11px] uppercase font-bold tracking-wider rounded-full bg-blue-500 hover:bg-blue-600 text-white shadow-md shadow-blue-500/20 px-4 transition-transform hover:scale-105" onClick={(e) => handleFollowUp(e, p)}>
                       <MessageCircle className="mr-1.5 h-3.5 w-3.5" /> Responder

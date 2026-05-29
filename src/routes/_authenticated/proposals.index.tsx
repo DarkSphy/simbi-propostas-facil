@@ -118,12 +118,12 @@ function ProposalsList() {
             {filteredProposals.map(p => (
               <li key={p.id}>
                 <Link to="/proposals/$id" params={{ id: p.id }} className="group flex items-center gap-4 px-6 py-5 transition-all hover:bg-muted/30">
-                  <div className="flex-1 truncate">
+                  <div className="flex-1 min-w-0">
                     <div className="truncate text-base font-semibold transition-colors group-hover:text-primary">{p.title}</div>
                     <div className="mt-0.5 truncate text-sm text-muted-foreground">{(p as any).clients?.name ?? "Sem cliente"} · {new Date(p.created_at).toLocaleDateString("pt-BR")}</div>
                   </div>
-                  <div className="w-28 text-right text-base font-medium">{formatBRL(Number(p.total))}</div>
-                  <div className="w-28 flex flex-col items-end gap-2">
+                  <div className="hidden sm:block w-32 text-right text-base font-medium">{formatBRL(Number(p.total))}</div>
+                  <div className="w-auto min-w-[130px] flex flex-col items-end gap-2 shrink-0">
                     {statusBadge(p.status)}
                     {['sent', 'viewed'].includes(p.status) && (
                       <Button size="sm" variant="default" className="h-8 text-[11px] uppercase font-bold tracking-wider rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shadow-md shadow-emerald-500/20 px-4 transition-transform hover:scale-105" onClick={(e) => handleFollowUp(e, p)}>
