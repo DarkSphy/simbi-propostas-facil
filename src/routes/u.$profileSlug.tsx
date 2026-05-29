@@ -185,9 +185,8 @@ function VitrinePage() {
                       <h3 className="font-bold text-lg leading-tight">{it.name}</h3>
                     </div>
                     {it.description && <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{it.description}</p>}
-                    <div className="mt-auto pt-2 font-black text-primary text-lg flex items-center justify-between">
-                      {formatBRL(Number(it.unit_price))}
-                      {!it.image_url && <span className="text-[10px] uppercase font-bold text-muted-foreground bg-muted px-2 py-0.5 rounded-full tracking-wider">{it.type === 'product' ? 'Produto' : 'Serviço'}</span>}
+                    <div className="mt-auto pt-2 flex items-center justify-between">
+                      <span className="text-[10px] uppercase font-bold text-muted-foreground bg-muted px-2 py-0.5 rounded-full tracking-wider">{it.type === 'product' ? 'Produto' : 'Serviço'}</span>
                     </div>
                   </div>
                 </div>
@@ -218,7 +217,7 @@ function VitrinePage() {
           <DialogHeader>
             <DialogTitle className="text-2xl">Finalizar Solicitação</DialogTitle>
             <DialogDescription>
-              Você selecionou {cartItems.length} item(s) totalizando <strong>{formatBRL(totalCart)}</strong>.
+              Você selecionou {cartItems.length} item(s) para solicitar orçamento.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 pt-4">
@@ -235,16 +234,11 @@ function VitrinePage() {
               <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">Resumo do Pedido</h4>
               <ul className="space-y-2">
                 {cartItems.map(it => (
-                  <li key={it.id} className="flex justify-between text-sm">
-                    <span className="font-medium">{it.name}</span>
-                    <span className="text-muted-foreground font-semibold">{formatBRL(Number(it.unit_price))}</span>
+                  <li key={it.id} className="flex text-sm">
+                    <span className="font-medium text-foreground">• {it.name}</span>
                   </li>
                 ))}
               </ul>
-              <div className="border-t border-border mt-3 pt-3 flex justify-between font-black text-primary">
-                <span>Total Estimado</span>
-                <span>{formatBRL(totalCart)}</span>
-              </div>
             </div>
 
             <Button className="w-full h-12 rounded-full font-bold text-base mt-2" onClick={submit} disabled={sending}>
