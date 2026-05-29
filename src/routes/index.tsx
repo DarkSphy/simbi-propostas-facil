@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
-import { ArrowRight, Check, Smartphone, Share2, Zap, MessageCircle, FileText, BarChart3, Star, Quote } from "lucide-react";
+import { ArrowRight, Check, Smartphone, Share2, Zap, MessageCircle, FileText, BarChart3, Star, Quote, Package, Grid } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -132,7 +132,7 @@ function Features() {
     { icon: Share2, title: "O fim do 'orçamento de boca'", desc: "Antes: você mandava um áudio confuso ou foto de caderno. Depois: o cliente clica num link e vê um orçamento com sua logo, impecável." },
     { icon: Zap, title: "Aprovação em um clique", desc: "Chega de 'vou pensar e te aviso'. O cliente lê no celular, aperta um botão verde de 'Aprovar' e você já pode começar o serviço." },
     { icon: MessageCircle, title: "Direto no WhatsApp", desc: "O cliente não precisa baixar nenhum aplicativo, nem abrir PDF pesado. Ele clica no link e já vê tudo ali mesmo, rapidinho." },
-    { icon: FileText, title: "Preços na ponta do dedo", desc: "Não perca tempo calculando tudo de novo do zero. Salve os serviços e peças mais usados e monte um orçamento em 2 minutos." },
+    { icon: Package, title: "Catálogo completo com fotos", desc: "Cadastre seus produtos e serviços com fotos, descrições detalhadas e preços unitários. Puxe qualquer item com um clique e monte orçamentos rápidos." },
   ];
 
   return (
@@ -176,7 +176,7 @@ function HowItWorks() {
             
             <div className="mt-10 space-y-8">
               {[
-                { title: "Adicione do Catálogo", desc: "Puxe serviços e valores cadastrados instantaneamente." },
+                { title: "Adicione do Catálogo com Fotos", desc: "Escolha produtos ou serviços cadastrados com fotos e descrições direto para a proposta." },
                 { title: "Compartilhe o Link", desc: "O cliente recebe uma página com a sua marca, impecável." },
                 { title: "Receba a Notificação", desc: "Mude o status e acompanhe o pagamento no seu dashboard." }
               ].map((step, i) => (
