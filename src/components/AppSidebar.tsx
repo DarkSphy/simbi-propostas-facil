@@ -12,7 +12,7 @@ const items = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Propostas", url: "/proposals", icon: FileText },
   { title: "Contratos", url: "/contracts", icon: FileSignature },
-  { title: "Ordem de Serviço", url: "/os", icon: ClipboardList },
+  { title: "Ordem de Serviço", url: "/work-orders", icon: ClipboardList },
   { title: "Agenda", url: "/agenda", icon: CalendarDays },
   { title: "Clientes", url: "/clients", icon: Users },
   { title: "Catálogo", url: "/catalog", icon: Grid },
