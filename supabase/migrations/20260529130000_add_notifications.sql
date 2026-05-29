@@ -87,6 +87,15 @@ BEGIN
       'Contrato Assinado ✍️',
       COALESCE(client_name, 'Um cliente') || ' assinou o contrato para "' || COALESCE(proposal_title, 'a proposta') || '"!'
     );
+
+    -- Log na linha de tempo da proposta
+    INSERT INTO public.proposal_logs (proposal_id, event_type, location, user_agent)
+    VALUES (
+      NEW.proposal_id,
+      'sign',
+      'Assinatura Eletrônica',
+      'Assinado via página digital de contratos'
+    );
   END IF;
   RETURN NEW;
 END;

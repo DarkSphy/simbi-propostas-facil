@@ -166,6 +166,7 @@ function ProposalDetail() {
               const isView = log.event_type === "view";
               const isApprove = log.event_type === "approve";
               const isReject = log.event_type === "reject";
+              const isSign = log.event_type === "sign";
               
               let icon = <Eye className="h-4 w-4 text-blue-600" />;
               let title = "Visualização";
@@ -179,6 +180,10 @@ function ProposalDetail() {
                 icon = <XCircle className="h-4 w-4 text-red-600" />;
                 title = "Proposta Recusada ❌";
                 colorClass = "bg-red-100 border-red-200";
+              } else if (isSign) {
+                icon = <FileSignature className="h-4 w-4 text-indigo-600" />;
+                title = "Contrato Assinado ✍️";
+                colorClass = "bg-indigo-100 border-indigo-200";
               }
 
               // Simple parser for user agent to show browser/device
