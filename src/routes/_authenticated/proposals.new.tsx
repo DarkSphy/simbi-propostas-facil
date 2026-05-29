@@ -237,7 +237,7 @@ function NewProposal() {
       } else {
         const public_slug = Math.random().toString(36).substring(2, 11) + Math.random().toString(36).substring(2, 6);
         const { data: prop, error: pErr } = await supabase.from("proposals")
-          .insert({ user_id: user.id, client_id: finalClientId, title, description, notes, total, status: "draft", public_slug, valid_until: validUntil })
+          .insert({ user_id: user.id, client_id: finalClientId, title, description, notes, total, status: "sent", public_slug, valid_until: validUntil })
           .select("id,public_slug").single();
         if (pErr) throw pErr;
         propId = prop.id;
@@ -253,7 +253,7 @@ function NewProposal() {
       }
       
       queryClient.invalidateQueries({ queryKey: ["proposals"] });
-      toast.success(editingId ? "Proposta atualizada!" : "Proposta salva como rascunho!");
+      toast.success(editingId ? "Proposta atualizada!" : "Proposta enviada com sucesso!");
       navigate({ to: "/proposals" });
     } catch (e: any) {
       console.error("Erro no save da proposta:", e);
