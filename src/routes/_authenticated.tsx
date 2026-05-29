@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { useAuth } from "@/lib/auth";
+import { NotificationBell } from "@/components/NotificationBell";
 
 export const Route = createFileRoute("/_authenticated")({
   component: AuthLayout,
@@ -29,8 +30,9 @@ function AuthLayout() {
       <div className="flex min-h-screen w-full bg-background">
         <AppSidebar />
         <div className="flex flex-1 flex-col">
-          <header className="print:hidden sticky top-0 z-30 flex h-14 items-center gap-2 border-b border-border bg-background/80 px-4 backdrop-blur">
+          <header className="print:hidden sticky top-0 z-30 flex h-14 items-center justify-between gap-2 border-b border-border bg-background/80 px-4 backdrop-blur">
             <SidebarTrigger />
+            <NotificationBell />
           </header>
           <main className="flex-1">
             <Outlet />

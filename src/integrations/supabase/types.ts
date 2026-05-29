@@ -108,6 +108,31 @@ export type Database = {
           updated_at?: string
           whatsapp?: string | null
         }
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          read: boolean
+          title: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          read?: boolean
+          title: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          read?: boolean
+          title?: string
+          user_id?: string
+        }
         Relationships: []
       }
       proposal_images: {
