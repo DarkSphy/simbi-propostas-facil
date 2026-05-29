@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Trash2, ArrowLeft, PackagePlus } from "lucide-react";
+import { Plus, Trash2, ArrowLeft, PackagePlus, Save, FolderOpen } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { formatBRL } from "@/lib/format";
@@ -38,7 +38,16 @@ function NewProposal() {
   const [validDays, setValidDays] = useState<string>("");
   const [items, setItems] = useState<Item[]>([{ description: "", quantity: 1, unit_price: "" }]);
   const [saving, setSaving] = useState(false);
+  
+  // Dialogs
   const [catalogOpen, setCatalogOpen] = useState(false);
+  const [saveTemplateOpen, setSaveTemplateOpen] = useState(false);
+  const [loadTemplateOpen, setLoadTemplateOpen] = useState(false);
+  
+  // Templates state
+  const [templateName, setTemplateName] = useState("");
+  const [savingTemplate, setSavingTemplate] = useState(false);
+
   const [editingId, setEditingId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -78,6 +87,16 @@ function NewProposal() {
     enabled: !!user
   });
 
+  const { data: templates = [] } = useQuery({
+    queryKey: ["proposal-templates"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("proposal_templates").select("*").eq("user_id", user?.id).order("name");
+      if (error && error.code !== '42P01') throw error; // Ignore table does not exist error initially
+      return data ?? [];
+    },
+    enabled: !!user
+  });
+
   const total = items.reduce((s, it) => s + Number(it.quantity || 0) * Number(it.unit_price || 0), 0);
 
   function updateItem(i: number, patch: Partial<Item>) {
@@ -102,7 +121,6 @@ function NewProposal() {
     const ext = file.name.split('.').pop();
     const filePath = `${user.id}/proposal-items/${Date.now()}.${ext}`;
     
-    // Mostra um loading rápido no botão ou toast
     const loadingId = toast.loading("Subindo imagem...");
     const { error } = await supabase.storage.from("proposal-images").upload(filePath, file);
     if (error) { toast.error("Erro ao subir imagem.", { id: loadingId }); return; }
@@ -112,17 +130,71 @@ function NewProposal() {
     toast.success("Imagem anexada!", { id: loadingId });
   }
 
+  async function saveTemplate() {
+    if (!templateName.trim()) {
+      toast.error("Informe um nome para o modelo.");
+      return;
+    }
+    if (!user) return;
+    setSavingTemplate(true);
+    try {
+      const content = {
+        title,
+        description,
+        notes,
+        items
+      };
+      
+      const { error } = await supabase.from("proposal_templates").insert({
+        user_id: user.id,
+        name: templateName.trim(),
+        content: content as any
+      });
+      
+      if (error) throw error;
+      
+      toast.success("Modelo salvo com sucesso!");
+      setSaveTemplateOpen(false);
+      setTemplateName("");
+      queryClient.invalidateQueries({ queryKey: ["proposal-templates"] });
+    } catch (e: any) {
+      console.error(e);
+      toast.error(e.message || "Erro ao salvar modelo. Verifique se criou a tabela no banco.");
+    } finally {
+      setSavingTemplate(false);
+    }
+  }
+
+  function loadTemplate(template: any) {
+    const content = template.content;
+    if (content.title) setTitle(content.title);
+    if (content.description) setDescription(content.description);
+    if (content.notes) setNotes(content.notes);
+    if (content.items && content.items.length > 0) setItems(content.items);
+    
+    setLoadTemplateOpen(false);
+    toast.success("Modelo carregado!");
+  }
+
+  async function deleteTemplate(id: string) {
+    if (!confirm("Excluir este modelo?")) return;
+    const { error } = await supabase.from("proposal_templates").delete().eq("id", id);
+    if (error) {
+      toast.error(error.message);
+    } else {
+      toast.success("Modelo excluído.");
+      queryClient.invalidateQueries({ queryKey: ["proposal-templates"] });
+    }
+  }
+
   async function save() {
-    console.log("Botão salvar clicado!");
     try {
       if (!title || !title.trim()) { 
         toast.error("Informe um título.");
-        alert("Por favor, preencha o Título da proposta antes de criar.");
         return; 
       }
       if (!user) { 
         toast.error("Sua sessão expirou.");
-        alert("Sua sessão expirou. Atualize a página e faça login novamente.");
         return; 
       }
       
@@ -165,7 +237,7 @@ function NewProposal() {
       } else {
         const public_slug = Math.random().toString(36).substring(2, 11) + Math.random().toString(36).substring(2, 6);
         const { data: prop, error: pErr } = await supabase.from("proposals")
-          .insert({ user_id: user.id, client_id: finalClientId, title, description, notes, total, status: "sent", public_slug, valid_until: validUntil })
+          .insert({ user_id: user.id, client_id: finalClientId, title, description, notes, total, status: "draft", public_slug, valid_until: validUntil })
           .select("id,public_slug").single();
         if (pErr) throw pErr;
         propId = prop.id;
@@ -181,12 +253,11 @@ function NewProposal() {
       }
       
       queryClient.invalidateQueries({ queryKey: ["proposals"] });
-      toast.success(editingId ? "Proposta atualizada!" : "Proposta criada!");
-      navigate({ to: "/proposals/$id", params: { id: pSlug } });
+      toast.success(editingId ? "Proposta atualizada!" : "Proposta salva como rascunho!");
+      navigate({ to: "/proposals" });
     } catch (e: any) {
       console.error("Erro no save da proposta:", e);
       toast.error(e?.message || "Erro ao criar proposta. Verifique o console.");
-      alert("Ocorreu um erro ao salvar: " + (e?.message || "Erro desconhecido"));
     } finally { 
       setSaving(false); 
     }
@@ -194,10 +265,46 @@ function NewProposal() {
 
   return (
     <div className="mx-auto max-w-3xl px-5 py-8">
-      <Link to="/proposals" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground"><ArrowLeft className="mr-1 h-4 w-4" /> Voltar</Link>
-      <h1 className="mt-3 text-2xl font-bold tracking-tight">{editingId ? "Editar proposta" : "Nova proposta"}</h1>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+        <div>
+          <Link to="/proposals" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground"><ArrowLeft className="mr-1 h-4 w-4" /> Voltar para lista</Link>
+          <h1 className="mt-2 text-2xl font-bold tracking-tight">{editingId ? "Editar proposta" : "Nova proposta"}</h1>
+        </div>
+        <div className="flex items-center gap-2">
+          {/* LOAD TEMPLATE DIALOG */}
+          <Dialog open={loadTemplateOpen} onOpenChange={setLoadTemplateOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline" className="rounded-full shadow-sm hover:-translate-y-0.5 transition-transform bg-primary/5 border-primary/20 text-primary">
+                <FolderOpen className="mr-1.5 h-4 w-4" /> Carregar Modelo
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader><DialogTitle>Meus Modelos Salvos</DialogTitle></DialogHeader>
+              <div className="max-h-[60vh] overflow-y-auto pt-4">
+                {templates.length === 0 ? (
+                  <p className="text-center text-sm text-muted-foreground py-4">Nenhum modelo salvo ainda. Crie uma proposta e clique em "Salvar como Modelo" no final da página.</p>
+                ) : (
+                  <ul className="divide-y divide-border">
+                    {templates.map((t: any) => (
+                      <li key={t.id} className="flex items-center justify-between py-3 group">
+                        <div className="font-medium">{t.name}</div>
+                        <div className="flex gap-2">
+                          <Button size="sm" onClick={() => loadTemplate(t)}>Usar</Button>
+                          <Button size="icon" variant="ghost" className="text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => deleteTemplate(t.id)}>
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
+      </div>
 
-      <div className="mt-6 space-y-6">
+      <div className="space-y-6">
         <Section title="Cliente">
           {clients.length > 0 && (
             <div className="space-y-1.5">
@@ -261,13 +368,13 @@ function NewProposal() {
               <Button variant="outline" size="sm" className="rounded-full" onClick={addItem}><Plus className="mr-1 h-4 w-4" /> Adicionar manual</Button>
               <Dialog open={catalogOpen} onOpenChange={setCatalogOpen}>
                 <DialogTrigger asChild>
-                  <Button variant="secondary" size="sm" className="rounded-full"><PackagePlus className="mr-1 h-4 w-4" /> Importar item salvo</Button>
+                  <Button variant="secondary" size="sm" className="rounded-full"><PackagePlus className="mr-1 h-4 w-4" /> Importar do Catálogo</Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader><DialogTitle>Produtos & Serviços Cadastrados</DialogTitle></DialogHeader>
                   <div className="max-h-[60vh] overflow-y-auto pt-4">
                     {catalogItems.length === 0 ? (
-                      <p className="text-center text-sm text-muted-foreground">Nenhum produto ou serviço cadastrado ainda.</p>
+                      <p className="text-center text-sm text-muted-foreground">Nenhum produto ou serviço cadastrado ainda. Vá em "Produtos & Serviços" no menu lateral para cadastrar.</p>
                     ) : (
                       <ul className="divide-y divide-border">
                         {catalogItems.map(c => (
@@ -293,9 +400,44 @@ function NewProposal() {
           <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={3} placeholder="Prazo, condições de pagamento, etc." />
         </Section>
 
-        <div className="flex justify-end gap-2">
-          <Button variant="outline" onClick={() => navigate({ to: "/proposals" })}>Cancelar</Button>
-          <Button onClick={save} disabled={saving}>{saving ? "Salvando…" : (editingId ? "Atualizar proposta" : "Criar proposta")}</Button>
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-4 pb-8 border-t border-border/50">
+          {/* SAVE TEMPLATE DIALOG */}
+          <Dialog open={saveTemplateOpen} onOpenChange={setSaveTemplateOpen}>
+            <DialogTrigger asChild>
+              <Button variant="ghost" className="text-muted-foreground hover:text-foreground">
+                <Save className="mr-2 h-4 w-4" /> Salvar como Modelo
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Salvar Modelo de Proposta</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4 pt-4">
+                <div className="space-y-2">
+                  <Label>Nome do Modelo</Label>
+                  <Input 
+                    placeholder="Ex: Instalação Padrão 12.000 BTUs" 
+                    value={templateName}
+                    onChange={(e) => setTemplateName(e.target.value)}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Irá salvar o Título, Descrição, Itens (com preços) e Observações atuais.
+                  </p>
+                </div>
+                <div className="flex justify-end gap-2">
+                  <Button variant="outline" onClick={() => setSaveTemplateOpen(false)}>Cancelar</Button>
+                  <Button onClick={saveTemplate} disabled={savingTemplate}>{savingTemplate ? "Salvando..." : "Salvar Modelo"}</Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+
+          <div className="flex gap-2 w-full sm:w-auto">
+            <Button variant="outline" onClick={() => navigate({ to: "/proposals" })} className="flex-1 sm:flex-none">Cancelar</Button>
+            <Button onClick={save} disabled={saving} className="flex-1 sm:flex-none">
+              {saving ? "Salvando…" : (editingId ? "Atualizar proposta" : "Salvar Rascunho")}
+            </Button>
+          </div>
         </div>
       </div>
     </div>
