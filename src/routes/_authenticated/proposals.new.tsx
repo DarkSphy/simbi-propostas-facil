@@ -274,8 +274,8 @@ function NewProposal() {
           {/* LOAD TEMPLATE DIALOG */}
           <Dialog open={loadTemplateOpen} onOpenChange={setLoadTemplateOpen}>
             <DialogTrigger asChild>
-              <Button variant="outline" className="rounded-full shadow-sm hover:-translate-y-0.5 transition-transform bg-primary/5 border-primary/20 text-primary">
-                <FolderOpen className="mr-1.5 h-4 w-4" /> Carregar Modelo
+              <Button className="rounded-full shadow-md hover:-translate-y-0.5 transition-transform">
+                <FolderOpen className="mr-1.5 h-4 w-4" /> Carregar Modelo Prontos
               </Button>
             </DialogTrigger>
             <DialogContent>
@@ -368,7 +368,9 @@ function NewProposal() {
               <Button variant="outline" size="sm" className="rounded-full" onClick={addItem}><Plus className="mr-1 h-4 w-4" /> Adicionar manual</Button>
               <Dialog open={catalogOpen} onOpenChange={setCatalogOpen}>
                 <DialogTrigger asChild>
-                  <Button variant="secondary" size="sm" className="rounded-full"><PackagePlus className="mr-1 h-4 w-4" /> Importar do Catálogo</Button>
+                  <Button className="rounded-full bg-slate-800 text-white hover:bg-slate-700 dark:bg-slate-200 dark:text-slate-900 dark:hover:bg-slate-300" size="sm">
+                    <PackagePlus className="mr-1 h-4 w-4" /> Importar do Catálogo
+                  </Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader><DialogTitle>Produtos & Serviços Cadastrados</DialogTitle></DialogHeader>
@@ -401,41 +403,43 @@ function NewProposal() {
         </Section>
 
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-4 pb-8 border-t border-border/50">
-          {/* SAVE TEMPLATE DIALOG */}
-          <Dialog open={saveTemplateOpen} onOpenChange={setSaveTemplateOpen}>
-            <DialogTrigger asChild>
-              <Button variant="ghost" className="text-muted-foreground hover:text-foreground">
-                <Save className="mr-2 h-4 w-4" /> Salvar como Modelo
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Salvar Modelo de Proposta</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4 pt-4">
-                <div className="space-y-2">
-                  <Label>Nome do Modelo</Label>
-                  <Input 
-                    placeholder="Ex: Instalação Padrão 12.000 BTUs" 
-                    value={templateName}
-                    onChange={(e) => setTemplateName(e.target.value)}
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Irá salvar o Título, Descrição, Itens (com preços) e Observações atuais.
-                  </p>
+          <div className="flex w-full sm:w-auto">
+            {/* SAVE TEMPLATE DIALOG */}
+            <Dialog open={saveTemplateOpen} onOpenChange={setSaveTemplateOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline" className="border-primary/50 text-primary hover:bg-primary/10">
+                  <Save className="mr-2 h-4 w-4" /> Salvar Proposta como Modelo
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Salvar Modelo de Proposta</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 pt-4">
+                  <div className="space-y-2">
+                    <Label>Nome do Modelo</Label>
+                    <Input 
+                      placeholder="Ex: Instalação Padrão 12.000 BTUs" 
+                      value={templateName}
+                      onChange={(e) => setTemplateName(e.target.value)}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Irá salvar o Título, Descrição, Itens (com preços) e Observações atuais.
+                    </p>
+                  </div>
+                  <div className="flex justify-end gap-2">
+                    <Button variant="outline" onClick={() => setSaveTemplateOpen(false)}>Cancelar</Button>
+                    <Button onClick={saveTemplate} disabled={savingTemplate}>{savingTemplate ? "Salvando..." : "Salvar Modelo"}</Button>
+                  </div>
                 </div>
-                <div className="flex justify-end gap-2">
-                  <Button variant="outline" onClick={() => setSaveTemplateOpen(false)}>Cancelar</Button>
-                  <Button onClick={saveTemplate} disabled={savingTemplate}>{savingTemplate ? "Salvando..." : "Salvar Modelo"}</Button>
-                </div>
-              </div>
-            </DialogContent>
-          </Dialog>
+              </DialogContent>
+            </Dialog>
+          </div>
 
           <div className="flex gap-2 w-full sm:w-auto">
             <Button variant="outline" onClick={() => navigate({ to: "/proposals" })} className="flex-1 sm:flex-none">Cancelar</Button>
-            <Button onClick={save} disabled={saving} className="flex-1 sm:flex-none">
-              {saving ? "Salvando…" : (editingId ? "Atualizar proposta" : "Salvar Rascunho")}
+            <Button onClick={save} disabled={saving} className="flex-1 sm:flex-none shadow-md">
+              {saving ? "Salvando…" : (editingId ? "Atualizar proposta" : "Salvar Proposta Oficial")}
             </Button>
           </div>
         </div>
