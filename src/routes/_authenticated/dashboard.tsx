@@ -173,36 +173,40 @@ function Dashboard() {
 
       <OnboardingChecklist proposalsCount={proposals.length} catalogCount={catalogCount} />
 
-      <div className="mb-8 overflow-hidden rounded-3xl border border-blue-200 bg-blue-50/50 p-6 shadow-sm">
+      <div className="mb-8 overflow-hidden rounded-3xl border border-blue-200 dark:border-blue-900/30 bg-blue-50/50 dark:bg-blue-950/10 p-6 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
           <div className="flex items-center gap-2">
             <CalendarDays className="h-6 w-6 text-blue-500" />
-            <h2 className="text-lg font-bold text-blue-900">Sua Agenda</h2>
+            <h2 className="text-lg font-bold text-blue-900 dark:text-blue-200">Sua Agenda</h2>
           </div>
-          <Button size="sm" variant="outline" className="bg-white" asChild>
+          <Button size="sm" variant="outline" className="bg-background dark:bg-card border-blue-200 dark:border-blue-900/50 hover:bg-muted text-foreground" asChild>
             <Link to="/agenda">Abrir Calendário</Link>
           </Button>
         </div>
         
         {appointments.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-6 text-center">
-            <CalendarDays className="h-10 w-10 text-blue-300 mb-2 opacity-50" />
-            <p className="text-sm font-medium text-blue-800">Sua agenda está livre!</p>
-            <p className="text-xs text-blue-600/70 mt-1 max-w-sm">Use o calendário para marcar datas de entrega, reuniões com clientes ou visitas técnicas.</p>
+            <CalendarDays className="h-10 w-10 text-blue-300 dark:text-blue-800 mb-2 opacity-50" />
+            <p className="text-sm font-medium text-blue-800 dark:text-blue-300">Sua agenda está livre!</p>
+            <p className="text-xs text-blue-600/70 dark:text-blue-400/70 mt-1 max-w-sm">Use o calendário para marcar datas de entrega, reuniões com clientes ou visitas técnicas.</p>
           </div>
         ) : (
           <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
             {appointments.map(apt => {
               const isTodayApt = apt.date === format(new Date(), "yyyy-MM-dd");
               return (
-                <div key={apt.id} className={`p-4 rounded-xl border bg-white flex flex-col justify-between gap-2 ${isTodayApt ? 'border-blue-300 ring-1 ring-blue-100 shadow-md' : 'border-blue-100'}`}>
+                <div key={apt.id} className={`p-4 rounded-xl border bg-card flex flex-col justify-between gap-2 transition-all ${
+                  isTodayApt 
+                    ? 'border-blue-300 dark:border-blue-700 ring-1 ring-blue-100 dark:ring-blue-950/30 shadow-md' 
+                    : 'border-blue-100 dark:border-blue-900/20 hover:border-blue-300 dark:hover:border-blue-800 hover:shadow-sm'
+                }`}>
                   <div>
                     <div className="flex items-center gap-2 mb-1">
-                      {isTodayApt && <span className="bg-red-100 text-red-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider animate-pulse">Hoje</span>}
-                      <span className="text-xs font-semibold text-blue-600">{format(parseISO(apt.date), "dd 'de' MMM", { locale: ptBR })} {apt.time && `às ${apt.time.substring(0,5)}`}</span>
+                      {isTodayApt && <span className="bg-red-100 dark:bg-red-950/50 text-red-700 dark:text-red-400 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider animate-pulse">Hoje</span>}
+                      <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">{format(parseISO(apt.date), "dd 'de' MMM", { locale: ptBR })} {apt.time && `às ${apt.time.substring(0,5)}`}</span>
                     </div>
-                    <div className="font-semibold text-gray-900 line-clamp-1" title={apt.title}>{apt.title}</div>
-                    {(apt.clients as any)?.name && <div className="text-xs text-gray-500 mt-1 line-clamp-1">Cliente: {(apt.clients as any).name}</div>}
+                    <div className="font-semibold text-foreground line-clamp-1" title={apt.title}>{apt.title}</div>
+                    {(apt.clients as any)?.name && <div className="text-xs text-muted-foreground mt-1 line-clamp-1">Cliente: {(apt.clients as any).name}</div>}
                   </div>
                 </div>
               );
@@ -212,26 +216,26 @@ function Dashboard() {
       </div>
 
       {pendingFollowups.length > 0 && (
-        <div className="mb-8 overflow-hidden rounded-3xl border border-amber-200 bg-amber-50/50 p-6 shadow-sm">
+        <div className="mb-8 overflow-hidden rounded-3xl border border-amber-200 dark:border-amber-900/30 bg-amber-50/50 dark:bg-amber-950/10 p-6 shadow-sm">
           <div className="flex items-center gap-2 mb-4">
             <AlertTriangle className="h-6 w-6 text-amber-500" />
-            <h2 className="text-lg font-bold text-amber-900">Acompanhamento Pendente</h2>
+            <h2 className="text-lg font-bold text-amber-900 dark:text-amber-200">Acompanhamento Pendente</h2>
           </div>
-          <p className="text-sm text-amber-800 mb-5">Você tem {pendingFollowups.length === 1 ? "1 orçamento enviado" : `${pendingFollowups.length} orçamentos enviados`} há mais de 3 dias sem resposta. Lembre os clientes para não perder a venda!</p>
+          <p className="text-sm text-amber-800 dark:text-amber-300 mb-5">Você tem {pendingFollowups.length === 1 ? "1 orçamento enviado" : `${pendingFollowups.length} orçamentos enviados`} há mais de 3 dias sem resposta. Lembre os clientes para não perder a venda!</p>
           <div className="space-y-3">
             {pendingFollowups.slice(0, 3).map(p => (
-              <div key={p.id} className="flex items-center justify-between p-4 rounded-xl border border-amber-100 bg-white">
+              <div key={p.id} className="flex items-center justify-between p-4 rounded-xl border border-amber-100 dark:border-amber-900/20 bg-card">
                 <div>
-                  <div className="font-semibold text-gray-900">{p.title}</div>
-                  <div className="text-xs text-gray-500">{(p.clients as any)?.name ?? "Cliente"} · Há {differenceInDays(new Date(), parseISO(p.created_at))} dias</div>
+                  <div className="font-semibold text-foreground">{p.title}</div>
+                  <div className="text-xs text-muted-foreground">{(p.clients as any)?.name ?? "Cliente"} · Há {differenceInDays(new Date(), parseISO(p.created_at))} dias</div>
                 </div>
-                <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full whitespace-nowrap px-4" onClick={() => handleFollowUp(p)}>
+                <Button size="sm" className="bg-emerald-600 dark:bg-emerald-700 hover:bg-emerald-700 dark:hover:bg-emerald-600 text-white rounded-full whitespace-nowrap px-4" onClick={() => handleFollowUp(p)}>
                   <MessageCircle className="mr-2 h-4 w-4" /> Lembrar Cliente
                 </Button>
               </div>
             ))}
             {pendingFollowups.length > 3 && (
-              <Button variant="link" className="text-amber-700 p-0 h-auto" asChild>
+              <Button variant="link" className="text-amber-700 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 p-0 h-auto" asChild>
                 <Link to="/proposals">Ver todos os pendentes</Link>
               </Button>
             )}
@@ -247,33 +251,39 @@ function Dashboard() {
       </div>
 
       <div className="mt-10 grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2 overflow-hidden rounded-3xl border border-border/50 bg-card shadow-card p-6">
+        <div className="lg:col-span-2 overflow-hidden rounded-3xl border border-border bg-card shadow-card p-6">
           <h2 className="text-lg font-bold tracking-tight mb-6">Faturamento Aprovado (6 meses)</h2>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} dy={10} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} tickFormatter={(val) => `R$ ${val}`} />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }} dy={10} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }} tickFormatter={(val) => `R$ ${val}`} />
                 <RechartsTooltip 
                   formatter={(value: number) => [formatBRL(value), "Faturamento"]}
-                  contentStyle={{ borderRadius: '1rem', border: '1px solid hsl(var(--border))', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+                  contentStyle={{ 
+                    borderRadius: '1rem', 
+                    border: '1px solid var(--border)', 
+                    backgroundColor: 'var(--card)',
+                    color: 'var(--foreground)',
+                    boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' 
+                  }}
                 />
-                <Line type="monotone" dataKey="revenue" stroke="hsl(var(--primary))" strokeWidth={3} dot={{ r: 4, fill: 'hsl(var(--primary))' }} activeDot={{ r: 6 }} />
+                <Line type="monotone" dataKey="revenue" stroke="var(--primary)" strokeWidth={3} dot={{ r: 4, fill: 'var(--primary)' }} activeDot={{ r: 6 }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-3xl border border-border/50 bg-card shadow-card transition-all">
-          <div className="flex items-center justify-between border-b border-border/50 bg-transparent px-6 py-5">
+        <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-card transition-all">
+          <div className="flex items-center justify-between border-b border-border bg-transparent px-6 py-5">
             <h2 className="text-lg font-bold tracking-tight">Últimas propostas</h2>
             <Link to="/proposals" className="text-sm font-medium text-primary hover:underline">Ver todas</Link>
           </div>
           {proposals.length === 0 ? (
             <EmptyState />
           ) : (
-            <ul className="divide-y divide-border/50">
+            <ul className="divide-y divide-border">
               {proposals.slice(0, 5).map(p => (
                 <li key={p.id} className="flex flex-col px-6 py-4 text-sm transition-colors hover:bg-muted/10 gap-2">
                   <div className="flex items-center justify-between">
@@ -298,7 +308,7 @@ function Dashboard() {
 
 function Stat({ icon: Icon, label, value }: any) {
   return (
-    <div className="group relative overflow-hidden rounded-3xl border border-border/50 bg-card p-6 shadow-card transition-all hover:shadow-elevated hover:-translate-y-1">
+    <div className="group relative overflow-hidden rounded-3xl border border-border bg-card p-6 shadow-card transition-all hover:shadow-elevated hover:-translate-y-1">
       <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-primary/5 opacity-0 transition-opacity group-hover:opacity-100" />
       <div className="relative flex items-center justify-between">
         <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground transition-colors group-hover:text-primary">{label}</span>
@@ -341,19 +351,33 @@ function OnboardingChecklist({ proposalsCount, catalogCount }: { proposalsCount:
   if (progress === steps.length) return null;
 
   return (
-    <div className="mb-8 overflow-hidden rounded-3xl border border-blue-200 bg-blue-50/50 p-6 shadow-sm">
-      <h2 className="text-lg font-bold text-gray-900 mb-2">Primeiros Passos ({progress}/{steps.length})</h2>
-      <p className="text-sm text-gray-600 mb-6">Complete estas ações para ver o poder do Simbi na prática.</p>
+    <div className="mb-8 overflow-hidden rounded-3xl border border-blue-200 dark:border-blue-900/30 bg-blue-50/50 dark:bg-blue-950/10 p-6 shadow-sm">
+      <h2 className="text-lg font-bold text-blue-900 dark:text-blue-200 mb-2">Primeiros Passos ({progress}/{steps.length})</h2>
+      <p className="text-sm text-blue-700/80 dark:text-blue-300/80 mb-6">Complete estas ações para ver o poder do Simbi na prática.</p>
       
       <div className="space-y-3">
         {steps.map((step, idx) => (
-          <Link key={idx} to={step.href as any} className={`flex items-center gap-4 p-4 rounded-xl border transition-all ${step.done ? 'bg-green-50 border-green-200' : 'bg-white border-blue-100 hover:border-blue-300 hover:shadow-sm'}`}>
-            <div className={`flex items-center justify-center h-8 w-8 rounded-full shrink-0 ${step.done ? 'bg-green-500 text-white' : 'bg-blue-100 text-blue-600'}`}>
+          <Link 
+            key={idx} 
+            to={step.href as any} 
+            className={`flex items-center gap-4 p-4 rounded-xl border transition-all ${
+              step.done 
+                ? 'bg-green-50/50 dark:bg-green-950/10 border-green-200 dark:border-green-900/20' 
+                : 'bg-card border-blue-100 dark:border-blue-900/20 hover:border-blue-300 dark:hover:border-blue-800 hover:shadow-sm text-foreground'
+            }`}
+          >
+            <div className={`flex items-center justify-center h-8 w-8 rounded-full shrink-0 ${
+              step.done ? 'bg-green-500 text-white' : 'bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400'
+            }`}>
               {step.done ? <CheckCircle2 className="h-5 w-5" /> : <span className="font-bold text-sm">{idx + 1}</span>}
             </div>
             <div>
-              <div className={`font-semibold ${step.done ? 'text-green-800 line-through opacity-70' : 'text-gray-900'}`}>{step.title}</div>
-              <div className={`text-xs ${step.done ? 'text-green-600/70' : 'text-gray-500'}`}>{step.desc}</div>
+              <div className={`font-semibold ${
+                step.done ? 'text-green-800 dark:text-green-300/75 line-through opacity-70' : 'text-foreground'
+              }`}>{step.title}</div>
+              <div className={`text-xs ${
+                step.done ? 'text-green-600/70 dark:text-green-400/50' : 'text-muted-foreground'
+              }`}>{step.desc}</div>
             </div>
           </Link>
         ))}
