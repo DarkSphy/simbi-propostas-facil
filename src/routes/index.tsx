@@ -1,13 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
-import { ArrowRight, Check, Smartphone, Share2, Zap, MessageCircle, FileText, BarChart3, Star, Quote, Package, Grid, Calculator, FileSignature } from "lucide-react";
+import { ArrowRight, Check, Smartphone, Share2, Zap, MessageCircle, FileText, BarChart3, Star, Quote, Package, Grid, Calculator, FileSignature, ClipboardList, CalendarDays } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Simbi — Propostas que passam confiança" },
-      { name: "description", content: "Crie orçamentos profissionais em minutos, envie pelo WhatsApp e feche serviços mais rápido. Mobile-first, sem complicação." },
+      { title: "Simbi — Do orçamento ao serviço, tudo em um só lugar" },
+      { name: "description", content: "Gerencie clientes, crie propostas rápidas, assine contratos digitais e emita Ordens de Serviço. Tudo em uma única ferramenta simples para prestadores de serviços." },
     ],
   }),
   component: Landing,
@@ -25,6 +25,23 @@ function Landing() {
       <Pricing />
       <CTA />
       <Footer />
+
+      {/* Floating WhatsApp Button */}
+      <a
+        href="https://wa.me/5531973175882?text=Ol%C3%A1!%20Vim%20do%20site%20do%20Simbi%20e%20gostaria%20de%20tirar%20algumas%20d%C3%BAvidas."
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-6 right-6 z-50 flex items-center justify-center bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 border-2 border-black group"
+        style={{ boxShadow: "4px 4px 0 #000" }}
+        title="Fale conosco no WhatsApp"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+          <path d="M12.031 0C5.385 0 0 5.385 0 12.031C0 14.673 1.408 17.067 3.237 18.732L2.016 23.21L6.685 22.013C8.36 23.364 10.15 24 12.031 24C18.677 24 24 18.615 24 11.969C24 5.323 18.677 0 12.031 0ZM18.423 16.59C18.158 17.338 16.892 17.962 16.143 18.125C15.553 18.257 14.733 18.366 11.666 17.086C7.755 15.452 5.234 11.455 5.048 11.206C4.861 10.957 3.522 9.18 3.522 7.342C3.522 5.503 4.456 4.601 4.83 4.227C5.14 3.916 5.67 3.76 6.168 3.76C6.324 3.76 6.464 3.768 6.589 3.776C6.963 3.791 7.15 3.822 7.4 4.413C7.68 5.114 8.365 6.794 8.458 6.981C8.552 7.168 8.645 7.385 8.52 7.635C8.396 7.884 8.302 8.008 8.116 8.226C7.929 8.444 7.726 8.615 7.555 8.833C7.368 9.051 7.165 9.284 7.383 9.658C7.601 10.032 8.365 11.277 9.486 12.273C10.932 13.565 12.115 13.97 12.52 14.125C12.925 14.28 13.392 14.25 13.673 13.97C13.953 13.689 14.67 12.833 14.981 12.397C15.292 11.961 15.603 12.023 15.977 12.148C16.35 12.272 18.312 13.237 18.716 13.44C19.121 13.642 19.386 13.735 19.479 13.891C19.573 14.047 19.573 14.779 19.293 15.526L18.423 16.59Z"/>
+        </svg>
+        <span className="absolute right-full mr-3 bg-black text-white text-xs font-bold uppercase py-1.5 px-3 rounded shadow-lg border border-neutral-700 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+          Suporte
+        </span>
+      </a>
     </div>
   );
 }
@@ -76,10 +93,10 @@ function Hero() {
       <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <h1 className="text-5xl font-bold tracking-tight text-white sm:text-7xl">
-            Propostas que encantam e fecham negócios.
+            Do orçamento fechado à entrega do serviço. Tudo em um só lugar.
           </h1>
-          <p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-white/70">
-            Destaque-se da concorrência com orçamentos elegantes. Crie em minutos, envie direto no WhatsApp e receba o "sim" do cliente mais rápido.
+          <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-white/70">
+            Destaque-se da concorrência com orçamentos elegantes. Crie em minutos, envie propostas, assine contratos digitais e emita Ordens de Serviço (OS) direto pelo WhatsApp. Sem burocracia, feito para quem bota a mão na massa.
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Button asChild size="lg" className="h-14 rounded-full bg-primary px-8 text-base text-primary-foreground shadow-lg shadow-primary/40 glow-primary transition-all hover:bg-primary/90 hover:glow-primary-hover hover:-translate-y-0.5">
@@ -131,10 +148,10 @@ function Features() {
   const items = [
     { icon: Share2, title: "O fim do 'orçamento de boca'", desc: "Antes: você mandava um áudio confuso ou foto de caderno. Depois: o cliente clica num link e vê um orçamento com sua logo, impecável." },
     { icon: Zap, title: "Aprovação em um clique", desc: "Chega de 'vou pensar e te aviso'. O cliente lê no celular, aperta um botão verde de 'Aprovar' e você já pode começar o serviço." },
-    { icon: MessageCircle, title: "Direto no WhatsApp", desc: "O cliente não precisa baixar nenhum aplicativo, nem abrir PDF pesado. Ele clica no link e já vê tudo ali mesmo, rapidinho." },
-    { icon: Package, title: "Catálogo completo com fotos", desc: "Cadastre seus produtos e serviços com fotos, descrições detalhadas e preços unitários. Puxe qualquer item com um clique e monte orçamentos rápidos." },
-    { icon: Calculator, title: "Calculadora de custo real", desc: "Calcule a margem exata de lucro de cada trabalho. Insira custos de insumos, horas trabalhadas e despesas para nunca mais precificar no prejuízo." },
     { icon: FileSignature, title: "Contratos instantâneos", desc: "Gere um contrato de prestação de serviços atrelado ao orçamento de forma automática. O cliente assina digitalmente na hora e você garante segurança jurídica." },
+    { icon: ClipboardList, title: "Ordens de Serviço (OS)", desc: "Gere Ordens de Serviço (OS) profissionais a partir dos orçamentos aprovados, prontas para impressão e com espaço para relatório técnico." },
+    { icon: CalendarDays, title: "Agenda integrada", desc: "Organize suas visitas técnicas e tarefas em um calendário inteligente conectado diretamente ao histórico de clientes e propostas." },
+    { icon: Calculator, title: "Calculadora de custo real", desc: "Calcule a margem exata de lucro de cada trabalho. Insira custos de insumos, horas trabalhadas e despesas para nunca mais precificar no prejuízo." },
   ];
 
   return (

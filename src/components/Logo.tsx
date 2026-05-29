@@ -28,7 +28,7 @@ export function Logo({ className = "", inverted = false }: { className?: string;
           Simbi
         </span>
         <span className={`text-[0.55rem] font-bold uppercase tracking-[0.2em] mt-1 ${inverted ? "text-white/80" : "text-primary"}`}>
-          Propostas que fecham
+          Do orçamento ao serviço
         </span>
       </div>
     </Link>
