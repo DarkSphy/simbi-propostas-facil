@@ -360,20 +360,22 @@ function NewProposal() {
                     )}
                     <input type="file" accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer" onChange={(e) => handleImageUpload(e, i)} title="Adicionar foto ao item" />
                   </div>
-                  <div className="flex items-center gap-1.5 mt-1 bg-background px-2 py-1 rounded-md border border-border/50 shadow-sm">
-                    <input type="checkbox" id={`opt-${i}`} checked={it.is_optional || false} onChange={e => updateItem(i, { is_optional: e.target.checked })} className="rounded border-border text-primary focus:ring-primary w-3.5 h-3.5 cursor-pointer" />
-                    <label htmlFor={`opt-${i}`} className="text-[10px] text-muted-foreground font-semibold uppercase cursor-pointer">Opcional</label>
-                  </div>
+                  <label className={`flex items-center justify-center gap-2 mt-2 px-3 py-1.5 rounded-lg border-2 shadow-sm transition-all cursor-pointer select-none w-full ${it.is_optional ? 'bg-primary/10 border-primary text-primary' : 'bg-card border-border hover:border-primary/40 text-muted-foreground'}`}>
+                    <input type="checkbox" checked={it.is_optional || false} onChange={e => updateItem(i, { is_optional: e.target.checked })} className="rounded border-gray-400 text-primary focus:ring-primary w-4 h-4 cursor-pointer" />
+                    <span className="text-[11px] font-extrabold uppercase tracking-wide">Opcional</span>
+                  </label>
                 </div>
                 <Button variant="destructive" size="icon" className="absolute -top-3 -right-3 h-6 w-6 rounded-full" onClick={() => removeItem(i)}><Trash2 className="h-3 w-3" /></Button>
               </div>
             ))}
-            <div className="flex flex-wrap gap-2 pt-2">
-              <Button variant="outline" size="sm" className="rounded-full" onClick={addItem}><Plus className="mr-1 h-4 w-4" /> Adicionar manual</Button>
+            <div className="flex flex-wrap gap-3 pt-4">
+              <Button variant="outline" size="default" className="rounded-full border-2 border-primary/30 text-primary hover:bg-primary/10 font-bold shadow-sm" onClick={addItem}>
+                <Plus className="mr-2 h-4 w-4" /> Adicionar Item Manualmente
+              </Button>
               <Dialog open={catalogOpen} onOpenChange={setCatalogOpen}>
                 <DialogTrigger asChild>
-                  <Button className="rounded-full bg-slate-800 text-white hover:bg-slate-700 dark:bg-slate-200 dark:text-slate-900 dark:hover:bg-slate-300" size="sm">
-                    <PackagePlus className="mr-1 h-4 w-4" /> Importar do Catálogo
+                  <Button className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-300 font-bold shadow-md" size="default">
+                    <PackagePlus className="mr-2 h-4 w-4" /> Importar do Catálogo
                   </Button>
                 </DialogTrigger>
                 <DialogContent>
