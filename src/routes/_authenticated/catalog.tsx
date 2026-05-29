@@ -9,8 +9,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, Trash2, Package, Search, Pencil } from "lucide-react";
+import { Plus, Trash2, Package, Search, Pencil, Eye, EyeOff } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Switch } from "@/components/ui/switch";
 import { formatBRL } from "@/lib/format";
 import { toast } from "sonner";
 
@@ -31,6 +32,7 @@ function Catalog() {
   const [unitPrice, setUnitPrice] = useState<number | string>("");
   const [imageUrl, setImageUrl] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [isPublic, setIsPublic] = useState(true);
 
   const [search, setSearch] = useState("");
 
@@ -63,6 +65,7 @@ function Catalog() {
         description: description.trim() || null,
         unit_price: Number(unitPrice) || 0,
         image_url: imageUrl || null,
+        is_public: isPublic,
       };
 
       if (editingId) {
@@ -91,6 +94,7 @@ function Catalog() {
     setUnitPrice("");
     setImageUrl("");
     setType("product");
+    setIsPublic(true);
     setOpen(false);
   }
 
@@ -101,6 +105,7 @@ function Catalog() {
     setUnitPrice(it.unit_price);
     setImageUrl(it.image_url || "");
     setType(it.type as "product" | "service");
+    setIsPublic(it.is_public ?? true);
     setOpen(true);
   }
 
@@ -203,6 +208,13 @@ function Catalog() {
                     <Input type="file" accept="image/*" onChange={handleImageUpload} disabled={uploading} className="flex-1" />
                   </div>
                 </div>
+                <div className="flex items-center justify-between rounded-lg border p-4">
+                  <div className="space-y-0.5">
+                    <Label className="text-base font-semibold">Mostrar na Vitrine Pública</Label>
+                    <p className="text-sm text-muted-foreground">Clientes poderão pedir orçamento diretamente para este item.</p>
+                  </div>
+                  <Switch checked={isPublic} onCheckedChange={setIsPublic} />
+                </div>
                 <div className="flex justify-end gap-2 pt-2">
                   <Button variant="outline" onClick={() => setOpen(false)}>Cancelar</Button>
                   <Button onClick={handleSave} disabled={saving}>{saving ? "Salvando..." : "Salvar"}</Button>
@@ -246,6 +258,29 @@ function Catalog() {
                     <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                       {it.type === "product" ? "Produto" : "Serviço"}
                     </span>
+                    {it.is_public ? (
+                      <TooltipProvider delayDuration={0}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-emerald-700">
+                              <Eye className="h-3 w-3" /> Vitrine
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent>Visível no seu link público</TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    ) : (
+                      <TooltipProvider delayDuration={0}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+                              <EyeOff className="h-3 w-3" /> Oculto
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent>Item privado (Apenas você pode adicionar)</TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    )}
                   </div>
                   {it.description && <div className="mt-1 text-sm text-muted-foreground">{it.description}</div>}
                 </div>

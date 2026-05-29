@@ -49,17 +49,31 @@ function ProposalsList() {
   });
 
   function handleFollowUp(e: React.MouseEvent, p: any) {
-    e.preventDefault(); // Prevent navigating to the proposal
+    e.preventDefault();
     const publicUrl = profile?.profile_slug 
       ? `${window.location.origin}/p/${profile.profile_slug}/${p.public_slug}`
       : `${window.location.origin}/p/${p.public_slug}`;
+      
     const phone = (p.clients as any)?.phone?.replace(/\D/g, "") ?? "";
     if (!phone) {
       alert("Este cliente não tem telefone cadastrado.");
       return;
     }
-    const msg = encodeURIComponent(`Olá, ${(p.clients as any)?.name.split(" ")[0]}! Tudo bem?\nSó passando para ver se conseguiu analisar o orçamento que te enviei. Qualquer dúvida, estou à disposição!\n\nLink: ${publicUrl}`);
-    window.open(`https://wa.me/${phone}?text=${msg}`, "_blank");
+    
+    const clientFirstName = (p.clients as any)?.name?.split(" ")[0] || "Cliente";
+    let msg = "";
+
+    if (p.status === 'in_progress') {
+      msg = `Olá ${clientFirstName}! Recebi sua solicitação de orçamento pela minha Vitrine. Podemos falar sobre os detalhes do projeto?`;
+    } else if (p.status === 'viewed') {
+      msg = `Olá ${clientFirstName}! Vi que você analisou a proposta "${p.title}". Ficou com alguma dúvida? Estou à disposição para conversarmos e ajustarmos o que for preciso!`;
+    } else {
+      msg = `Olá ${clientFirstName}! Tudo bem?\nPassando para saber se conseguiu acessar o link do orçamento "${p.title}". Qualquer dúvida, estou à disposição!\n\nLink: ${publicUrl}`;
+    }
+
+    // Se o número não tiver DDI, assume Brasil
+    const finalPhone = phone.length <= 11 ? `55${phone}` : phone;
+    window.open(`https://wa.me/${finalPhone}?text=${encodeURIComponent(msg)}`, "_blank");
   }
 
   return (
@@ -110,9 +124,10 @@ function ProposalsList() {
                   <div className="w-28 text-right text-base font-medium">{formatBRL(Number(p.total))}</div>
                   <div className="w-28 flex flex-col items-end gap-2">
                     {statusBadge(p.status)}
-                    {p.status === 'sent' && differenceInDays(new Date(), parseISO(p.created_at)) >= 3 && (
-                      <Button size="sm" variant="outline" className="h-7 text-xs bg-emerald-50 text-emerald-600 border-emerald-200 hover:bg-emerald-100 hover:text-emerald-700 px-2" onClick={(e) => handleFollowUp(e, p)}>
-                        <MessageCircle className="mr-1 h-3 w-3" /> Lembrar
+                    {['sent', 'viewed', 'in_progress'].includes(p.status) && (
+                      <Button size="sm" variant="outline" className="h-7 text-[10px] uppercase font-bold tracking-wider bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100 hover:text-emerald-800 px-2" onClick={(e) => handleFollowUp(e, p)}>
+                        <MessageCircle className="mr-1 h-3.5 w-3.5" /> 
+                        {p.status === 'in_progress' ? 'Responder' : 'Cobrar'}
                       </Button>
                     )}
                   </div>

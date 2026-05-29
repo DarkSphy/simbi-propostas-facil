@@ -26,7 +26,7 @@ export function RealtimeNotifications() {
       .on(
         'postgres_changes',
         {
-          event: 'UPDATE',
+          event: '*',
           schema: 'public',
           table: 'proposals',
           filter: `user_id=eq.${user.id}`,
@@ -38,6 +38,19 @@ export function RealtimeNotifications() {
           const status = newRow.status;
           const title = newRow.title;
           const id = newRow.id;
+
+          // Se for uma nova inserção vinda da vitrine
+          if (payload.eventType === 'INSERT' && status === 'in_progress') {
+            queryClient.invalidateQueries({ queryKey: ["proposals"] });
+            queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+            queryClient.invalidateQueries({ queryKey: ["clients"] });
+            toast.success(`Nova solicitação de orçamento recebida na sua Vitrine!`);
+            sendNativeNotification("Novo Orçamento", `Um cliente acaba de enviar uma solicitação pela Vitrine.`);
+            return;
+          }
+
+          // Para atualizações normais (UPDATE)
+          if (payload.eventType !== 'UPDATE') return;
 
           // We use localStorage to track if we already notified this specific state transition
           // because Supabase by default doesn't send the full 'old' record unless REPLICA IDENTITY FULL is enabled.
@@ -56,7 +69,7 @@ export function RealtimeNotifications() {
             } else if (status === "approved") {
               toast.success(`A proposta "${title}" foi aprovada.`);
               sendNativeNotification("Proposta Aprovada", `O cliente aceitou os termos da proposta "${title}".`);
-            } else if (status === "refused") {
+            } else if (status === "rejected" || status === "refused") {
               toast.error(`A proposta "${title}" foi recusada.`);
               sendNativeNotification("Proposta Recusada", `A proposta "${title}" foi declinada pelo cliente.`);
             }

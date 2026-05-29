@@ -17,6 +17,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as UProfileSlugRouteImport } from './routes/u.$profileSlug'
 import { Route as PSlugRouteImport } from './routes/p.$slug'
 import { Route as OsIdRouteImport } from './routes/os.$id'
 import { Route as CContractSlugRouteImport } from './routes/c.$contractSlug'
@@ -73,6 +74,11 @@ const AuthenticatedRoute = AuthenticatedRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UProfileSlugRoute = UProfileSlugRouteImport.update({
+  id: '/u/$profileSlug',
+  path: '/u/$profileSlug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PSlugRoute = PSlugRouteImport.update({
@@ -191,6 +197,7 @@ export interface FileRoutesByFullPath {
   '/c/$contractSlug': typeof CContractSlugRoute
   '/os/$id': typeof OsIdRoute
   '/p/$slug': typeof PSlugRoute
+  '/u/$profileSlug': typeof UProfileSlugRoute
   '/contract/$id': typeof AuthenticatedContractIdRoute
   '/proposals/$id': typeof AuthenticatedProposalsIdRoute
   '/proposals/new': typeof AuthenticatedProposalsNewRoute
@@ -218,6 +225,7 @@ export interface FileRoutesByTo {
   '/c/$contractSlug': typeof CContractSlugRoute
   '/os/$id': typeof OsIdRoute
   '/p/$slug': typeof PSlugRoute
+  '/u/$profileSlug': typeof UProfileSlugRoute
   '/contract/$id': typeof AuthenticatedContractIdRoute
   '/proposals/$id': typeof AuthenticatedProposalsIdRoute
   '/proposals/new': typeof AuthenticatedProposalsNewRoute
@@ -247,6 +255,7 @@ export interface FileRoutesById {
   '/c/$contractSlug': typeof CContractSlugRoute
   '/os/$id': typeof OsIdRoute
   '/p/$slug': typeof PSlugRoute
+  '/u/$profileSlug': typeof UProfileSlugRoute
   '/_authenticated/contract/$id': typeof AuthenticatedContractIdRoute
   '/_authenticated/proposals/$id': typeof AuthenticatedProposalsIdRoute
   '/_authenticated/proposals/new': typeof AuthenticatedProposalsNewRoute
@@ -276,6 +285,7 @@ export interface FileRouteTypes {
     | '/c/$contractSlug'
     | '/os/$id'
     | '/p/$slug'
+    | '/u/$profileSlug'
     | '/contract/$id'
     | '/proposals/$id'
     | '/proposals/new'
@@ -303,6 +313,7 @@ export interface FileRouteTypes {
     | '/c/$contractSlug'
     | '/os/$id'
     | '/p/$slug'
+    | '/u/$profileSlug'
     | '/contract/$id'
     | '/proposals/$id'
     | '/proposals/new'
@@ -331,6 +342,7 @@ export interface FileRouteTypes {
     | '/c/$contractSlug'
     | '/os/$id'
     | '/p/$slug'
+    | '/u/$profileSlug'
     | '/_authenticated/contract/$id'
     | '/_authenticated/proposals/$id'
     | '/_authenticated/proposals/new'
@@ -350,6 +362,7 @@ export interface RootRouteChildren {
   CContractSlugRoute: typeof CContractSlugRoute
   OsIdRoute: typeof OsIdRoute
   PSlugRoute: typeof PSlugRoute
+  UProfileSlugRoute: typeof UProfileSlugRoute
   PProfileSlugProposalSlugRoute: typeof PProfileSlugProposalSlugRoute
 }
 
@@ -409,6 +422,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/u/$profileSlug': {
+      id: '/u/$profileSlug'
+      path: '/u/$profileSlug'
+      fullPath: '/u/$profileSlug'
+      preLoaderRoute: typeof UProfileSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/p/$slug': {
@@ -590,6 +610,7 @@ const rootRouteChildren: RootRouteChildren = {
   CContractSlugRoute: CContractSlugRoute,
   OsIdRoute: OsIdRoute,
   PSlugRoute: PSlugRoute,
+  UProfileSlugRoute: UProfileSlugRoute,
   PProfileSlugProposalSlugRoute: PProfileSlugProposalSlugRoute,
 }
 export const routeTree = rootRouteImport
