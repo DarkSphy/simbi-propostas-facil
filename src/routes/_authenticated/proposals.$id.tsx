@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Share2, MessageCircle, Trash2, Copy } from "lucide-react";
+import { ArrowLeft, Share2, MessageCircle, Trash2, Copy, Eye, CheckCircle2, XCircle, Laptop, Smartphone, Globe, Calendar } from "lucide-react";
 import { formatBRL, statusBadge } from "@/lib/format";
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
@@ -35,6 +35,20 @@ function ProposalDetail() {
         profileSlug = prof?.profile_slug;
       }
       return { ...data, profile_slug: profileSlug };
+    },
+    enabled: !!user,
+  });
+
+  const { data: logs = [] } = useQuery({
+    queryKey: ["proposal_logs", id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("proposal_logs")
+        .select("*")
+        .eq("proposal_id", id)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
     },
     enabled: !!user,
   });
@@ -137,6 +151,88 @@ function ProposalDetail() {
           <p className="whitespace-pre-wrap text-sm">{data.notes}</p>
         </div>
       )}
+
+      {/* Linha do tempo de interações */}
+      <div className="mt-5 rounded-2xl border border-border bg-card p-6 shadow-soft">
+        <h2 className="mb-6 text-sm font-semibold uppercase tracking-wide text-muted-foreground flex items-center gap-2">
+          <Share2 className="h-4 w-4 text-primary" /> Rastreamento de Interações
+        </h2>
+
+        {logs.length === 0 ? (
+          <p className="text-sm text-muted-foreground text-center py-4">Nenhuma interação registrada ainda.</p>
+        ) : (
+          <div className="relative border-l border-border ml-3 pl-6 space-y-6">
+            {logs.map((log: any) => {
+              const isView = log.event_type === "view";
+              const isApprove = log.event_type === "approve";
+              const isReject = log.event_type === "reject";
+              
+              let icon = <Eye className="h-4 w-4 text-blue-600" />;
+              let title = "Visualização";
+              let colorClass = "bg-blue-100 border-blue-200";
+              
+              if (isApprove) {
+                icon = <CheckCircle2 className="h-4 w-4 text-emerald-600" />;
+                title = "Proposta Aprovada 🎉";
+                colorClass = "bg-emerald-100 border-emerald-200";
+              } else if (isReject) {
+                icon = <XCircle className="h-4 w-4 text-red-600" />;
+                title = "Proposta Recusada ❌";
+                colorClass = "bg-red-100 border-red-200";
+              }
+
+              // Simple parser for user agent to show browser/device
+              const ua = log.user_agent || "";
+              const isMobile = /mobile/i.test(ua);
+              const deviceIcon = isMobile ? <Smartphone className="h-3.5 w-3.5 inline mr-1 text-muted-foreground" /> : <Laptop className="h-3.5 w-3.5 inline mr-1 text-muted-foreground" />;
+
+              return (
+                <div key={log.id} className="relative">
+                  {/* Circle dot on the timeline line */}
+                  <span className={`absolute -left-[37px] top-0.5 flex h-6 w-6 items-center justify-center rounded-full border ${colorClass} bg-card shadow-sm`}>
+                    {icon}
+                  </span>
+
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between gap-4 flex-wrap">
+                      <h4 className="font-semibold text-sm text-foreground">{title}</h4>
+                      <span className="text-[10px] font-medium text-muted-foreground flex items-center gap-1 bg-muted px-2 py-0.5 rounded-full">
+                        <Calendar className="h-3 w-3" />
+                        {new Date(log.created_at).toLocaleString("pt-BR", {
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </span>
+                    </div>
+                    
+                    <p className="text-xs text-muted-foreground leading-relaxed flex flex-wrap items-center gap-x-2 gap-y-1">
+                      <span className="flex items-center text-foreground font-medium">
+                        <Globe className="h-3.5 w-3.5 mr-1 text-primary/70" />
+                        {log.location || "Localização Indisponível"}
+                      </span>
+                      {log.ip_address && (
+                        <span className="text-muted-foreground/80">(IP: {log.ip_address})</span>
+                      )}
+                    </p>
+
+                    {log.user_agent && (
+                      <div className="text-[10px] text-muted-foreground flex items-center bg-muted/30 px-2 py-1 rounded border border-border/40 w-fit">
+                        {deviceIcon}
+                        <span className="truncate max-w-[280px]" title={log.user_agent}>
+                          {log.user_agent.split(" ")[0]} ({log.user_agent.includes("Windows") ? "Windows" : log.user_agent.includes("Macintosh") ? "Mac OS" : log.user_agent.includes("Android") ? "Android" : log.user_agent.includes("iPhone") ? "iOS" : "Dispositivo desconhecido"})
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
 
       <div className="mt-8 flex justify-end">
         <Button variant="ghost" className="text-destructive hover:text-destructive" onClick={remove}><Trash2 className="mr-1 h-4 w-4" /> Excluir proposta</Button>

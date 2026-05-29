@@ -6,6 +6,7 @@ import { formatBRL, statusBadge } from "@/lib/format";
 import { Check, MessageCircle, X, Instagram, Linkedin, Globe, ZoomIn, Printer, AlertTriangle, ExternalLink } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { logProposalEvent } from "@/lib/tracking";
 
 export const Route = createFileRoute("/p/$slug")({
   head: () => ({ meta: [{ title: "Proposta · Simbi" }] }),
@@ -46,6 +47,9 @@ function PublicProposal() {
       setData({ ...prop, profiles: prof || {} });
       setLoading(false);
 
+      // Registrar o log de visualização
+      logProposalEvent({ proposalId: prop.id, eventType: "view", userId: prop.user_id });
+
       if (prop.status === "sent") {
         await supabase.rpc("update_proposal_status", { p_slug: slug, p_status: "viewed" });
       }
@@ -55,6 +59,14 @@ function PublicProposal() {
   async function setStatus(status: "approved" | "rejected") {
     const { error } = await supabase.rpc("update_proposal_status", { p_slug: slug, p_status: status });
     if (error) { toast.error(error.message); return; }
+    
+    // Registrar o log de aprovação ou rejeição
+    logProposalEvent({ 
+      proposalId: data.id, 
+      eventType: status === "approved" ? "approve" : "reject", 
+      userId: data.user_id 
+    });
+
     setData({ ...data, status });
     toast.success(status === "approved" ? "Proposta aprovada!" : "Proposta recusada.");
   }
