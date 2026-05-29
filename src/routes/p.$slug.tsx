@@ -6,7 +6,8 @@ import { formatBRL, statusBadge } from "@/lib/format";
 import { Check, MessageCircle, X, Instagram, Linkedin, Globe, ZoomIn, Printer, AlertTriangle, ExternalLink } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { logProposalEvent } from "@/lib/tracking";
+import { logProposalEvent } from "@/lib/tracking";import { useAuth } from "@/lib/auth";
+import { PrintCustomizer, PrintSettings } from "@/components/PrintCustomizer";
 
 export const Route = createFileRoute("/p/$slug")({
   head: () => ({ meta: [{ title: "Proposta · Simbi" }] }),
@@ -26,8 +27,32 @@ function getContrastColor(hexColor: string) {
 
 function PublicProposal() {
   const { slug } = Route.useParams();
+  const { user } = useAuth();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+
+  const defaultPrintSettings: PrintSettings = {
+    margin: 'default',
+    font: 'inter',
+    showLogo: true,
+    showFooter: true,
+    ecoMode: false,
+  };
+
+  const [printSettings, setPrintSettings] = useState<PrintSettings>(() => {
+    try {
+      const saved = localStorage.getItem(`simbi_print_settings_${slug}`);
+      if (saved) return JSON.parse(saved);
+    } catch (e) {}
+    return defaultPrintSettings;
+  });
+
+  const handleSettingsChange = (newSettings: PrintSettings) => {
+    setPrintSettings(newSettings);
+    localStorage.setItem(`simbi_print_settings_${slug}`, JSON.stringify(newSettings));
+  };
+
+  const isOwner = user?.id === data?.user_id;
 
   useEffect(() => {
     (async () => {
@@ -146,8 +171,43 @@ function PublicProposal() {
   const isCards = profile.item_layout === "cards";
   const hasImages = items.some((it: any) => !!it.image_url);
 
+  // Dynamic print styles
+  const printMargin = printSettings.margin === 'compact' ? '0.5cm' : printSettings.margin === 'wide' ? '2cm' : '1cm';
+  const printFont = printSettings.font === 'playfair' ? '"Playfair Display", serif' :
+                    printSettings.font === 'quicksand' ? '"Quicksand", sans-serif' :
+                    printSettings.font === 'courier' ? '"Courier New", monospace' :
+                    '"Inter", sans-serif';
+
   return (
-    <div className={`min-h-screen py-10 transition-colors relative ${fontClass}`} style={customStyles}>
+    <div className={`min-h-screen py-10 transition-colors relative ${fontClass} proposal-body`} style={customStyles}>
+      <style>{`
+        @media print {
+          @page {
+            margin: ${printMargin};
+          }
+          .proposal-body {
+            font-family: ${printFont} !important;
+          }
+          ${!printSettings.showLogo ? '.print-logo { display: none !important; }' : ''}
+          ${!printSettings.showFooter ? '.print-footer { display: none !important; }' : ''}
+          ${printSettings.ecoMode ? `
+            * {
+              background: transparent !important;
+              color: black !important;
+              box-shadow: none !important;
+              text-shadow: none !important;
+              border-color: #ddd !important;
+            }
+            .bg-primary { background: transparent !important; border: 1px solid #000 !important; }
+            .bg-card { background: transparent !important; }
+            .bg-muted { background: transparent !important; }
+            .text-primary { color: black !important; }
+            .text-muted-foreground { color: #555 !important; }
+            .text-emerald-600 { color: black !important; }
+            img { filter: grayscale(100%) !important; }
+          ` : ''}
+        }
+      `}</style>
       
       {/* Texture Background Layer */}
       {profile.background_image_url && <div className="absolute inset-0 z-0 pointer-events-none bg-black/40 backdrop-blur-[2px]" />}
@@ -156,7 +216,7 @@ function PublicProposal() {
 
       <div className="relative z-10 mx-auto max-w-2xl px-4">
         {/* Header Visual with Logo/Banner */}
-        <div className={`mb-10 flex flex-col items-center text-center ${profile.background_image_url ? 'bg-card/80 backdrop-blur-md p-8 rounded-3xl border border-border/50 shadow-sm mx-auto max-w-lg w-full' : 'max-w-lg mx-auto w-full'}`}>
+        <div className={`mb-10 flex flex-col items-center text-center print-logo ${profile.background_image_url ? 'bg-card/80 backdrop-blur-md p-8 rounded-3xl border border-border/50 shadow-sm mx-auto max-w-lg w-full' : 'max-w-lg mx-auto w-full'}`}>
           {profile.logo_url ? (
             profile.header_type === 'banner' ? (
               <div className="w-full h-32 sm:h-48 overflow-hidden rounded-2xl border border-border/50 shadow-lg bg-muted/20 mb-6 transition-transform hover:scale-[1.02]">
@@ -370,8 +430,16 @@ function PublicProposal() {
           </div>
         )}
 
-        <p className="mt-8 mb-4 text-center text-xs opacity-60">Proposta comercial gerada via <span className="font-bold">Simbi</span></p>
+        <p className="mt-8 mb-4 text-center text-xs opacity-60 print-footer">Proposta comercial gerada via <span className="font-bold">Simbi</span></p>
       </div>
+
+      {isOwner && (
+        <PrintCustomizer 
+          settings={printSettings} 
+          onChange={handleSettingsChange} 
+          onPrint={() => window.print()} 
+        />
+      )}
     </div>
   );
 }
