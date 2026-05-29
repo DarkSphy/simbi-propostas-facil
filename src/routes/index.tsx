@@ -96,7 +96,7 @@ function Hero() {
             Do orçamento fechado à entrega do serviço. Tudo em um só lugar.
           </h1>
           <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-white/70">
-            Destaque-se da concorrência com orçamentos elegantes. Crie em minutos, envie propostas, assine contratos digitais e emita Ordens de Serviço (OS) direto pelo WhatsApp. Sem burocracia, feito para quem bota a mão na massa.
+            Destaque-se da concorrência com orçamentos elegantes. Crie em minutos, envie propostas, assine contratos digitais e emita Ordens de Serviço (OS) integrado ao WhatsApp. Sem burocracia, feito para quem bota a mão na massa.
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Button asChild size="lg" className="h-14 rounded-full bg-primary px-8 text-base text-primary-foreground shadow-lg shadow-primary/40 glow-primary transition-all hover:bg-primary/90 hover:glow-primary-hover hover:-translate-y-0.5">
