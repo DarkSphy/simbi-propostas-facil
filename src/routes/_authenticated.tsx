@@ -2,8 +2,8 @@ import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
-import { useAuth } from "@/lib/auth";
 import { NotificationBell } from "@/components/NotificationBell";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export const Route = createFileRoute("/_authenticated")({
   component: AuthLayout,
@@ -32,7 +32,10 @@ function AuthLayout() {
         <div className="flex flex-1 flex-col">
           <header className="print:hidden sticky top-0 z-30 flex h-14 items-center justify-between gap-2 border-b border-border bg-background/80 px-4 backdrop-blur">
             <SidebarTrigger />
-            <NotificationBell />
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+              <NotificationBell />
+            </div>
           </header>
           <main className="flex-1">
             <Outlet />
