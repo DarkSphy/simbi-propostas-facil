@@ -5,10 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Package, ShoppingCart, Send, Instagram, Phone, Mail, MapPin, CheckCircle2, Check } from "lucide-react";
+import { Package, ShoppingCart, Send, Instagram, Phone, Mail, MapPin, CheckCircle2, Check, Linkedin, Globe } from "lucide-react";
 import { formatBRL } from "@/lib/format";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 
 export const Route = createFileRoute("/u/$profileSlug")({
   component: VitrinePageWrapper,
@@ -146,13 +147,34 @@ function VitrinePage() {
     "--radius": "1.5rem"
   } as React.CSSProperties : {};
 
+  const containerAnim = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 }
+    }
+  };
+
+  const itemAnim = {
+    hidden: { opacity: 0, y: 30, scale: 0.95 },
+    show: { 
+      opacity: 1, 
+      y: 0, 
+      scale: 1,
+      transition: { type: "spring", stiffness: 300, damping: 24 }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground pb-32" style={organicStyle}>
       {/* Header Profile / Hero */}
       <div className="relative border-b border-border shadow-sm overflow-hidden">
         {profile.vitrine_hero_type === 'image' && profile.vitrine_hero_url && (
           <div className="absolute inset-0 z-0">
-            <img src={profile.vitrine_hero_url} alt="Cover" className="w-full h-full object-cover" />
+            <motion.img 
+              initial={{ scale: 1.1 }} animate={{ scale: 1 }} transition={{ duration: 10, ease: "easeOut" }}
+              src={profile.vitrine_hero_url} alt="Cover" className="w-full h-full object-cover" 
+            />
             <div className="absolute inset-0 bg-background/80 backdrop-blur-sm dark:bg-background/90" />
           </div>
         )}
@@ -164,23 +186,44 @@ function VitrinePage() {
         )}
         
         <div className="relative z-10 max-w-4xl mx-auto px-5 py-12 md:py-16 text-center">
-          {profile.logo_url ? (
-            <img src={profile.logo_url} alt={profile.name} className="h-24 w-24 md:h-32 md:w-32 object-cover rounded-3xl mx-auto mb-6 shadow-xl border-4 border-background/50 backdrop-blur-md" />
-          ) : (
-            <div className="h-24 w-24 md:h-32 md:w-32 rounded-3xl bg-primary text-primary-foreground mx-auto mb-6 flex items-center justify-center text-4xl font-bold shadow-xl border-4 border-background/50 backdrop-blur-md">
-              {profile.name?.[0]?.toUpperCase() || 'S'}
-            </div>
-          )}
-          <h1 className="text-3xl md:text-5xl font-black tracking-tight mb-3 drop-shadow-sm">{profile.name}</h1>
+          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+            {profile.logo_url ? (
+              <img src={profile.logo_url} alt={profile.company_name || profile.name} className="h-28 w-28 md:h-36 md:w-36 object-cover rounded-3xl mx-auto mb-6 shadow-2xl border-4 border-background/50 backdrop-blur-md" />
+            ) : (
+              <div className="h-28 w-28 md:h-36 md:w-36 rounded-3xl bg-primary text-primary-foreground mx-auto mb-6 flex items-center justify-center text-5xl font-bold shadow-2xl border-4 border-background/50 backdrop-blur-md">
+                {(profile.company_name || profile.name)?.[0]?.toUpperCase() || 'S'}
+              </div>
+            )}
+            <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-2 drop-shadow-sm">{profile.company_name || profile.name}</h1>
+            {profile.company_name && <p className="text-lg md:text-xl font-medium mb-4 text-foreground/80">{profile.name}</p>}
+          </motion.div>
           
-          <div className="flex flex-wrap justify-center gap-4 text-sm text-foreground/80 mb-6 font-medium">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} className="flex flex-wrap justify-center gap-4 text-sm text-foreground/80 mb-5 font-medium">
             {profile.phone && <span className="flex items-center gap-1.5"><Phone className="h-4 w-4" /> {profile.phone}</span>}
             {profile.email && <span className="flex items-center gap-1.5"><Mail className="h-4 w-4" /> {profile.email}</span>}
-          </div>
+          </motion.div>
 
-          <p className="max-w-2xl mx-auto text-foreground/70 text-base md:text-lg leading-relaxed">
+          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.4 }} className="flex justify-center gap-3 mb-6">
+            {profile.instagram_url && (
+              <a href={profile.instagram_url} target="_blank" rel="noreferrer" className="text-foreground hover:text-primary hover:bg-primary/10 transition-all p-2.5 bg-background/50 backdrop-blur-sm rounded-full hover:scale-110 shadow-sm border border-border/50">
+                <Instagram className="h-5 w-5" />
+              </a>
+            )}
+            {profile.linkedin_url && (
+              <a href={profile.linkedin_url} target="_blank" rel="noreferrer" className="text-foreground hover:text-primary hover:bg-primary/10 transition-all p-2.5 bg-background/50 backdrop-blur-sm rounded-full hover:scale-110 shadow-sm border border-border/50">
+                <Linkedin className="h-5 w-5" />
+              </a>
+            )}
+            {profile.website_url && (
+              <a href={profile.website_url} target="_blank" rel="noreferrer" className="text-foreground hover:text-primary hover:bg-primary/10 transition-all p-2.5 bg-background/50 backdrop-blur-sm rounded-full hover:scale-110 shadow-sm border border-border/50">
+                <Globe className="h-5 w-5" />
+              </a>
+            )}
+          </motion.div>
+
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="max-w-2xl mx-auto text-foreground/70 text-base md:text-lg leading-relaxed">
             Selecione abaixo os produtos ou serviços que você tem interesse e clique em "Solicitar Orçamento" para receber uma proposta personalizada nossa.
-          </p>
+          </motion.p>
         </div>
       </div>
 
@@ -201,8 +244,8 @@ function VitrinePage() {
               </div>
             )}
             <div className={cn("w-full", pitchYoutubeId ? "md:w-1/2" : "text-center")}>
-              <h2 className="text-2xl font-bold mb-4 tracking-tight">Um pouco sobre mim</h2>
-              <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">{profile.vitrine_pitch_text || "Assista ao vídeo para me conhecer melhor e entender como posso te ajudar a alcançar seus objetivos!"}</p>
+              <h2 className="text-2xl font-bold mb-4 tracking-tight">Sobre a empresa</h2>
+              <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">{profile.vitrine_pitch_text || "Assista ao vídeo para nos conhecer melhor e entender como podemos te ajudar a alcançar seus objetivos!"}</p>
             </div>
           </div>
         </div>
@@ -223,46 +266,49 @@ function VitrinePage() {
             <p className="text-muted-foreground font-medium">Nenhum serviço disponível no momento.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
+          <motion.div variants={containerAnim} initial="hidden" animate="show" className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
             {filteredItems.map(it => {
               const selected = !!cart[it.id];
               return (
-                <div 
+                <motion.div 
+                  variants={itemAnim}
                   key={it.id} 
                   onClick={() => toggleCart(it.id)}
                   className={cn(
-                    "flex flex-col bg-card rounded-2xl border transition-all cursor-pointer overflow-hidden group hover:shadow-md",
-                    selected ? "border-primary ring-1 ring-primary/20 shadow-sm" : "border-border hover:border-primary/40"
+                    "flex flex-col bg-card rounded-2xl border transition-all cursor-pointer overflow-hidden group hover:shadow-xl hover:-translate-y-1",
+                    selected ? "border-primary ring-2 ring-primary/20 shadow-md" : "border-border"
                   )}
                 >
                   {it.image_url ? (
                     <div className="aspect-video w-full bg-muted/20 border-b border-border/50 relative overflow-hidden">
-                      <img src={it.image_url} alt={it.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                      <div className={cn("absolute top-3 right-3 h-6 w-6 rounded-full border-2 flex items-center justify-center transition-colors shadow-sm", selected ? "bg-primary border-primary text-primary-foreground" : "bg-background/80 border-border backdrop-blur-sm")}>
-                        {selected && <Check className="h-3.5 w-3.5" />}
+                      <img src={it.image_url} alt={it.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                      {/* Gradient overlay for better contrast if needed, or just dark glow on hover */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className={cn("absolute top-3 right-3 h-7 w-7 rounded-full border-2 flex items-center justify-center transition-all shadow-sm z-10", selected ? "bg-primary border-primary text-primary-foreground scale-110" : "bg-background/80 border-border backdrop-blur-md opacity-70 group-hover:opacity-100")}>
+                        {selected && <Check className="h-4 w-4" />}
                       </div>
                     </div>
                   ) : (
                     <div className="p-4 flex justify-end">
-                       <div className={cn("h-6 w-6 rounded-full border-2 flex items-center justify-center transition-colors shadow-sm", selected ? "bg-primary border-primary text-primary-foreground" : "bg-card border-border")}>
+                       <div className={cn("h-6 w-6 rounded-full border-2 flex items-center justify-center transition-all shadow-sm", selected ? "bg-primary border-primary text-primary-foreground scale-110" : "bg-card border-border")}>
                         {selected && <Check className="h-3.5 w-3.5" />}
                       </div>
                     </div>
                   )}
                   
-                  <div className="p-5 flex-1 flex flex-col">
+                  <div className="p-5 flex-1 flex flex-col relative bg-card">
                     <div className="flex items-start justify-between gap-2 mb-2">
-                      <h3 className="font-bold text-lg leading-tight">{it.name}</h3>
+                      <h3 className="font-bold text-lg leading-tight group-hover:text-primary transition-colors">{it.name}</h3>
                     </div>
                     {it.description && <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{it.description}</p>}
                     <div className="mt-auto pt-2 flex items-center justify-between">
-                      <span className="text-[10px] uppercase font-bold text-muted-foreground bg-muted px-2 py-0.5 rounded-full tracking-wider">{it.type === 'product' ? 'Produto' : 'Serviço'}</span>
+                      <span className="text-[10px] uppercase font-bold text-muted-foreground bg-muted px-2.5 py-1 rounded-full tracking-wider">{it.type === 'product' ? 'Produto' : 'Serviço'}</span>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
-          </div>
+          </motion.div>
         )}
       </div>
 
