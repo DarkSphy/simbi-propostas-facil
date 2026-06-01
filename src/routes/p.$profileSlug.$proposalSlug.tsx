@@ -27,6 +27,7 @@ export const Route = createFileRoute("/p/$profileSlug/$proposalSlug")({
     return {
       meta: [
         { title: `${title} · Simbi` },
+        { name: "robots", content: "noindex" },
         { property: "og:title", content: title },
         { property: "og:image", content: ogImageUrl },
         { property: "twitter:card", content: "summary_large_image" },

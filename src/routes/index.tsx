@@ -7,7 +7,13 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Simbi — Do orçamento ao serviço, tudo em um só lugar" },
-      { name: "description", content: "Gerencie clientes, crie propostas rápidas, assine contratos digitais e emita Ordens de Serviço. Tudo em uma única ferramenta simples para prestadores de serviços." },
+      { name: "description", content: "Gerencie clientes, crie propostas rápidas, assine contratos digitais e emita Ordens de Serviço. Tudo em uma única ferramenta simples para prestadores de serviços autônomos." },
+      { property: "og:title", content: "Simbi — O melhor sistema para orçamentos e serviços" },
+      { property: "og:description", content: "Pare de perder tempo no WhatsApp. Crie orçamentos profissionais com 1 clique e aumente suas vendas." },
+      { property: "og:type", content: "website" },
+      { property: "twitter:card", content: "summary_large_image" },
+      { property: "twitter:title", content: "Simbi — Orçamentos Profissionais" },
+      { property: "twitter:description", content: "Feito para prestadores de serviços, mecânicas, marcenarias e profissionais autônomos." },
     ],
   }),
   component: Landing,

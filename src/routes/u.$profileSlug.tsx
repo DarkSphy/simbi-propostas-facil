@@ -110,6 +110,42 @@ export const Route = createFileRoute("/u/$profileSlug")({
 
     return { profile, items: items || [] };
   },
+  head: ({ loaderData }) => {
+    if (!loaderData?.profile) return {};
+    const { profile } = loaderData;
+    const title = profile.company_name || profile.full_name || "Vitrine";
+    const desc = profile.vitrine_pitch_text || `Conheça os produtos e serviços de ${title}.`;
+    const image = profile.logo_url || "https://simbi-propostas-facil.lovable.app/og-vitrine.png";
+    
+    // JSON-LD for Local Business / Store
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": title,
+      "image": image,
+      "description": desc,
+      "url": `https://simbi-propostas-facil.lovable.app/u/${profile.profile_slug}`,
+      "telephone": profile.whatsapp || ""
+    };
+
+    return {
+      meta: [
+        { title: `${title} | Catálogo & Serviços` },
+        { name: "description", content: desc },
+        { property: "og:title", content: title },
+        { property: "og:description", content: desc },
+        { property: "og:image", content: image },
+        { property: "twitter:card", content: "summary_large_image" },
+        { property: "twitter:image", content: image },
+      ],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify(jsonLd)
+        }
+      ]
+    };
+  },
   errorComponent: () => <div className="min-h-screen flex items-center justify-center bg-background"><div className="p-10 text-center font-semibold text-lg text-muted-foreground border border-border rounded-2xl bg-card shadow-sm">Perfil não encontrado.</div></div>
 });
 
@@ -254,7 +290,7 @@ function VitrinePage() {
       <BackgroundEffects isDark={isDark} />
       
       {/* Header Profile / Hero */}
-      <div className="relative border-b border-border shadow-sm overflow-hidden">
+      <header className="relative border-b border-border shadow-sm overflow-hidden">
         {profile.vitrine_hero_type === 'image' && profile.vitrine_hero_url && (
           <div className="absolute inset-0 z-0">
             <motion.img 
@@ -311,7 +347,7 @@ function VitrinePage() {
             Selecione abaixo os produtos ou serviços que você tem interesse e clique em "Solicitar Orçamento" para receber uma proposta personalizada nossa.
           </motion.p>
         </div>
-      </div>
+      </header>
 
       {/* Marquee Banner */}
       <MarqueeBanner words={
