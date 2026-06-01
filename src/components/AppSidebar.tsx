@@ -1,6 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
-  Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarHeader,
+  Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarGroupLabel,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar,
 } from "@/components/ui/sidebar";
 import { LayoutDashboard, FileText, FileSignature, Users, History, Settings, LogOut, Package, ClipboardList, Calculator, BarChart3, CalendarDays, Grid, Inbox, Store } from "lucide-react";
@@ -8,21 +8,46 @@ import { Logo } from "./Logo";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 
-const items = [
-  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
-  { title: "Propostas", url: "/proposals", icon: FileText },
-  { title: "Minha Vitrine", url: "/vitrine-settings", icon: Store },
-  { title: "Pedidos Vitrine", url: "/requests", icon: Inbox },
-  { title: "Contratos", url: "/contracts", icon: FileSignature },
-  { title: "Ordem de Serviço", url: "/work-orders", icon: ClipboardList },
-  { title: "Agenda", url: "/agenda", icon: CalendarDays },
-  { title: "Clientes", url: "/clients", icon: Users },
-  { title: "Produtos & Serviços", url: "/catalog", icon: Grid },
-  { title: "Calculadora", url: "/calculator", icon: Calculator },
-  { title: "Relatórios", url: "/reports", icon: BarChart3 },
-  { title: "Histórico", url: "/history", icon: History },
-  { title: "Configurações", url: "/settings", icon: Settings },
-] as const;
+const navGroups = [
+  {
+    label: "Visão Geral",
+    items: [
+      { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+      { title: "Agenda", url: "/agenda", icon: CalendarDays },
+    ]
+  },
+  {
+    label: "Vendas & Contratos",
+    items: [
+      { title: "Propostas", url: "/proposals", icon: FileText },
+      { title: "Contratos", url: "/contracts", icon: FileSignature },
+      { title: "Ordem de Serviço", url: "/work-orders", icon: ClipboardList },
+    ]
+  },
+  {
+    label: "Catálogo & Vitrine",
+    items: [
+      { title: "Produtos & Serviços", url: "/catalog", icon: Grid },
+      { title: "Minha Vitrine", url: "/vitrine-settings", icon: Store },
+      { title: "Pedidos Vitrine", url: "/requests", icon: Inbox },
+    ]
+  },
+  {
+    label: "Clientes & Dados",
+    items: [
+      { title: "Clientes", url: "/clients", icon: Users },
+      { title: "Histórico", url: "/history", icon: History },
+    ]
+  },
+  {
+    label: "Gestão",
+    items: [
+      { title: "Calculadora", url: "/calculator", icon: Calculator },
+      { title: "Relatórios", url: "/reports", icon: BarChart3 },
+      { title: "Configurações", url: "/settings", icon: Settings },
+    ]
+  }
+];
 
 export function AppSidebar() {
   const { state } = useSidebar();
@@ -36,25 +61,28 @@ export function AppSidebar() {
         {!collapsed ? <Logo inverted /> : <div className="grid h-7 w-7 place-items-center rounded-lg bg-primary text-primary-foreground text-sm font-bold">S</div>}
       </SidebarHeader>
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {items.map((it) => {
-                const active = path === it.url || path.startsWith(it.url + "/");
-                return (
-                  <SidebarMenuItem key={it.url}>
-                    <SidebarMenuButton asChild isActive={active} className="transition-all data-[active=true]:bg-white/10 data-[active=true]:text-white data-[active=true]:font-semibold hover:bg-white/5 hover:text-white text-sidebar-foreground/80">
-                      <Link to={it.url} className="flex items-center gap-3 py-1">
-                        <it.icon className={`h-[1.125rem] w-[1.125rem] transition-colors ${active ? "text-white drop-shadow-sm" : "text-sidebar-foreground/60"}`} />
-                        {!collapsed && <span>{it.title}</span>}
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {navGroups.map((group, index) => (
+          <SidebarGroup key={index} className="pt-2">
+            {!collapsed && <SidebarGroupLabel className="text-xs font-semibold uppercase tracking-wider text-sidebar-foreground/50 px-3 mb-1">{group.label}</SidebarGroupLabel>}
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {group.items.map((it) => {
+                  const active = path === it.url || path.startsWith(it.url + "/");
+                  return (
+                    <SidebarMenuItem key={it.url}>
+                      <SidebarMenuButton asChild isActive={active} className="transition-all data-[active=true]:bg-white/10 data-[active=true]:text-white data-[active=true]:font-semibold hover:bg-white/5 hover:text-white text-sidebar-foreground/80">
+                        <Link to={it.url} className="flex items-center gap-3 py-1">
+                          <it.icon className={`h-[1.125rem] w-[1.125rem] transition-colors ${active ? "text-white drop-shadow-sm" : "text-sidebar-foreground/60"}`} />
+                          {!collapsed && <span>{it.title}</span>}
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
       </SidebarContent>
       <SidebarFooter className="px-2 pb-3">
         {!collapsed && user && (
