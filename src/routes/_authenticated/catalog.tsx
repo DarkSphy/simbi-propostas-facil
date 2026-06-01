@@ -136,7 +136,7 @@ function Catalog() {
   async function handleRemove(id: string) {
     if (!confirm("Excluir este item?")) return;
     const { error } = await supabase.from("catalog_items").delete().eq("id", id);
-    if (error) { toast.error(error.message); return; }
+    if (error) { toast.error(getErrorMessage(error)); return; }
     toast.success("Item excluído.");
     qc.invalidateQueries({ queryKey: ["catalog-items"] });
     qc.invalidateQueries({ queryKey: ["catalogCount"] });
@@ -145,6 +145,7 @@ function Catalog() {
   async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
     if (!user || !e.target.files || e.target.files.length === 0) return;
     const file = e.target.files[0];
+    if (file.size > 5 * 1024 * 1024) { toast.error('A imagem deve ter no máximo 5MB para conexões lentas.'); return; }
     setUploading(true);
     const ext = file.name.split('.').pop();
     const filePath = `${user.id}/catalog/${Date.now()}.${ext}`;
@@ -388,7 +389,7 @@ function CategoriesManager({ categories, user, qc }: any) {
     setSaving(true);
     const { error } = await supabase.from("catalog_categories").insert({ user_id: user.id, name: name.trim() });
     setSaving(false);
-    if (error) { toast.error(error.message); return; }
+    if (error) { toast.error(getErrorMessage(error)); return; }
     toast.success("Categoria adicionada");
     setName("");
     qc.invalidateQueries({ queryKey: ["catalog-categories"] });
@@ -397,7 +398,7 @@ function CategoriesManager({ categories, user, qc }: any) {
   async function handleRemove(id: string) {
     if (!confirm("Excluir esta categoria? Os produtos atrelados a ela ficarão sem categoria.")) return;
     const { error } = await supabase.from("catalog_categories").delete().eq("id", id);
-    if (error) { toast.error(error.message); return; }
+    if (error) { toast.error(getErrorMessage(error)); return; }
     toast.success("Categoria excluída");
     qc.invalidateQueries({ queryKey: ["catalog-categories"] });
     qc.invalidateQueries({ queryKey: ["catalog-items"] });

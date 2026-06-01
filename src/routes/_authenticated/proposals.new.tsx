@@ -119,6 +119,7 @@ function NewProposal() {
   async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>, index: number) {
     if (!user || !e.target.files || e.target.files.length === 0) return;
     const file = e.target.files[0];
+    if (file.size > 5 * 1024 * 1024) { toast.error('A imagem deve ter no máximo 5MB para conexões lentas.'); return; }
     const ext = file.name.split('.').pop();
     const filePath = `${user.id}/proposal-items/${Date.now()}.${ext}`;
     
@@ -181,7 +182,7 @@ function NewProposal() {
     if (!confirm("Excluir este modelo?")) return;
     const { error } = await supabase.from("proposal_templates").delete().eq("id", id);
     if (error) {
-      toast.error(error.message);
+      toast.error(getErrorMessage(error));
     } else {
       toast.success("Modelo excluído.");
       queryClient.invalidateQueries({ queryKey: ["proposal-templates"] });

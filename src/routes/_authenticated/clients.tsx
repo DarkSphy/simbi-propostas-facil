@@ -76,7 +76,7 @@ function ClientsPage() {
       content: newNote.trim()
     });
     if (error) {
-      toast.error(error.message);
+      toast.error(getErrorMessage(error));
     } else {
       setNewNote("");
       qc.invalidateQueries({ queryKey: ["client-crm", selectedClient.id] });
@@ -96,11 +96,11 @@ function ClientsPage() {
 
     if (editingId) {
       const { error } = await supabase.from("clients").update(payload).eq("id", editingId);
-      if (error) { toast.error(error.message); return; }
+      if (error) { toast.error(getErrorMessage(error)); return; }
       toast.success("Cliente atualizado");
     } else {
       const { error } = await supabase.from("clients").insert({ user_id: user.id, ...payload });
-      if (error) { toast.error(error.message); return; }
+      if (error) { toast.error(getErrorMessage(error)); return; }
       toast.success("Cliente adicionado");
     }
     resetForm();
@@ -124,7 +124,7 @@ function ClientsPage() {
   async function remove(id: string) {
     if (!confirm("Excluir cliente?")) return;
     const { error } = await supabase.from("clients").delete().eq("id", id);
-    if (error) { toast.error(error.message); return; }
+    if (error) { toast.error(getErrorMessage(error)); return; }
     qc.invalidateQueries({ queryKey: ["clients"] });
   }
 

@@ -111,13 +111,14 @@ function SettingsPage() {
       updated_at: new Date().toISOString() 
     });
     setSaving(false);
-    if (error) { toast.error(error.message); return; }
+    if (error) { toast.error(getErrorMessage(error)); return; }
     toast.success("Salvo!");
   }
 
   async function handleLogoUpload(e: React.ChangeEvent<HTMLInputElement>) {
     if (!user || !e.target.files || e.target.files.length === 0) return;
     const file = e.target.files[0];
+    if (file.size > 5 * 1024 * 1024) { toast.error('A imagem deve ter no máximo 5MB para conexões lentas.'); return; }
     setUploading(true);
     const ext = file.name.split('.').pop();
     const filePath = `${user.id}/logos/${Date.now()}.${ext}`;
@@ -135,6 +136,7 @@ function SettingsPage() {
   async function handleBgUpload(e: React.ChangeEvent<HTMLInputElement>) {
     if (!user || !e.target.files || e.target.files.length === 0) return;
     const file = e.target.files[0];
+    if (file.size > 5 * 1024 * 1024) { toast.error('A imagem deve ter no máximo 5MB para conexões lentas.'); return; }
     setUploadingBg(true);
     const ext = file.name.split('.').pop();
     const filePath = `${user.id}/bg/${Date.now()}.${ext}`;

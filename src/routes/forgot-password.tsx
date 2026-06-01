@@ -22,7 +22,7 @@ function ForgotPage() {
       redirectTo: `${window.location.origin}/reset-password`,
     });
     setLoading(false);
-    if (error) { toast.error(error.message); return; }
+    if (error) { toast.error(getErrorMessage(error)); return; }
     toast.success("Enviamos um link de redefinição para seu e-mail.");
   }
 

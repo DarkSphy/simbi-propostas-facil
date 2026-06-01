@@ -73,7 +73,7 @@ function ProposalDetail() {
   async function remove() {
     if (!confirm("Excluir esta proposta?")) return;
     const { error } = await supabase.from("proposals").delete().eq("id", id);
-    if (error) { toast.error(error.message); return; }
+    if (error) { toast.error(getErrorMessage(error)); return; }
     toast.success("Proposta excluída");
     qc.invalidateQueries({ queryKey: ["proposals-list"] });
     navigate({ to: "/proposals" });
@@ -81,7 +81,7 @@ function ProposalDetail() {
 
   async function updateStatus(newStatus: string) {
     const { error } = await supabase.from("proposals").update({ status: newStatus as any }).eq("id", id);
-    if (error) { toast.error(error.message); return; }
+    if (error) { toast.error(getErrorMessage(error)); return; }
     toast.success("Status atualizado!");
     qc.invalidateQueries({ queryKey: ["proposal", id] });
     qc.invalidateQueries({ queryKey: ["proposals-list"] });

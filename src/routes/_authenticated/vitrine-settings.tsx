@@ -103,7 +103,7 @@ function VitrineSettings() {
 
     setSaving(false);
     if (error) {
-      toast.error(error.message);
+      toast.error(getErrorMessage(error));
     } else {
       toast.success("Vitrine atualizada com sucesso!");
     }

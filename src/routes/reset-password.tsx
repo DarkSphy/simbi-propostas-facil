@@ -22,7 +22,7 @@ function ResetPage() {
     setLoading(true);
     const { error } = await supabase.auth.updateUser({ password });
     setLoading(false);
-    if (error) { toast.error(error.message); return; }
+    if (error) { toast.error(getErrorMessage(error)); return; }
     toast.success("Senha redefinida!");
     navigate({ to: "/dashboard", replace: true });
   }

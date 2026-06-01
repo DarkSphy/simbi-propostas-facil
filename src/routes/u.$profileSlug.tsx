@@ -214,7 +214,7 @@ function VitrinePage() {
 
     setSending(false);
     if (error) {
-      toast.error(error.message);
+      toast.error(getErrorMessage(error));
     } else {
       setDone(true);
       toast.success("Orçamento solicitado com sucesso!");

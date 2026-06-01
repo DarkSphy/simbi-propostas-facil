@@ -138,7 +138,7 @@ function ContractsPage() {
   async function removeContract(id: string) {
     if (!confirm("Deseja realmente excluir este contrato?")) return;
     const { error } = await supabase.from("contracts").delete().eq("id", id);
-    if (error) { toast.error(error.message); return; }
+    if (error) { toast.error(getErrorMessage(error)); return; }
     toast.success("Contrato excluído!");
     qc.invalidateQueries({ queryKey: ["contracts"] });
   }

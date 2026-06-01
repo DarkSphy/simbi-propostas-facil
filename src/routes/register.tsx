@@ -31,7 +31,7 @@ function RegisterPage() {
       options: { data: { full_name: fullName }, emailRedirectTo: `${window.location.origin}/dashboard` },
     });
     setLoading(false);
-    if (error) { toast.error(error.message); return; }
+    if (error) { toast.error(getErrorMessage(error)); return; }
     toast.success("Conta criada! Redirecionando…");
     navigate({ to: "/dashboard", replace: true });
   }

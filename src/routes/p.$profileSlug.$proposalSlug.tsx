@@ -107,7 +107,7 @@ function PublicProposal() {
 
   async function setStatus(status: "approved" | "rejected") {
     const { error } = await supabase.rpc("update_proposal_status", { p_slug: slug, p_status: status });
-    if (error) { toast.error(error.message); return; }
+    if (error) { toast.error(getErrorMessage(error)); return; }
 
     // Registrar o log de aprovação ou rejeição
     logProposalEvent({ 
