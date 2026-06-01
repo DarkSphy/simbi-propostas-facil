@@ -27,6 +27,7 @@ import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedRequestsRouteImport } from './routes/_authenticated/requests'
 import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
 import { Route as AuthenticatedHistoryRouteImport } from './routes/_authenticated/history'
+import { Route as AuthenticatedFinanceRouteImport } from './routes/_authenticated/finance'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedContractsRouteImport } from './routes/_authenticated/contracts'
 import { Route as AuthenticatedClientsRouteImport } from './routes/_authenticated/clients'
@@ -129,6 +130,11 @@ const AuthenticatedHistoryRoute = AuthenticatedHistoryRouteImport.update({
   path: '/history',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedFinanceRoute = AuthenticatedFinanceRouteImport.update({
+  id: '/finance',
+  path: '/finance',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -203,6 +209,7 @@ export interface FileRoutesByFullPath {
   '/clients': typeof AuthenticatedClientsRoute
   '/contracts': typeof AuthenticatedContractsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/finance': typeof AuthenticatedFinanceRoute
   '/history': typeof AuthenticatedHistoryRoute
   '/reports': typeof AuthenticatedReportsRoute
   '/requests': typeof AuthenticatedRequestsRoute
@@ -233,6 +240,7 @@ export interface FileRoutesByTo {
   '/clients': typeof AuthenticatedClientsRoute
   '/contracts': typeof AuthenticatedContractsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/finance': typeof AuthenticatedFinanceRoute
   '/history': typeof AuthenticatedHistoryRoute
   '/reports': typeof AuthenticatedReportsRoute
   '/requests': typeof AuthenticatedRequestsRoute
@@ -265,6 +273,7 @@ export interface FileRoutesById {
   '/_authenticated/clients': typeof AuthenticatedClientsRoute
   '/_authenticated/contracts': typeof AuthenticatedContractsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/finance': typeof AuthenticatedFinanceRoute
   '/_authenticated/history': typeof AuthenticatedHistoryRoute
   '/_authenticated/reports': typeof AuthenticatedReportsRoute
   '/_authenticated/requests': typeof AuthenticatedRequestsRoute
@@ -297,6 +306,7 @@ export interface FileRouteTypes {
     | '/clients'
     | '/contracts'
     | '/dashboard'
+    | '/finance'
     | '/history'
     | '/reports'
     | '/requests'
@@ -327,6 +337,7 @@ export interface FileRouteTypes {
     | '/clients'
     | '/contracts'
     | '/dashboard'
+    | '/finance'
     | '/history'
     | '/reports'
     | '/requests'
@@ -358,6 +369,7 @@ export interface FileRouteTypes {
     | '/_authenticated/clients'
     | '/_authenticated/contracts'
     | '/_authenticated/dashboard'
+    | '/_authenticated/finance'
     | '/_authenticated/history'
     | '/_authenticated/reports'
     | '/_authenticated/requests'
@@ -519,6 +531,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedHistoryRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/finance': {
+      id: '/_authenticated/finance'
+      path: '/finance'
+      fullPath: '/finance'
+      preLoaderRoute: typeof AuthenticatedFinanceRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -606,6 +625,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedClientsRoute: typeof AuthenticatedClientsRoute
   AuthenticatedContractsRoute: typeof AuthenticatedContractsRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedFinanceRoute: typeof AuthenticatedFinanceRoute
   AuthenticatedHistoryRoute: typeof AuthenticatedHistoryRoute
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
   AuthenticatedRequestsRoute: typeof AuthenticatedRequestsRoute
@@ -625,6 +645,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedClientsRoute: AuthenticatedClientsRoute,
   AuthenticatedContractsRoute: AuthenticatedContractsRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedFinanceRoute: AuthenticatedFinanceRoute,
   AuthenticatedHistoryRoute: AuthenticatedHistoryRoute,
   AuthenticatedReportsRoute: AuthenticatedReportsRoute,
   AuthenticatedRequestsRoute: AuthenticatedRequestsRoute,

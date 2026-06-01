@@ -3,7 +3,7 @@ import {
   Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarGroupLabel,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar,
 } from "@/components/ui/sidebar";
-import { LayoutDashboard, FileText, FileSignature, Users, History, Settings, LogOut, Package, ClipboardList, Calculator, BarChart3, CalendarDays, Grid, Inbox, Store } from "lucide-react";
+import { LayoutDashboard, FileText, FileSignature, Users, History, Settings, LogOut, Package, ClipboardList, Calculator, BarChart3, CalendarDays, Grid, Inbox, Store, CircleDollarSign } from "lucide-react";
 import { Logo } from "./Logo";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
@@ -42,6 +42,7 @@ const navGroups = [
   {
     label: "Gestão",
     items: [
+      { title: "Financeiro", url: "/finance", icon: CircleDollarSign },
       { title: "Calculadora", url: "/calculator", icon: Calculator },
       { title: "Relatórios", url: "/reports", icon: BarChart3 },
       { title: "Configurações", url: "/settings", icon: Settings },

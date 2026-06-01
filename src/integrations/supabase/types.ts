@@ -108,6 +108,58 @@ export type Database = {
           updated_at?: string
           whatsapp?: string | null
         }
+        Relationships: []
+      }
+      financial_transactions: {
+        Row: {
+          id: string
+          user_id: string
+          type: Database["public"]["Enums"]["transaction_type"]
+          status: Database["public"]["Enums"]["transaction_status"]
+          amount: number
+          description: string
+          due_date: string
+          paid_date: string | null
+          proposal_id: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          type: Database["public"]["Enums"]["transaction_type"]
+          status?: Database["public"]["Enums"]["transaction_status"]
+          amount: number
+          description: string
+          due_date: string
+          paid_date?: string | null
+          proposal_id?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          type?: Database["public"]["Enums"]["transaction_type"]
+          status?: Database["public"]["Enums"]["transaction_status"]
+          amount?: number
+          description?: string
+          due_date?: string
+          paid_date?: string | null
+          proposal_id?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "financial_transactions_proposal_id_fkey"
+            columns: ["proposal_id"]
+            isOneToOne: false
+            referencedRelation: "proposals"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       notifications: {
         Row: {
           created_at: string
@@ -309,6 +361,8 @@ export type Database = {
     Enums: {
       item_type: "product" | "service"
       proposal_status: "sent" | "viewed" | "approved" | "rejected" | "in_progress" | "canceled" | "finished" | "paid"
+      transaction_type: "income" | "expense"
+      transaction_status: "pending" | "paid" | "cancelled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -438,6 +492,8 @@ export const Constants = {
     Enums: {
       item_type: ["product", "service"],
       proposal_status: ["sent", "viewed", "approved", "rejected", "in_progress", "canceled", "finished", "paid"],
+      transaction_type: ["income", "expense"],
+      transaction_status: ["pending", "paid", "cancelled"],
     },
   },
 } as const
