@@ -90,6 +90,21 @@ export type Database = {
           theme_color: string | null
           updated_at: string
           whatsapp: string | null
+          name?: string | null
+          profile_slug?: string | null
+          vitrine_hero_url?: string | null
+          vitrine_hero_type?: string | null
+          vitrine_pitch_text?: string | null
+          vitrine_pitch_video_url?: string | null
+          vitrine_marquee_words?: string | null
+          vitrine_skin?: string | null
+          ui_theme?: string | null
+          vitrine_testimonials?: string | null
+          instagram_url?: string | null
+          linkedin_url?: string | null
+          website_url?: string | null
+          email?: string | null
+          phone?: string | null
         }
         Insert: {
           company_name?: string | null
@@ -100,6 +115,21 @@ export type Database = {
           theme_color?: string | null
           updated_at?: string
           whatsapp?: string | null
+          name?: string | null
+          profile_slug?: string | null
+          vitrine_hero_url?: string | null
+          vitrine_hero_type?: string | null
+          vitrine_pitch_text?: string | null
+          vitrine_pitch_video_url?: string | null
+          vitrine_marquee_words?: string | null
+          vitrine_skin?: string | null
+          ui_theme?: string | null
+          vitrine_testimonials?: string | null
+          instagram_url?: string | null
+          linkedin_url?: string | null
+          website_url?: string | null
+          email?: string | null
+          phone?: string | null
         }
         Update: {
           company_name?: string | null
@@ -110,6 +140,21 @@ export type Database = {
           theme_color?: string | null
           updated_at?: string
           whatsapp?: string | null
+          name?: string | null
+          profile_slug?: string | null
+          vitrine_hero_url?: string | null
+          vitrine_hero_type?: string | null
+          vitrine_pitch_text?: string | null
+          vitrine_pitch_video_url?: string | null
+          vitrine_marquee_words?: string | null
+          vitrine_skin?: string | null
+          ui_theme?: string | null
+          vitrine_testimonials?: string | null
+          instagram_url?: string | null
+          linkedin_url?: string | null
+          website_url?: string | null
+          email?: string | null
+          phone?: string | null
         }
         Relationships: []
       }

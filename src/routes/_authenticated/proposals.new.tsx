@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import { getErrorMessage } from "@/lib/utils/error";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -257,7 +258,7 @@ function NewProposal() {
       navigate({ to: "/proposals" });
     } catch (e: any) {
       console.error("Erro no save da proposta:", e);
-      toast.error(e?.message || "Erro ao criar proposta. Verifique o console.");
+      toast.error(getErrorMessage(e, "Erro ao criar proposta. Verifique o console."));
     } finally { 
       setSaving(false); 
     }

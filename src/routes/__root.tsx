@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
+import { OfflineBanner } from "@/components/OfflineBanner";
 
 import appCss from "../styles.css?url";
 
@@ -104,6 +105,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <AuthInvalidator />
+        <OfflineBanner />
         <RealtimeNotifications />
         <Outlet />
         <Toaster position="top-center" richColors />
