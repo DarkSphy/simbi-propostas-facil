@@ -63,6 +63,8 @@ function Catalog() {
     enabled: !!user
   });
 
+  const [stockQuantity, setStockQuantity] = useState<string>("");
+
   const filteredItems = items.filter((it: any) => 
     it.name.toLowerCase().includes(search.toLowerCase()) || 
     (it.description && it.description.toLowerCase().includes(search.toLowerCase()))
@@ -82,6 +84,7 @@ function Catalog() {
         image_url: imageUrl || null,
         is_public: isPublic,
         category_id: categoryId === "none" ? null : categoryId,
+        stock_quantity: stockQuantity.trim() === "" ? null : Number(stockQuantity),
       };
 
       if (editingId) {
@@ -112,6 +115,7 @@ function Catalog() {
     setType("product");
     setIsPublic(true);
     setCategoryId("none");
+    setStockQuantity("");
     setOpen(false);
   }
 
@@ -124,6 +128,7 @@ function Catalog() {
     setType(it.type as "product" | "service");
     setIsPublic(it.is_public ?? true);
     setCategoryId(it.category_id || "none");
+    setStockQuantity(it.stock_quantity !== null && it.stock_quantity !== undefined ? String(it.stock_quantity) : "");
     setOpen(true);
   }
 
@@ -242,9 +247,15 @@ function Catalog() {
                   <Label>Descrição (Opcional)</Label>
                   <Textarea value={description} onChange={e => setDescription(e.target.value)} placeholder="Detalhes do que está incluso..." rows={2} />
                 </div>
-                <div className="space-y-1.5">
-                  <Label>Preço Unitário</Label>
-                  <Input type="number" min="0" step="0.01" value={unitPrice} onChange={e => setUnitPrice(e.target.value)} placeholder="0.00" />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <Label>Preço Unitário</Label>
+                    <Input type="number" min="0" step="0.01" value={unitPrice} onChange={e => setUnitPrice(e.target.value)} placeholder="0.00" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Estoque (Opcional)</Label>
+                    <Input type="number" min="0" step="1" value={stockQuantity} onChange={e => setStockQuantity(e.target.value)} placeholder="Infinito" />
+                  </div>
                 </div>
                 <div className="space-y-1.5">
                   <Label>Foto do item (Opcional)</Label>
@@ -333,6 +344,14 @@ function Catalog() {
                           <TooltipContent>Item privado (Apenas você pode adicionar)</TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
+                    )}
+                    {it.stock_quantity !== null && it.stock_quantity !== undefined && (
+                      <span className={cn(
+                        "rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider",
+                        it.stock_quantity === 0 ? "bg-red-100 text-red-700" : "bg-blue-100 text-blue-700"
+                      )}>
+                        {it.stock_quantity === 0 ? "Esgotado" : `Estoque: ${it.stock_quantity}`}
+                      </span>
                     )}
                   </div>
                   {it.description && <div className="mt-1 text-sm text-muted-foreground">{it.description}</div>}

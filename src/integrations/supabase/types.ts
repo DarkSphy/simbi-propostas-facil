@@ -24,6 +24,7 @@ export type Database = {
           unit_price: number
           user_id: string
           image_url: string | null
+          stock_quantity: number | null
         }
         Insert: {
           created_at?: string
@@ -34,6 +35,7 @@ export type Database = {
           unit_price?: number
           user_id: string
           image_url?: string | null
+          stock_quantity?: number | null
         }
         Update: {
           created_at?: string
@@ -44,6 +46,7 @@ export type Database = {
           unit_price?: number
           user_id?: string
           image_url?: string | null
+          stock_quantity?: number | null
         }
         Relationships: []
       }
@@ -263,6 +266,7 @@ export type Database = {
           sort_order: number
           unit_price: number
           image_url: string | null
+          catalog_item_id: string | null
         }
         Insert: {
           description: string
@@ -272,6 +276,7 @@ export type Database = {
           sort_order?: number
           unit_price?: number
           image_url?: string | null
+          catalog_item_id?: string | null
         }
         Update: {
           description?: string
@@ -281,6 +286,7 @@ export type Database = {
           sort_order?: number
           unit_price?: number
           image_url?: string | null
+          catalog_item_id?: string | null
         }
         Relationships: [
           {
@@ -290,6 +296,13 @@ export type Database = {
             referencedRelation: "proposals"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "proposal_items_catalog_item_id_fkey"
+            columns: ["catalog_item_id"]
+            isOneToOne: false
+            referencedRelation: "catalog_items"
+            referencedColumns: ["id"]
+          }
         ]
       }
       proposals: {

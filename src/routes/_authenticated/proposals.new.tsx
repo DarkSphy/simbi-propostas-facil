@@ -19,7 +19,7 @@ export const Route = createFileRoute("/_authenticated/proposals/new")({
   component: NewProposal,
 });
 
-type Item = { description: string; quantity: number | string; unit_price: number | string; image_url?: string; is_optional?: boolean };
+type Item = { description: string; quantity: number | string; unit_price: number | string; image_url?: string; is_optional?: boolean; catalog_item_id?: string };
 type Client = { id: string; name: string };
 
 function NewProposal() {
@@ -104,7 +104,7 @@ function NewProposal() {
   }
   function addItem() { setItems([...items, { description: "", quantity: 1, unit_price: "", is_optional: false }]); }
   function addFromCatalog(catItem: any) {
-    const newIt = { description: catItem.name, quantity: 1, unit_price: catItem.unit_price, image_url: catItem.image_url, is_optional: false };
+    const newIt = { description: catItem.name, quantity: 1, unit_price: catItem.unit_price, image_url: catItem.image_url, is_optional: false, catalog_item_id: catItem.id };
     if (items.length === 1 && !items[0].description) {
       setItems([newIt]);
     } else {
@@ -247,7 +247,7 @@ function NewProposal() {
       const cleanItems = items.filter(i => i.description && i.description.trim());
       if (cleanItems.length > 0) {
         const { error: iErr } = await supabase.from("proposal_items").insert(
-          cleanItems.map((it, idx) => ({ proposal_id: propId, description: it.description, quantity: it.quantity, unit_price: it.unit_price, sort_order: idx, image_url: it.image_url || null, is_optional: it.is_optional || false }))
+          cleanItems.map((it, idx) => ({ proposal_id: propId, description: it.description, quantity: it.quantity, unit_price: it.unit_price, sort_order: idx, image_url: it.image_url || null, is_optional: it.is_optional || false, catalog_item_id: it.catalog_item_id || null }))
         );
         if (iErr) throw iErr;
       }

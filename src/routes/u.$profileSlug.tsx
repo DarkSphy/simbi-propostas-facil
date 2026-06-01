@@ -398,13 +398,15 @@ function VitrinePage() {
           <motion.div variants={containerAnim} initial="hidden" animate="show" className="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-8">
             {filteredItems.map(it => {
               const selected = !!cart[it.id];
+              const isOutOfStock = it.stock_quantity === 0;
               return (
                 <TiltCard 
                   key={it.id} 
-                  onClick={() => toggleCart(it.id)}
+                  onClick={() => !isOutOfStock && toggleCart(it.id)}
                   className={cn(
-                    "flex flex-col bg-card/80 backdrop-blur-md rounded-3xl border transition-colors cursor-pointer overflow-hidden group hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_20px_50px_rgba(255,255,255,0.05)]",
-                    selected ? "border-primary ring-2 ring-primary/40 shadow-lg" : "border-border/50"
+                    "flex flex-col bg-card/80 backdrop-blur-md rounded-3xl border transition-colors cursor-pointer overflow-hidden group",
+                    selected ? "border-primary ring-2 ring-primary/40 shadow-lg" : "border-border/50 hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_20px_50px_rgba(255,255,255,0.05)]",
+                    isOutOfStock && "opacity-75 grayscale cursor-not-allowed hover:shadow-none"
                   )}
                 >
                   <motion.div variants={itemAnim} className="flex flex-col h-full">
@@ -412,15 +414,27 @@ function VitrinePage() {
                       <div className="aspect-video w-full bg-muted/20 border-b border-border/30 relative overflow-hidden">
                         <img src={it.image_url} alt={it.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                        <div className={cn("absolute top-3 right-3 h-8 w-8 rounded-full border-2 flex items-center justify-center transition-all shadow-lg z-10", selected ? "bg-primary border-primary text-primary-foreground scale-110" : "bg-black/40 border-white/20 backdrop-blur-md opacity-0 group-hover:opacity-100")}>
-                          {selected && <Check className="h-4 w-4" />}
-                        </div>
+                        {isOutOfStock ? (
+                          <div className="absolute top-3 right-3 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-md shadow-lg z-10 uppercase tracking-widest">
+                            Esgotado
+                          </div>
+                        ) : (
+                          <div className={cn("absolute top-3 right-3 h-8 w-8 rounded-full border-2 flex items-center justify-center transition-all shadow-lg z-10", selected ? "bg-primary border-primary text-primary-foreground scale-110" : "bg-black/40 border-white/20 backdrop-blur-md opacity-0 group-hover:opacity-100")}>
+                            {selected && <Check className="h-4 w-4" />}
+                          </div>
+                        )}
                       </div>
                     ) : (
                       <div className="p-4 flex justify-end">
-                         <div className={cn("h-6 w-6 rounded-full border-2 flex items-center justify-center transition-all shadow-sm", selected ? "bg-primary border-primary text-primary-foreground scale-110" : "bg-card border-border")}>
-                          {selected && <Check className="h-3.5 w-3.5" />}
-                        </div>
+                        {isOutOfStock ? (
+                          <div className="bg-red-100 text-red-700 border border-red-200 text-[10px] font-bold px-2 py-1 rounded-md shadow-sm uppercase tracking-widest">
+                            Esgotado
+                          </div>
+                        ) : (
+                          <div className={cn("h-6 w-6 rounded-full border-2 flex items-center justify-center transition-all shadow-sm", selected ? "bg-primary border-primary text-primary-foreground scale-110" : "bg-card border-border")}>
+                            {selected && <Check className="h-3.5 w-3.5" />}
+                          </div>
+                        )}
                       </div>
                     )}
                     
