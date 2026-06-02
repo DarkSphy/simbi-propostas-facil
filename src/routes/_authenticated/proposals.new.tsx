@@ -390,10 +390,27 @@ function NewProposal() {
                         {catalogItems.map(c => (
                           <li key={c.id} className="flex items-center justify-between py-3">
                             <div>
-                              <div className="font-medium">{c.name}</div>
+                              <div className="font-medium flex items-center gap-2">
+                                {c.name}
+                                {c.stock_quantity !== null && c.stock_quantity !== undefined && (
+                                  <span className={cn(
+                                    "text-[10px] px-1.5 py-0.5 rounded-full font-bold",
+                                    c.stock_quantity === 0 ? "bg-red-100 text-red-700" : c.stock_quantity <= 5 ? "bg-amber-100 text-amber-700" : "bg-emerald-100 text-emerald-700"
+                                  )}>
+                                    {c.stock_quantity === 0 ? "Esgotado" : `Estoque: ${c.stock_quantity}`}
+                                  </span>
+                                )}
+                              </div>
                               <div className="text-xs text-muted-foreground">{formatBRL(Number(c.unit_price))}</div>
                             </div>
-                            <Button size="sm" onClick={() => addFromCatalog(c)}>Adicionar</Button>
+                            <Button 
+                              size="sm" 
+                              variant={c.stock_quantity === 0 ? "outline" : "default"}
+                              disabled={c.stock_quantity === 0}
+                              onClick={() => addFromCatalog(c)}
+                            >
+                              {c.stock_quantity === 0 ? "Esgotado" : "Adicionar"}
+                            </Button>
                           </li>
                         ))}
                       </ul>

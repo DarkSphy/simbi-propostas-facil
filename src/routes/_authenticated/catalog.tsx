@@ -176,6 +176,12 @@ function Catalog() {
         >
           Categorias
         </button>
+        <button 
+          className={cn("px-4 py-2 font-semibold text-sm border-b-2 transition-colors", activeTab === "stock" ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground")}
+          onClick={() => setActiveTab("stock")}
+        >
+          Gestão de Estoque
+        </button>
       </div>
 
       {activeTab === "items" ? (
@@ -374,8 +380,10 @@ function Catalog() {
         )}
       </div>
         </>
-      ) : (
+      ) : activeTab === "categories" ? (
         <CategoriesManager categories={categories} user={user} qc={qc} />
+      ) : (
+        <StockManager items={items} user={user} qc={qc} />
       )}
     </div>
   );
@@ -422,6 +430,77 @@ function CategoriesManager({ categories, user, qc }: any) {
                 <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive" onClick={() => handleRemove(c.id)}>
                   <Trash2 className="h-4 w-4" />
                 </Button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function StockManager({ items, user, qc }: any) {
+  const [search, setSearch] = useState("");
+  const stockItems = items.filter((it: any) => it.type === "product" && it.stock_quantity !== null && it.stock_quantity !== undefined);
+  
+  const filtered = stockItems.filter((it: any) => it.name.toLowerCase().includes(search.toLowerCase()));
+
+  async function adjustStock(id: string, current: number, change: number) {
+    const newStock = Math.max(0, current + change);
+    const { error } = await supabase.from("catalog_items").update({ stock_quantity: newStock }).eq("id", id);
+    if (error) {
+      toast.error("Erro ao atualizar estoque.");
+      return;
+    }
+    qc.invalidateQueries({ queryKey: ["catalog-items"] });
+    toast.success(`Estoque atualizado para ${newStock}`);
+  }
+
+  return (
+    <div className="space-y-6 animate-in fade-in duration-300">
+      <div className="flex flex-col sm:flex-row justify-between gap-4">
+        <div className="relative w-full sm:w-64">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input 
+            placeholder="Buscar produtos..." 
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-9 rounded-full bg-card"
+          />
+        </div>
+      </div>
+      
+      <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
+        {stockItems.length === 0 ? (
+          <div className="p-10 text-center text-muted-foreground text-sm">
+            Nenhum produto com controle de estoque ativo. Ao cadastrar um produto, informe a quantidade inicial.
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="p-10 text-center text-muted-foreground text-sm">Nenhum produto encontrado.</div>
+        ) : (
+          <ul className="divide-y divide-border">
+            {filtered.map((it: any) => (
+              <li key={it.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 hover:bg-muted/30 gap-4">
+                <div>
+                  <div className="font-medium flex items-center gap-2">
+                    {it.name}
+                    {it.stock_quantity <= 5 && (
+                      <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-red-100 text-red-700 animate-pulse">
+                        Critico
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-xs text-muted-foreground">Estoque Atual: {it.stock_quantity}</div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button variant="outline" size="icon" onClick={() => adjustStock(it.id, it.stock_quantity, -1)} disabled={it.stock_quantity === 0}>
+                    -
+                  </Button>
+                  <div className="w-12 text-center font-bold text-lg">{it.stock_quantity}</div>
+                  <Button variant="outline" size="icon" onClick={() => adjustStock(it.id, it.stock_quantity, 1)}>
+                    +
+                  </Button>
+                </div>
               </li>
             ))}
           </ul>

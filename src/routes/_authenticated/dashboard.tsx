@@ -75,6 +75,21 @@ function Dashboard() {
     enabled: !!user,
   });
 
+  const { data: lowStockItems = [] } = useQuery({
+    queryKey: ["lowStockItems", user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("catalog_items")
+        .select("id, name, stock_quantity")
+        .eq("user_id", user!.id)
+        .lte("stock_quantity", 5)
+        .order("stock_quantity", { ascending: true });
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!user,
+  });
+
   // Onboarding
   useEffect(() => {
     if (!user || isLoadingProposals || proposals.length > 0 || localStorage.getItem("dummyInjected_" + user.id)) return;
@@ -228,15 +243,30 @@ function Dashboard() {
             </div>
             <div>
               <h3 className="text-base font-bold text-blue-900 dark:text-blue-100">Central de Alertas</h3>
-              <div className="mt-1 flex flex-wrap gap-2 text-sm text-blue-800 dark:text-blue-200">
+              <div className="mt-2 flex flex-col gap-2">
                 {pendingFollowups.length > 0 && (
-                  <span className="flex items-center gap-1.5 rounded-full bg-white/60 dark:bg-black/20 px-3 py-1 font-medium">
-                    <AlertTriangle className="h-4 w-4 text-amber-500" /> {pendingFollowups.length} pendentes
-                  </span>
+                  <div className="flex items-center justify-between rounded-lg bg-white/60 dark:bg-black/20 px-3 py-2 border border-amber-200/50">
+                    <div className="flex items-center gap-2">
+                      <AlertTriangle className="h-4 w-4 text-amber-500" /> 
+                      <span className="text-sm font-medium text-amber-900 dark:text-amber-100">
+                        Você tem {pendingFollowups.length} {pendingFollowups.length === 1 ? "orçamento aguardando resposta" : "orçamentos aguardando resposta"} (mais de 3 dias).
+                      </span>
+                    </div>
+                  </div>
                 )}
-                <span className="flex items-center gap-1.5 rounded-full bg-white/60 dark:bg-black/20 px-3 py-1 font-medium">
-                  <PackageOpen className="h-4 w-4 text-red-500" /> 1 item com estoque baixo
-                </span>
+                {lowStockItems.length > 0 && (
+                  <div className="flex items-center justify-between rounded-lg bg-white/60 dark:bg-black/20 px-3 py-2 border border-red-200/50">
+                    <div className="flex items-center gap-2">
+                      <PackageOpen className="h-4 w-4 text-red-500" /> 
+                      <span className="text-sm font-medium text-red-900 dark:text-red-100">
+                        Alerta de Estoque: {lowStockItems.length} {lowStockItems.length === 1 ? "produto está" : "produtos estão"} com nível crítico (5 ou menos unidades).
+                      </span>
+                    </div>
+                  </div>
+                )}
+                {pendingFollowups.length === 0 && lowStockItems.length === 0 && (
+                  <span className="text-sm font-medium text-blue-700 dark:text-blue-300">Tudo sob controle! Nenhum alerta crítico no momento.</span>
+                )}
                 {appointments.length > 0 && (
                   <span className="flex items-center gap-1.5 rounded-full bg-white/60 dark:bg-black/20 px-3 py-1 font-medium">
                     <CalendarDays className="h-4 w-4 text-blue-500" /> {appointments.length} eventos hoje
