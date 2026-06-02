@@ -286,37 +286,26 @@ function Catalog() {
                 </div>
                 <div className="flex justify-end gap-2 pt-2">
                   <Button variant="outline" onClick={() => setOpen(false)}>Cancelar</Button>
-                  <Button onClick={handleSave} disabled={saving}>{saving ? "Salvando..." : "Salvar"}</Button>
+                  <Button variant="success" onClick={handleSave} disabled={saving}>{saving ? "Salvando..." : "Salvar"}</Button>
                 </div>
               </div>
             </DialogContent>
           </Dialog>
       </div>
 
-      <div className="mt-6 rounded-2xl border border-border bg-card shadow-soft">
-        {isLoading ? (
-          <div className="p-10 text-center text-sm text-muted-foreground">Carregando…</div>
-        ) : items.length === 0 ? (
-          <div className="px-5 py-12 text-center">
-            <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-accent">
-              <Package className="h-5 w-5 text-accent-foreground" />
-            </div>
-            <h3 className="mt-3 font-semibold">Nenhum item cadastrado</h3>
-            <p className="mt-1 text-sm text-muted-foreground">Cadastre seus produtos e serviços para usá-los nas propostas.</p>
-            <Button onClick={() => setOpen(true)} variant="outline" className="mt-4 rounded-full"><Plus className="mr-1 h-4 w-4" /> Adicionar item</Button>
-          </div>
-        ) : filteredItems.length === 0 ? (
-          <div className="p-10 text-center text-sm text-muted-foreground">Nenhum item encontrado na busca.</div>
-        ) : (
-          <ul className="divide-y divide-border">
+      {isLoading ? (
+        <div className="p-10 text-center text-sm text-muted-foreground">Carregando…</div>
+      ) : filteredItems.length === 0 ? (
+        <div className="text-center p-12 bg-card rounded-2xl border border-border/50 shadow-sm mt-4">
+          <Package className="mx-auto h-12 w-12 text-muted-foreground/30" />
+          <h3 className="mt-3 font-semibold">Nenhum item cadastrado</h3>
+          <p className="mt-1 text-sm text-muted-foreground">Cadastre seus produtos e serviços para usá-los nas propostas.</p>
+          <Button onClick={() => setOpen(true)} variant="success" className="mt-4 rounded-full shadow-emerald-500/20"><Plus className="mr-1 h-4 w-4" /> Adicionar item</Button>
+        </div>
+      ) : (
+        <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden mt-4">
+          <ul className="divide-y divide-border/50">
             {filteredItems.map(it => (
-              <li key={it.id} className="flex items-center gap-4 px-5 py-4 hover:bg-muted/40">
-                {it.image_url ? (
-                  <div className="h-12 w-12 shrink-0 rounded-lg border border-border overflow-hidden bg-muted/20">
-                    <img src={it.image_url} alt={it.name} className="h-full w-full object-cover" />
-                  </div>
-                ) : (
-                  <div className="h-12 w-12 shrink-0 rounded-lg border border-border border-dashed bg-muted/10 grid place-items-center">
                     <Package className="h-5 w-5 text-muted-foreground/50" />
                   </div>
                 )}
