@@ -58,10 +58,16 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="px-3 py-3">
-        {!collapsed ? <Logo inverted /> : <div className="grid h-7 w-7 place-items-center rounded-lg bg-primary text-primary-foreground text-sm font-bold">S</div>}
+      <SidebarHeader className="px-4 py-5 border-b border-white/5 mb-2">
+        <div className="flex items-center justify-center w-full">
+          {!collapsed ? (
+            <div className="drop-shadow-lg transition-transform hover:scale-105"><Logo inverted /></div>
+          ) : (
+            <div className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-primary to-emerald-400 shadow-[0_0_15px_rgba(42,157,143,0.4)] text-white text-lg font-black tracking-tighter">S</div>
+          )}
+        </div>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="px-2">
         {navGroups.map((group, index) => (
           <SidebarGroup key={index} className="pt-2">
             {!collapsed && <SidebarGroupLabel className="text-xs font-semibold uppercase tracking-wider text-sidebar-foreground/50 px-3 mb-1">{group.label}</SidebarGroupLabel>}
@@ -71,9 +77,9 @@ export function AppSidebar() {
                   const active = path === it.url || path.startsWith(it.url + "/");
                   return (
                     <SidebarMenuItem key={it.url}>
-                      <SidebarMenuButton asChild isActive={active} className="transition-all data-[active=true]:bg-white/10 data-[active=true]:text-white data-[active=true]:font-semibold data-[active=true]:border-l-4 data-[active=true]:border-primary hover:bg-white/5 hover:text-white text-sidebar-foreground/80 rounded-none border-l-4 border-transparent">
-                        <Link to={it.url} className="flex items-center gap-3 py-1">
-                          <it.icon className={`h-[1.125rem] w-[1.125rem] transition-colors ${active ? "text-primary drop-shadow-sm" : "text-sidebar-foreground/60"}`} />
+                      <SidebarMenuButton asChild isActive={active} className="transition-all data-[active=true]:bg-gradient-to-r data-[active=true]:from-primary/20 data-[active=true]:to-transparent data-[active=true]:text-white data-[active=true]:font-bold data-[active=true]:border-l-[3px] data-[active=true]:border-primary hover:bg-white/5 hover:text-white text-sidebar-foreground/80 rounded-r-lg rounded-l-none border-l-[3px] border-transparent my-0.5">
+                        <Link to={it.url} className="flex items-center gap-3 py-1.5">
+                          <it.icon className={`h-[1.125rem] w-[1.125rem] transition-colors ${active ? "text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.6)]" : "text-sidebar-foreground/60"}`} />
                           {!collapsed && <span>{it.title}</span>}
                         </Link>
                       </SidebarMenuButton>
@@ -85,15 +91,23 @@ export function AppSidebar() {
           </SidebarGroup>
         ))}
       </SidebarContent>
-      <SidebarFooter className="px-2 pb-3">
-        {!collapsed && user && (
-          <div className="mb-2 truncate rounded-md px-2 py-1 text-xs text-muted-foreground">{user.email}</div>
-        )}
+      <SidebarFooter className="p-4 border-t border-white/5 mt-auto">
+        {!collapsed && user ? (
+          <div className="mb-4 flex items-center gap-3 rounded-xl bg-white/[0.03] p-3 border border-white/5 shadow-inner">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary/80 to-primary/40 text-sm font-bold text-white shadow-md">
+              {user.email?.charAt(0).toUpperCase() || "U"}
+            </div>
+            <div className="flex flex-col overflow-hidden">
+              <span className="truncate text-sm font-bold text-white/90">{user.email?.split('@')[0]}</span>
+              <span className="truncate text-[10px] uppercase tracking-wider text-emerald-400 font-semibold">Simbi Pro</span>
+            </div>
+          </div>
+        ) : null}
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={() => supabase.auth.signOut()}>
+            <SidebarMenuButton onClick={() => supabase.auth.signOut()} className="hover:bg-red-500/10 hover:text-red-400 transition-colors text-sidebar-foreground/70">
               <LogOut className="h-4 w-4" />
-              {!collapsed && <span>Sair</span>}
+              {!collapsed && <span>Encerrar Sessão</span>}
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
