@@ -10,6 +10,7 @@ import { formatBRL } from "@/lib/format";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { motion, useScroll, useSpring, useMotionValue, useTransform } from "framer-motion";
+import { getErrorMessage } from "@/lib/utils/error";
 
 function ProgressBar() {
   const { scrollYProgress } = useScroll();

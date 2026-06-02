@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Store, Link as LinkIcon, Image as ImageIcon, Video, Youtube, Palette, MessageSquareQuote, Check, Trash2, Plus, Type } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getErrorMessage } from "@/lib/utils/error";
 
 export const Route = createFileRoute("/_authenticated/vitrine-settings")({
   head: () => ({ meta: [{ title: "Minha Vitrine · Simbi" }] }),

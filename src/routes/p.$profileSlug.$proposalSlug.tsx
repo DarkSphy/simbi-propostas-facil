@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/
 import { toast } from "sonner";
 import { logProposalEvent } from "@/lib/tracking";import { useAuth } from "@/lib/auth";
 import { PrintCustomizer, PrintSettings } from "@/components/PrintCustomizer";
+import { getErrorMessage } from "@/lib/utils/error";
 
 export const Route = createFileRoute("/p/$profileSlug/$proposalSlug")({
   loader: async ({ params }) => {

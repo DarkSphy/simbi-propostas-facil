@@ -6,6 +6,7 @@ import { ArrowLeft, Share2, MessageCircle, Trash2, Copy, Eye, CheckCircle2, XCir
 import { formatBRL, statusBadge } from "@/lib/format";
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
+import { getErrorMessage } from "@/lib/utils/error";
 
 export const Route = createFileRoute("/_authenticated/proposals/$id")({
   head: () => ({ meta: [{ title: "Proposta · Simbi" }] }),
