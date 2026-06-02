@@ -11,6 +11,22 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { getErrorMessage } from "@/lib/utils/error";
 
+function MarqueeBanner({ words }: { words: string[] }) {
+  if (!words || words.length === 0) return null;
+  
+  return (
+    <div className="overflow-hidden bg-primary/5 border-y border-border py-2.5 flex items-center">
+      <div className="flex whitespace-nowrap animate-marquee">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="flex items-center gap-8 mx-4">
+            {words.map((w, idx) => <span key={idx} className="text-xs font-bold tracking-[0.2em] uppercase text-primary/80">{w} ✦</span>)}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export const Route = createFileRoute("/u/$profileSlug")({
   component: VitrinePageWrapper,
   loader: async ({ params }) => {
@@ -164,6 +180,19 @@ function VitrinePage() {
     }
   };
 
+  const testimonials = profile.vitrine_testimonials ? 
+    (typeof profile.vitrine_testimonials === 'string' ? JSON.parse(profile.vitrine_testimonials) : profile.vitrine_testimonials) 
+    : [];
+
+  const getYoutubeId = (url: string) => {
+    if (!url) return null;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  };
+
+  const pitchYoutubeId = getYoutubeId(profile.vitrine_pitch_video_url);
+
   return (
     <div className="min-h-screen bg-background text-foreground pb-20">
       
@@ -210,6 +239,30 @@ function VitrinePage() {
           </div>
         </div>
       </header>
+
+      {/* Letreiro Rotativo */}
+      <MarqueeBanner words={
+        profile.vitrine_marquee_words 
+        ? (typeof profile.vitrine_marquee_words === 'string' ? JSON.parse(profile.vitrine_marquee_words) : profile.vitrine_marquee_words)
+        : ["Qualidade", "Confiança", "Atendimento Premium", "Resultados"]
+      } />
+
+      {/* Apresentação (Vídeo) */}
+      {pitchYoutubeId && (
+        <div className="max-w-3xl mx-auto px-5 py-8 border-b border-border/20">
+          <h2 className="text-2xl font-bold mb-4 tracking-tight">Conheça nosso trabalho</h2>
+          <div className="w-full aspect-video rounded-2xl overflow-hidden shadow-xl border border-border relative">
+            <iframe 
+              src={`https://www.youtube.com/embed/${pitchYoutubeId}?rel=0`}
+              title="YouTube video player"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="w-full h-full absolute inset-0"
+            ></iframe>
+          </div>
+        </div>
+      )}
 
       {/* 2. Menu de Categorias Fixo (Sticky) */}
       {activeCategories.length > 1 && (
@@ -279,6 +332,24 @@ function VitrinePage() {
           </div>
         )}
       </main>
+
+      {/* Testimonials (Depoimentos) */}
+      {testimonials.length > 0 && (
+        <div className="bg-muted/30 border-y border-border/50 py-12 mt-8">
+          <div className="max-w-3xl mx-auto px-5">
+            <h2 className="text-2xl font-bold mb-6 tracking-tight text-center">O que dizem os clientes</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {testimonials.map((t: any, i: number) => (
+                <div key={i} className="bg-card border border-border p-6 rounded-2xl shadow-sm flex flex-col">
+                  <div className="flex text-amber-400 mb-3 text-sm">★★★★★</div>
+                  <p className="text-sm text-muted-foreground flex-1 italic mb-4 leading-relaxed">"{t.text}"</p>
+                  <div className="font-bold text-sm">{t.name}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 4. Modal de Captação (Lead to WhatsApp) */}
       <Dialog open={open} onOpenChange={setOpen}>
