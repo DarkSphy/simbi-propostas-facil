@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
-import { ArrowRight, Check, Smartphone, Share2, Zap, MessageCircle, FileText, BarChart3, Star, Quote, Package, Grid, Calculator, FileSignature, ClipboardList, CalendarDays, Receipt, Tag, Bell, Settings, Wrench, Shield, CheckSquare, Layers, LineChart, Banknote, Power } from "lucide-react";
+import { ArrowRight, Check, Smartphone, Share2, Zap, MessageCircle, FileText, BarChart3, Star, Quote, Package, Grid, Calculator, FileSignature, ClipboardList, CalendarDays, Receipt, Tag, Bell, Settings, Wrench, Shield, CheckSquare, Layers, LineChart, Banknote, Power, Crown } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -337,26 +337,26 @@ function Pricing() {
     <section id="planos" className="bg-background py-24 sm:py-32 border-t border-border">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-base font-semibold leading-7 text-primary">Preços justos e transparentes</h2>
-          <p className="mt-2 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">Comece de graça, cresça com o Simbi.</p>
-          <p className="mt-4 text-lg text-muted-foreground">Planos pensados para caber no bolso do profissional autônomo e pequeno empreendedor.</p>
+          <h2 className="text-base font-semibold leading-7 text-primary">Planos sob medida</h2>
+          <p className="mt-2 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">Cresça no seu ritmo.</p>
+          <p className="mt-4 text-lg text-muted-foreground">Comece de graça para testar e mude para o plano Profissional quando quiser transformar seu negócio.</p>
         </div>
         
         <div className="mx-auto mt-16 grid max-w-lg grid-cols-1 gap-8 md:max-w-4xl md:grid-cols-2 items-center">
           {/* Free Plan */}
           <div className="flex flex-col justify-between rounded-3xl bg-card border border-border p-8 shadow-sm">
             <div>
-              <h3 className="text-2xl font-bold text-foreground">Básico</h3>
-              <p className="mt-4 text-sm leading-6 text-muted-foreground">Perfeito para quem está começando e precisa de agilidade nos orçamentos.</p>
+              <h3 className="text-2xl font-bold text-foreground">Básico (Grátis)</h3>
+              <p className="mt-4 text-sm leading-6 text-muted-foreground">O essencial para autônomos que querem sair do papel e enviar orçamentos digitais.</p>
               <div className="mt-6 flex items-baseline gap-x-1">
-                <span className="text-5xl font-bold tracking-tight text-foreground">Grátis</span>
-                <span className="text-sm font-semibold leading-6 text-muted-foreground">para sempre</span>
+                <span className="text-5xl font-bold tracking-tight text-foreground">R$ 0</span>
+                <span className="text-sm font-semibold leading-6 text-muted-foreground">/para sempre</span>
               </div>
               <ul className="mt-8 space-y-3 text-sm leading-6 text-muted-foreground">
-                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-primary" /> Até 5 propostas por mês</li>
-                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-primary" /> Cadastro de até 10 itens</li>
-                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-primary" /> Cadastro de até 10 clientes</li>
-                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-primary" /> Compartilhamento via WhatsApp</li>
+                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-muted-foreground" /> Painel de Orçamentos Simples</li>
+                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-muted-foreground" /> Até 5 propostas por mês</li>
+                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-muted-foreground" /> Limite de 10 clientes e 10 itens</li>
+                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-muted-foreground" /> Envio rápido via link de WhatsApp</li>
               </ul>
             </div>
             <Button asChild variant="outline" className="mt-8 w-full rounded-full h-12">
@@ -365,28 +365,29 @@ function Pricing() {
           </div>
 
           {/* Pro Plan */}
-          <div className="flex flex-col justify-between rounded-3xl bg-primary p-8 shadow-2xl ring-1 ring-primary relative overflow-hidden">
-            <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-white/10 blur-2xl"></div>
-            <div>
+          <div className="flex flex-col justify-between rounded-3xl bg-gradient-to-br from-primary to-primary/80 p-8 shadow-[0_0_40px_rgba(42,157,143,0.3)] ring-1 ring-primary relative overflow-hidden transition-transform hover:-translate-y-1">
+            <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-white/20 blur-2xl"></div>
+            <div className="absolute bottom-0 right-0 w-full h-1/2 bg-gradient-to-t from-black/20 to-transparent"></div>
+            <div className="relative z-10">
               <div className="flex items-center justify-between gap-x-4">
-                <h3 className="text-2xl font-bold text-primary-foreground">Profissional</h3>
-                <span className="rounded-full bg-white/20 px-2.5 py-1 text-xs font-semibold leading-5 text-primary-foreground">Mais popular</span>
+                <h3 className="text-2xl font-bold text-white flex items-center gap-2">Simbi Pro <Crown className="h-5 w-5 text-yellow-400" /></h3>
+                <span className="rounded-full bg-emerald-400/20 px-2.5 py-1 text-xs font-bold leading-5 text-emerald-100 border border-emerald-400/30">O Poder de um ERP</span>
               </div>
-              <p className="mt-4 text-sm leading-6 text-primary-foreground/80">Acesso ilimitado a todas as funcionalidades de vendas e gestão.</p>
+              <p className="mt-4 text-sm leading-6 text-primary-foreground/90">Para empresas que querem impressionar clientes e gerenciar tudo num painel avançado.</p>
               <div className="mt-6 flex items-baseline gap-x-1">
-                <span className="text-5xl font-bold tracking-tight text-primary-foreground">R$ 39,90</span>
+                <span className="text-5xl font-bold tracking-tight text-white">R$ 39,90</span>
                 <span className="text-sm font-semibold leading-6 text-primary-foreground/80">/mês</span>
               </div>
-              <ul className="mt-8 space-y-3 text-sm leading-6 text-primary-foreground/90">
-                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-primary-foreground" /> <strong>Propostas ilimitadas</strong></li>
-                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-primary-foreground" /> Itens e clientes <strong>ilimitados</strong></li>
-                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-primary-foreground" /> Personalização completa com sua logo e cores</li>
-                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-primary-foreground" /> URL Personalizada (simbi.com/p/sua-marca)</li>
-                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-primary-foreground" /> Integração com botão de pagamento</li>
+              <ul className="mt-8 space-y-3 text-sm leading-6 text-white">
+                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-emerald-300" /> <strong>Dashboard ERP Premium</strong> (Central de Alertas e Timeline)</li>
+                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-emerald-300" /> <strong>Vitrine Interativa</strong> para seus clientes</li>
+                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-emerald-300" /> <strong>Propostas e Cadastros Ilimitados</strong></li>
+                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-emerald-300" /> Personalização Total (Sua Cor, Sua Logo, Sua URL)</li>
+                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-emerald-300" /> Status de Leitura Avançado (Saiba quando o cliente viu)</li>
               </ul>
             </div>
-            <Button asChild className="mt-8 w-full rounded-full h-12 bg-white text-primary hover:bg-white/90 shadow-lg font-bold">
-              <Link to="/register">Assinar plano Profissional</Link>
+            <Button asChild className="mt-8 w-full rounded-full h-12 bg-white text-primary hover:bg-emerald-50 shadow-xl font-bold relative z-10 text-base">
+              <Link to="/register">Assinar Simbi Pro</Link>
             </Button>
           </div>
         </div>
