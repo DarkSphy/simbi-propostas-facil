@@ -13,7 +13,8 @@ import { getErrorMessage } from "@/lib/utils/error";
 export const Route = createFileRoute("/p/$profileSlug/$proposalSlug")({
   loader: async ({ params }) => {
     try {
-      const { data: prop } = await supabase.rpc("get_proposal_by_slug", { p_slug: params.proposalSlug });
+      const { data } = await supabase.rpc("get_proposal_by_slug", { p_slug: params.proposalSlug });
+      const prop = data as any;
       return { prop: prop ? { title: prop.title, profiles: prop.profiles } : null };
     } catch (e) {
       return { prop: null };
@@ -79,7 +80,8 @@ function PublicProposal() {
 
   useEffect(() => {
     (async () => {
-      const { data: prop, error } = await supabase.rpc("get_proposal_by_slug", { p_slug: slug });
+      const { data, error } = await supabase.rpc("get_proposal_by_slug", { p_slug: slug });
+      const prop = data as any;
 
       if (error || !prop) {
         setLoading(false);
@@ -130,7 +132,7 @@ function PublicProposal() {
   today.setHours(0,0,0,0);
   const isExpired = !finalized && validDate && validDate < today;
   
-  let customStyles = {} as React.CSSProperties;
+  let customStyles: any = {};
   
   if (profile.theme_color) {
     customStyles = {

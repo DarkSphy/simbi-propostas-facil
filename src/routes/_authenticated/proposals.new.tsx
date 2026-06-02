@@ -249,7 +249,7 @@ function NewProposal() {
       const cleanItems = items.filter(i => i.description && i.description.trim());
       if (cleanItems.length > 0) {
         const { error: iErr } = await supabase.from("proposal_items").insert(
-          cleanItems.map((it, idx) => ({ proposal_id: propId, description: it.description, quantity: it.quantity, unit_price: it.unit_price, sort_order: idx, image_url: it.image_url || null, is_optional: it.is_optional || false, catalog_item_id: it.catalog_item_id || null }))
+          cleanItems.map((it, idx) => ({ proposal_id: propId as string, description: it.description, quantity: Number(it.quantity), unit_price: Number(it.unit_price), sort_order: idx, image_url: it.image_url || null, is_optional: it.is_optional || false, catalog_item_id: it.catalog_item_id || null }))
         );
         if (iErr) throw iErr;
       }
