@@ -389,6 +389,9 @@ function Pricing() {
             <Button asChild className="mt-8 w-full rounded-full h-12 bg-white text-primary hover:bg-emerald-50 shadow-xl font-bold relative z-10 text-base">
               <Link to="/register">Assinar Simbi Pro</Link>
             </Button>
+            <p className="mt-4 text-xs text-center text-emerald-100/70 font-medium flex items-center justify-center gap-1.5 relative z-10">
+              <Shield className="h-3.5 w-3.5" /> Garantia incondicional de 7 dias ou seu dinheiro de volta.
+            </p>
           </div>
         </div>
       </div>
