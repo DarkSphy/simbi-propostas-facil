@@ -702,10 +702,14 @@ function InteractiveWheel() {
           {/* Central Button */}
           <button 
             onClick={() => setActive(!active)}
-            className={`z-30 relative h-28 w-28 sm:h-40 sm:w-40 rounded-full flex flex-col items-center justify-center transition-all duration-700 shadow-2xl border-4 ${active ? "bg-primary border-primary/30 text-white shadow-[0_0_80px_rgba(42,157,143,0.6)] scale-105" : "bg-card border-border text-muted-foreground hover:bg-muted hover:scale-105"}`}
+            className={`z-30 relative h-28 w-28 sm:h-40 sm:w-40 rounded-full flex flex-col items-center justify-center transition-all duration-700 shadow-2xl border-4 ${
+              active 
+                ? "bg-primary border-primary/30 text-white shadow-[0_0_80px_rgba(42,157,143,0.8)] scale-105" 
+                : "bg-gradient-to-br from-primary to-emerald-500 border-white/30 text-white shadow-[0_0_40px_rgba(52,211,153,0.5)] hover:scale-110 hover:shadow-[0_0_60px_rgba(52,211,153,0.7)] hover:brightness-110 hover:-translate-y-2"
+            }`}
           >
-            <Power className={`h-10 w-10 sm:h-14 sm:w-14 mb-2 transition-all duration-700 ${active ? "text-white animate-pulse" : "text-muted-foreground"}`} />
-            <span className="font-black text-sm sm:text-lg tracking-tight">{active ? "Sincronizado" : "Ligar Simbi"}</span>
+            <Power className={`h-10 w-10 sm:h-14 sm:w-14 mb-1 transition-all duration-700 ${active ? "text-white animate-pulse" : "text-white drop-shadow-md"}`} />
+            <span className="font-black text-sm sm:text-lg tracking-tight drop-shadow-sm">{active ? "Conectado" : "LIGAR SIMBI"}</span>
           </button>
           
           {/* Connection Lines (SVG) */}
