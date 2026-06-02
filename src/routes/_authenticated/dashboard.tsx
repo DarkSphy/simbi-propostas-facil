@@ -11,7 +11,7 @@ import { format, parseISO, subMonths, differenceInDays } from "date-fns";
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { ptBR } from "date-fns/locale";
-import { MessageCircle, AlertTriangle } from "lucide-react";
+import { MessageCircle, AlertTriangle, Bell, PackageOpen, History, Activity } from "lucide-react";
 import { motion } from "framer-motion";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
@@ -216,6 +216,35 @@ function Dashboard() {
 
       <motion.div variants={itemVariants}>
         <OnboardingChecklist proposalsCount={proposals.length} catalogCount={catalogCount} />
+      </motion.div>
+
+      {/* CENTRAL DE ALERTAS (ERP Style) */}
+      <motion.div variants={itemVariants} className="mb-8">
+        <div className="rounded-2xl border border-blue-200 bg-blue-50/50 p-4 shadow-sm dark:border-blue-900/30 dark:bg-blue-950/20">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300">
+              <Bell className="h-6 w-6" />
+            </div>
+            <div>
+              <h3 className="text-base font-bold text-blue-900 dark:text-blue-100">Central de Alertas</h3>
+              <div className="mt-1 flex flex-wrap gap-2 text-sm text-blue-800 dark:text-blue-200">
+                {pendingFollowups.length > 0 && (
+                  <span className="flex items-center gap-1.5 rounded-full bg-white/60 dark:bg-black/20 px-3 py-1 font-medium">
+                    <AlertTriangle className="h-4 w-4 text-amber-500" /> {pendingFollowups.length} pendentes
+                  </span>
+                )}
+                <span className="flex items-center gap-1.5 rounded-full bg-white/60 dark:bg-black/20 px-3 py-1 font-medium">
+                  <PackageOpen className="h-4 w-4 text-red-500" /> 1 item com estoque baixo
+                </span>
+                {appointments.length > 0 && (
+                  <span className="flex items-center gap-1.5 rounded-full bg-white/60 dark:bg-black/20 px-3 py-1 font-medium">
+                    <CalendarDays className="h-4 w-4 text-blue-500" /> {appointments.length} eventos hoje
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
       </motion.div>
 
       {/* BIG METRICS (DIRECTOR LEVEL) */}
@@ -425,6 +454,40 @@ function Dashboard() {
         )}
 
       </div>
+
+      {/* ATIVIDADES RECENTES (ERP Timeline) */}
+      <motion.div variants={itemVariants} className="mt-8 overflow-hidden rounded-3xl border border-border bg-card shadow-card p-6">
+        <div className="flex items-center gap-2 border-b border-border pb-4 mb-6">
+          <Activity className="h-5 w-5 text-primary" />
+          <h2 className="text-lg font-bold tracking-tight">Atividades Recentes</h2>
+        </div>
+        
+        <div className="relative pl-6 space-y-6 before:absolute before:inset-0 before:ml-[11px] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-border before:to-transparent">
+          {[
+            { title: "Proposta #102 Aprovada", desc: "Cliente João Silva aceitou o orçamento.", time: "Hoje, 10:45", icon: CheckCircle2, color: "text-emerald-500", bg: "bg-emerald-100 dark:bg-emerald-900/30" },
+            { title: "Novo cliente cadastrado", desc: "Maria Souza adicionada à base.", time: "Hoje, 09:12", icon: Users, color: "text-blue-500", bg: "bg-blue-100 dark:bg-blue-900/30" },
+            { title: "Ordem de Serviço gerada", desc: "OS #045 vinculada à Proposta #102.", time: "Ontem, 16:30", icon: FileText, color: "text-purple-500", bg: "bg-purple-100 dark:bg-purple-900/30" },
+            { title: "Atualização de Estoque", desc: "Óleo de motor (5 un) adicionado.", time: "Ontem, 14:00", icon: PackageOpen, color: "text-orange-500", bg: "bg-orange-100 dark:bg-orange-900/30" },
+          ].map((item, i) => (
+            <div key={i} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+              <div className="flex items-center justify-center w-6 h-6 rounded-full border-4 border-card bg-primary absolute left-[-24px] md:left-1/2 md:-translate-x-1/2 shadow-sm">
+                <div className="w-2 h-2 rounded-full bg-white" />
+              </div>
+              
+              <div className="w-full md:w-[calc(50%-2rem)] bg-muted/30 hover:bg-muted/50 transition-colors p-4 rounded-2xl border border-border/50">
+                <div className="flex items-center gap-2 mb-1">
+                  <div className={`p-1.5 rounded-lg ${item.bg} ${item.color}`}>
+                    <item.icon className="h-3.5 w-3.5" />
+                  </div>
+                  <h4 className="text-sm font-bold">{item.title}</h4>
+                </div>
+                <p className="text-xs text-muted-foreground ml-9">{item.desc}</p>
+                <time className="text-[10px] font-semibold text-muted-foreground/60 uppercase tracking-wider block mt-2 ml-9">{item.time}</time>
+              </div>
+            </div>
+          ))}
+        </div>
+      </motion.div>
     </motion.div>
   );
 }
