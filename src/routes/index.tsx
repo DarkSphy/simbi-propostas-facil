@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
-import { ArrowRight, Check, Smartphone, Share2, Zap, MessageCircle, FileText, BarChart3, Star, Quote, Package, Grid, Calculator, FileSignature, ClipboardList, CalendarDays } from "lucide-react";
+import { ArrowRight, Check, Smartphone, Share2, Zap, MessageCircle, FileText, BarChart3, Star, Quote, Package, Grid, Calculator, FileSignature, ClipboardList, CalendarDays, Receipt, Tag, Bell, Settings, Wrench, Shield, CheckSquare, Layers, LineChart, Banknote } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -24,7 +24,9 @@ function Landing() {
     <div className="min-h-screen bg-background text-foreground selection:bg-primary/30">
       <Header />
       <Hero />
+      <SocialProofBar />
       <InfiniteLogos />
+      <FeaturePillCloud />
       <Features />
       <HowItWorks />
       <Testimonials />
@@ -120,12 +122,20 @@ function Hero() {
 }
 
 function InfiniteLogos() {
-  const brands = [
-    "Oficina do João", "Marcenaria Silva", "TechFix Assistência", "Construtora Alfa", "Mecânica Souza", 
-    "Refrigeração Costa", "Eletro Service", "Serralheria Arte Ferro", "Mestre das Obras", "Resolve Assistência"
+  const infiniteBrands = [
+    { name: "Oficina do João", color: "text-blue-500" },
+    { name: "Marcenaria Silva", color: "text-emerald-500" },
+    { name: "TechFix Assistência", color: "text-purple-500" },
+    { name: "Construtora Alfa", color: "text-amber-500" },
+    { name: "Mecânica Souza", color: "text-red-500" },
+    { name: "Refrigeração Costa", color: "text-cyan-500" },
+    { name: "Eletro Service", color: "text-indigo-500" },
+    { name: "Serralheria Arte Ferro", color: "text-orange-500" },
+    { name: "Mestre das Obras", color: "text-teal-500" },
+    { name: "Resolve Assistência", color: "text-pink-500" }
   ];
   // Duplicar a lista para o efeito infinito suave
-  const infiniteBrands = [...brands, ...brands];
+  const displayBrands = [...infiniteBrands, ...infiniteBrands];
 
   return (
     <section className="border-b border-border bg-card py-10">
@@ -135,9 +145,9 @@ function InfiniteLogos() {
         </p>
         <div className="mt-8 flex overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
           <div className="flex w-max min-w-full shrink-0 animate-marquee items-center justify-around gap-16 py-2">
-            {infiniteBrands.map((brand, i) => (
-              <span key={i} className="text-xl font-bold tracking-tight text-foreground/20 transition-colors hover:text-foreground/40">
-                {brand}
+            {displayBrands.map((brand, i) => (
+              <span key={i} className={`text-xl font-bold tracking-tight opacity-70 transition-all hover:opacity-100 hover:scale-105 ${brand.color}`}>
+                {brand.name}
               </span>
             ))}
           </div>
@@ -530,5 +540,74 @@ function MockProposalHero() {
         </div>
       </div>
     </div>
+  );
+}
+
+function SocialProofBar() {
+  const avatars = [
+    "https://i.pravatar.cc/150?img=33",
+    "https://i.pravatar.cc/150?img=11",
+    "https://i.pravatar.cc/150?img=12",
+    "https://i.pravatar.cc/150?img=15",
+    "https://i.pravatar.cc/150?img=32",
+    "https://i.pravatar.cc/150?img=60",
+    "https://i.pravatar.cc/150?img=68",
+    "https://i.pravatar.cc/150?img=65",
+  ];
+
+  return (
+    <div className="bg-[#2a9d8f] w-full py-4 overflow-hidden border-y border-white/10 shadow-inner">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-center gap-6">
+        <div className="flex -space-x-3 hover:space-x-0 transition-all duration-300">
+          {avatars.map((url, i) => (
+            <img key={i} className="inline-block h-10 w-10 sm:h-12 sm:w-12 rounded-full ring-2 ring-white object-cover shadow-sm transition-transform hover:scale-110 hover:z-10" src={url} alt={`User ${i}`} />
+          ))}
+          <div className="inline-flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white ring-2 ring-white shadow-sm z-10">
+            <span className="text-[#2a9d8f] font-bold text-lg">+</span>
+          </div>
+        </div>
+        <p className="text-white font-medium text-sm sm:text-base tracking-wide text-center">
+          +5.000 profissionais autônomos usam o Simbi todos os dias
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function FeaturePillCloud() {
+  const pills = [
+    { icon: FileSignature, label: "Propostas Comerciais" },
+    { icon: ClipboardList, label: "Ordem de Serviço" },
+    { icon: Package, label: "Controle de Estoque" },
+    { icon: Smartphone, label: "Catálogo e Vitrine Online" },
+    { icon: CheckSquare, label: "Aprovação em 1 clique" },
+    { icon: Calculator, label: "Cálculo de Orçamento" },
+    { icon: Receipt, label: "Emissão de Recibos" },
+    { icon: Wrench, label: "Gestão de Serviços" },
+    { icon: LineChart, label: "Dashboard Financeiro" },
+    { icon: Banknote, label: "Gestão de Fluxo de Caixa" },
+    { icon: Settings, label: "Automações" },
+    { icon: Layers, label: "CRM Visual" },
+    { icon: Shield, label: "Assinatura Digital de Contrato" },
+    { icon: Tag, label: "Categorias de Produtos" },
+  ];
+
+  return (
+    <section className="bg-primary/5 py-24 sm:py-32 relative overflow-hidden">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8 text-center">
+        <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl mb-4">
+          Recursos e possibilidades infinitas para uma gestão <br className="hidden sm:block" /> inteligente, ágil e moderna? Tem no Simbi!
+        </h2>
+        
+        <div className="flex flex-wrap items-center justify-center gap-3 md:gap-4 mt-12 max-w-5xl mx-auto">
+          {pills.map((pill, i) => (
+            <div key={i} className="flex items-center gap-2 rounded-full bg-white dark:bg-card border border-border shadow-sm px-4 md:px-6 py-2.5 md:py-3 transition-all hover:border-primary hover:shadow-elevated hover:scale-105 cursor-default group">
+              <pill.icon className="h-5 w-5 text-primary/70 group-hover:text-primary transition-colors" />
+              <span className="text-sm md:text-base font-medium text-foreground/80 group-hover:text-foreground">{pill.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
