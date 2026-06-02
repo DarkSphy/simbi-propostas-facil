@@ -96,7 +96,8 @@ function RequestsList() {
         </div>
       </div>
 
-      <div className="mt-8 overflow-hidden rounded-3xl border border-border/50 bg-card shadow-elevated">
+      <div className="mt-8 overflow-x-auto overflow-y-hidden rounded-3xl border border-border/50 bg-card shadow-elevated">
+        <div className="min-w-[500px]">
         {isLoading ? (
           <div className="p-10 text-center text-sm text-muted-foreground">Carregando…</div>
         ) : filteredProposals.length === 0 ? (
@@ -137,6 +138,7 @@ function RequestsList() {
             ))}
           </ul>
         )}
+        </div>
       </div>
     </div>
   );

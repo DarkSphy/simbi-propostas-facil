@@ -55,7 +55,8 @@ function WorkOrdersPage() {
         </div>
       </div>
 
-      <div className="mt-6 rounded-2xl border border-border bg-card shadow-soft">
+      <div className="mt-6 overflow-x-auto overflow-y-hidden rounded-2xl border border-border bg-card shadow-soft">
+        <div className="min-w-[500px]">
         {proposals.length === 0 ? (
           <div className="px-5 py-12 text-center">
             <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-blue-500/10"><ClipboardList className="h-5 w-5 text-blue-600" /></div>
@@ -87,6 +88,7 @@ function WorkOrdersPage() {
             ))}
           </ul>
         )}
+        </div>
       </div>
     </div>
   );

@@ -115,7 +115,9 @@ function ReportsPage() {
             {wonProposals.length === 0 ? (
               <div className="p-10 text-center text-sm text-muted-foreground">Nenhuma venda fechada nos últimos {period} dias.</div>
             ) : (
-              <table className="w-full text-left text-sm print:text-xs">
+              <div className="overflow-x-auto overflow-y-hidden">
+                <div className="min-w-[600px]">
+                  <table className="w-full text-left text-sm print:text-xs">
                 <thead>
                   <tr className="border-b border-border/50 bg-muted/30 print:bg-gray-100">
                     <th className="px-6 py-4 font-semibold text-muted-foreground">Serviço / Título</th>
@@ -144,6 +146,8 @@ function ReportsPage() {
                   </tr>
                 </tfoot>
               </table>
+              </div>
+            </div>
             )}
           </div>
         </>

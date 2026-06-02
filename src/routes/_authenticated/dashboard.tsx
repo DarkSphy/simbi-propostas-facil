@@ -400,22 +400,26 @@ function Dashboard() {
             {proposals.length === 0 ? (
               <EmptyState />
             ) : (
-              <ul className="divide-y divide-border">
-                {proposals.slice(0, 4).map(p => (
-                  <li key={p.id} className="flex flex-col px-6 py-4 text-sm transition-colors hover:bg-muted/10 gap-2">
-                    <div className="flex items-center justify-between">
-                      <Link to="/proposals/$id" params={{ id: p.id }} className="truncate font-semibold transition-colors hover:text-primary">
-                        {p.title}
-                      </Link>
-                      <span className="w-24 text-right">{statusBadge(p.status)}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-muted-foreground">
-                      <span className="truncate">{(p as any).clients?.name ?? "—"}</span>
-                      <span className="font-medium text-foreground">{formatBRL(Number(p.total))}</span>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+              <div className="overflow-x-auto overflow-y-hidden">
+                <div className="min-w-[450px]">
+                  <ul className="divide-y divide-border">
+                    {proposals.slice(0, 4).map(p => (
+                      <li key={p.id} className="flex flex-col px-6 py-4 text-sm transition-colors hover:bg-muted/10 gap-2">
+                        <div className="flex items-center justify-between">
+                          <Link to="/proposals/$id" params={{ id: p.id }} className="truncate font-semibold transition-colors hover:text-primary">
+                            {p.title}
+                          </Link>
+                          <span className="w-24 text-right">{statusBadge(p.status)}</span>
+                        </div>
+                        <div className="flex items-center justify-between text-muted-foreground">
+                          <span className="truncate">{(p as any).clients?.name ?? "—"}</span>
+                          <span className="font-medium text-foreground">{formatBRL(Number(p.total))}</span>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
             )}
           </motion.div>
         )}
