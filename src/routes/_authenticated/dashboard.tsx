@@ -12,7 +12,7 @@ import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { ptBR } from "date-fns/locale";
 import { MessageCircle, AlertTriangle, Bell, PackageOpen, History, Activity } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard · Simbi" }] }),
@@ -28,7 +28,7 @@ function Dashboard() {
     queryFn: async () => {
       const { count } = await supabase.from("catalog_items")
         .select("*", { count: "exact", head: true })
-        .eq("user_id", user?.id);
+        .eq("user_id", user!.id);
       return count ?? 0;
     },
     enabled: !!user,
@@ -39,7 +39,7 @@ function Dashboard() {
     queryFn: async () => {
       const { data, error } = await supabase.from("proposals")
         .select("id,title,total,status,created_at,public_slug,client_id,clients(name,phone)")
-        .eq("user_id", user?.id)
+        .eq("user_id", user!.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data ?? [];
@@ -50,7 +50,7 @@ function Dashboard() {
   const { data: profile } = useQuery({
     queryKey: ["profile", user?.id],
     queryFn: async () => {
-      const { data } = await supabase.from("profiles").select("full_name, profile_slug").eq("id", user?.id).single();
+      const { data } = await supabase.from("profiles").select("full_name, profile_slug").eq("id", user!.id).single();
       return data;
     },
     enabled: !!user,
@@ -63,7 +63,7 @@ function Dashboard() {
       const { data, error } = await supabase
         .from("appointments")
         .select("id, title, date, time, status, clients(name)")
-        .eq("user_id", user?.id)
+        .eq("user_id", user!.id)
         .gte("date", todayStr)
         .neq("status", "canceled")
         .order("date", { ascending: true })
@@ -78,25 +78,26 @@ function Dashboard() {
   // Onboarding
   useEffect(() => {
     if (!user || isLoadingProposals || proposals.length > 0 || localStorage.getItem("dummyInjected_" + user.id)) return;
+    const currentUser = user;
     async function injectDummyData() {
-      localStorage.setItem("dummyInjected_" + user.id, "true");
+      localStorage.setItem("dummyInjected_" + currentUser.id, "true");
       try {
         const { data: client } = await supabase.from("clients").insert({
-          user_id: user!.id, name: "João Silva (Exemplo)", email: "joao.exemplo@email.com",
+          user_id: currentUser.id, name: "João Silva (Exemplo)", email: "joao.exemplo@email.com",
           phone: "11999999999", document: "123.456.789-00", address: "Rua Exemplo, 123 - Centro"
         }).select().single();
         if (!client) return;
 
         const { data: proposal } = await supabase.from("proposals").insert({
-          user_id: user!.id, client_id: client.id, title: "Proposta Exemplo - Revisão Completa",
+          user_id: currentUser.id, client_id: client.id, title: "Proposta Exemplo - Revisão Completa",
           description: "Essa é uma proposta de exemplo. Sinta-se livre para excluí-la depois.",
           status: "approved", total: 1350.00
         }).select().single();
         if (!proposal) return;
 
         await supabase.from("proposal_items").insert([
-          { proposal_id: proposal.id, title: "Troca de Óleo + Filtro", quantity: 1, price: 150.00, order_index: 0 },
-          { proposal_id: proposal.id, title: "Kit Correia Dentada (Peça e Mão de Obra)", quantity: 1, price: 1200.00, order_index: 1 }
+          { proposal_id: proposal.id, description: "Troca de Óleo + Filtro", quantity: 1, unit_price: 150.00, sort_order: 0 },
+          { proposal_id: proposal.id, description: "Kit Correia Dentada (Peça e Mão de Obra)", quantity: 1, unit_price: 1200.00, sort_order: 1 }
         ]);
 
         queryClient.invalidateQueries({ queryKey: ["proposals"] });
@@ -163,11 +164,11 @@ function Dashboard() {
   }
 
   // Framer Motion Variants
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     show: { opacity: 1, transition: { staggerChildren: 0.1 } }
   };
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100 } }
   };

@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { formatBRL } from "@/lib/format";
 import { Clock, Eye, CheckCircle2, XCircle, Send, StickyNote, Activity } from "lucide-react";
+import { getErrorMessage } from "@/lib/utils/error";
 
 export const Route = createFileRoute("/_authenticated/clients")({
   head: () => ({ meta: [{ title: "Clientes · Simbi" }] }),
@@ -37,7 +38,7 @@ function ClientsPage() {
     queryFn: async () => {
       const { data, error } = await supabase.from("clients")
         .select("*, proposals(status, created_at)")
-        .eq("user_id", user?.id)
+        .eq("user_id", user!.id)
         .order("created_at", { ascending: false });
       if (error) throw error; return data ?? [];
     },
@@ -252,7 +253,7 @@ function ClientsPage() {
                     {crmData?.notes?.map(note => (
                       <div key={note.id} className="rounded-lg border border-border/50 bg-amber-50/50 dark:bg-amber-950/10 p-3 text-sm">
                         <div className="mb-1 flex items-center justify-between text-xs text-muted-foreground">
-                          <span>{new Date(note.created_at).toLocaleDateString('pt-BR')}</span>
+                          <span>{note.created_at ? new Date(note.created_at).toLocaleDateString('pt-BR') : ''}</span>
                         </div>
                         <p className="whitespace-pre-wrap">{note.content}</p>
                       </div>

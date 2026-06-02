@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { CalendarDays, ChevronLeft, ChevronRight, Plus, MapPin, Clock, Trash2, CheckCircle2 } from "lucide-react";
+import { CalendarDays, ChevronLeft, ChevronRight, Plus, MapPin, Clock, Trash2, CheckCircle2, Users, FileText } from "lucide-react";
 import { toast } from "sonner";
 import { 
   format, addMonths, subMonths, startOfMonth, endOfMonth, eachDayOfInterval, 
@@ -47,7 +47,7 @@ function AgendaPage() {
       const { data, error } = await supabase
         .from("appointments")
         .select("*, clients(name), proposals(title)")
-        .eq("user_id", user?.id)
+        .eq("user_id", user!.id)
         .order("date", { ascending: true })
         .order("time", { ascending: true });
       if (error) throw error;
@@ -60,7 +60,7 @@ function AgendaPage() {
   const { data: clients = [] } = useQuery({
     queryKey: ["clients"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("clients").select("id, name").eq("user_id", user?.id).order("name");
+      const { data, error } = await supabase.from("clients").select("id, name").eq("user_id", user!.id).order("name");
       if (error) throw error;
       return data || [];
     },
@@ -71,7 +71,7 @@ function AgendaPage() {
   const { data: proposals = [] } = useQuery({
     queryKey: ["proposals", "agenda"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("proposals").select("id, title, clients(name)").eq("user_id", user?.id).order("created_at", { ascending: false });
+      const { data, error } = await supabase.from("proposals").select("id, title, clients(name)").eq("user_id", user!.id).order("created_at", { ascending: false });
       if (error) throw error;
       return data || [];
     },
@@ -265,7 +265,7 @@ function AgendaPage() {
                           ${apt.status === 'completed' ? 'bg-gray-100 text-gray-500 line-through' : 'bg-blue-50 text-blue-700 border border-blue-100/50'}
                         `}
                         title={`${apt.time ? apt.time.substring(0,5) + ' - ' : ''}${apt.title}`}
-                        onClick={() => toggleStatus(apt.id, apt.status)}
+                        onClick={() => toggleStatus(apt.id, apt.status ?? "scheduled")}
                       >
                         {apt.time && <span className="font-semibold opacity-70">{apt.time.substring(0,5)}</span>}
                         <span className="truncate">{apt.title}</span>
@@ -317,7 +317,7 @@ function AgendaPage() {
                         variant={apt.status === 'completed' ? "outline" : "default"} 
                         size="sm" 
                         className={apt.status !== 'completed' ? "bg-emerald-600 hover:bg-emerald-700" : ""}
-                        onClick={() => toggleStatus(apt.id, apt.status)}
+                        onClick={() => toggleStatus(apt.id, apt.status ?? "scheduled")}
                       >
                         <CheckCircle2 className="mr-2 h-4 w-4" /> 
                         {apt.status === 'completed' ? 'Reabrir' : 'Concluir'}

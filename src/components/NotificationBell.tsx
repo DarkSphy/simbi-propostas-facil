@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/sidebar"; // wait, popover from components/ui/popover is better
 import { Popover as BasePopover, PopoverContent as BasePopoverContent, PopoverTrigger as BasePopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
