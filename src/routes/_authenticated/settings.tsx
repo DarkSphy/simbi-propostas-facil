@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { Upload, X } from "lucide-react";
 import { getErrorMessage } from "@/lib/utils/error";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   head: () => ({ meta: [{ title: "Configurações · Simbi" }] }),
@@ -208,20 +209,32 @@ function SettingsPage() {
                 <div className="flex flex-col sm:flex-row sm:items-center gap-6 mt-2">
                   {logoUrl ? (
                     <div className="relative shrink-0">
-                      <div className={`overflow-hidden rounded-xl border border-border bg-muted/20 ${headerType === 'banner' ? 'h-24 w-full sm:w-64' : 'h-20 w-20'}`}>
+                      <div className={`overflow-hidden rounded-xl border border-border bg-muted/20 ${headerType === 'banner' ? 'h-24 w-full sm:w-64' : 'h-24 w-24'}`}>
                         <img src={logoUrl} alt="Logo/Banner" className={`h-full w-full ${headerType === 'banner' ? 'object-cover' : 'object-contain p-2'}`} />
                       </div>
-                      <button onClick={() => setLogoUrl("")} className="absolute -right-3 -top-3 z-10 grid h-7 w-7 place-items-center rounded-full bg-destructive text-destructive-foreground hover:scale-110 transition-transform shadow-md border-2 border-card"><X className="h-3 w-3" /></button>
+                      <button type="button" onClick={() => setLogoUrl("")} className="absolute -right-3 -top-3 z-10 grid h-7 w-7 place-items-center rounded-full bg-destructive text-destructive-foreground hover:scale-110 transition-transform shadow-md border-2 border-card"><X className="h-3 w-3" /></button>
                     </div>
                   ) : (
-                    <Button type="button" variant="outline" className={`rounded-xl border-dashed ${headerType === 'banner' ? 'h-24 w-full sm:w-64' : 'h-20 w-20'}`} onClick={() => fileRef.current?.click()}>
-                      {uploading ? "Enviando..." : <Upload className="h-6 w-6 text-muted-foreground" />}
-                    </Button>
+                    <label className={cn(
+                      "flex flex-col items-center justify-center border-2 border-dashed border-primary/30 bg-primary/5 hover:bg-primary/10 rounded-xl cursor-pointer transition-colors group relative shrink-0",
+                      headerType === 'banner' ? 'h-24 w-full sm:w-64' : 'h-24 w-24'
+                    )}>
+                      <div className="flex flex-col items-center justify-center text-primary">
+                        {uploading ? (
+                          <span className="text-xs font-semibold animate-pulse">Enviando...</span>
+                        ) : (
+                          <>
+                            <Upload className="w-6 h-6 mb-1 opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all" />
+                            <span className="text-[10px] font-semibold">Upload</span>
+                          </>
+                        )}
+                      </div>
+                      <input type="file" className="hidden" accept="image/*" onChange={handleLogoUpload} disabled={uploading} />
+                    </label>
                   )}
                   <div className="text-xs text-muted-foreground flex-1">
                     {headerType === 'banner' ? "Recomendado: Imagem retangular (proporção 3:1)." : "Recomendado: PNG fundo transparente. Formato quadrado (1:1)."}
                   </div>
-                  <input type="file" ref={fileRef} className="hidden" accept="image/*" onChange={handleLogoUpload} />
                 </div>
               </div>
             </div>
@@ -315,17 +328,26 @@ function SettingsPage() {
                 <div className="flex items-center gap-6 mt-2">
                   {backgroundImageUrl ? (
                     <div className="relative shrink-0">
-                      <div className="h-20 w-32 overflow-hidden rounded-lg border border-border bg-muted/20">
+                      <div className="h-24 w-40 overflow-hidden rounded-xl border border-border bg-muted/20">
                         <img src={backgroundImageUrl} alt="Background" className="h-full w-full object-cover" />
                       </div>
-                      <button onClick={() => setBackgroundImageUrl("")} className="absolute -right-3 -top-3 z-10 grid h-7 w-7 place-items-center rounded-full bg-destructive text-destructive-foreground hover:scale-110 transition-transform shadow-md border-2 border-card"><X className="h-3 w-3" /></button>
+                      <button type="button" onClick={() => setBackgroundImageUrl("")} className="absolute -right-3 -top-3 z-10 grid h-7 w-7 place-items-center rounded-full bg-destructive text-destructive-foreground hover:scale-110 transition-transform shadow-md border-2 border-card"><X className="h-3 w-3" /></button>
                     </div>
                   ) : (
-                    <Button type="button" variant="outline" className="h-20 w-32 rounded-lg border-dashed" onClick={() => bgFileRef.current?.click()}>
-                      {uploadingBg ? "Enviando..." : <div className="flex flex-col items-center"><Upload className="h-5 w-5 text-muted-foreground mb-1" /><span className="text-xs">Fazer Upload</span></div>}
-                    </Button>
+                    <label className="flex flex-col items-center justify-center h-24 w-40 border-2 border-dashed border-primary/30 bg-primary/5 hover:bg-primary/10 rounded-xl cursor-pointer transition-colors group relative shrink-0">
+                      <div className="flex flex-col items-center justify-center text-primary">
+                        {uploadingBg ? (
+                          <span className="text-xs font-semibold animate-pulse">Enviando...</span>
+                        ) : (
+                          <>
+                            <Upload className="w-6 h-6 mb-1 opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all" />
+                            <span className="text-[10px] font-semibold">Upload Fundo</span>
+                          </>
+                        )}
+                      </div>
+                      <input type="file" className="hidden" accept="image/*" onChange={handleBgUpload} disabled={uploadingBg} />
+                    </label>
                   )}
-                  <input type="file" ref={bgFileRef} className="hidden" accept="image/*" onChange={handleBgUpload} />
                 </div>
               </div>
             )}

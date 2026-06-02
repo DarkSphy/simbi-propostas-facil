@@ -146,7 +146,7 @@ function ClientsPage() {
             />
           </div>
           <Dialog open={open} onOpenChange={(val) => { if (!val) resetForm(); else setOpen(true); }}>
-            <DialogTrigger asChild><Button className="rounded-full whitespace-nowrap" onClick={() => resetForm()}><Plus className="mr-1 h-4 w-4" /> Novo cliente</Button></DialogTrigger>
+            <DialogTrigger asChild><Button variant="success" className="rounded-full whitespace-nowrap shadow-emerald-500/20" onClick={() => resetForm()}><Plus className="mr-1 h-4 w-4" /> Novo cliente</Button></DialogTrigger>
             <DialogContent>
               <DialogHeader><DialogTitle>{editingId ? "Editar cliente" : "Novo cliente"}</DialogTitle></DialogHeader>
               <div className="space-y-3">
@@ -156,7 +156,10 @@ function ClientsPage() {
                 <div><Label>CPF/CNPJ</Label><Input value={document} onChange={(e) => setDocument(e.target.value)} /></div>
                 <div><Label>Endereço</Label><Input value={address} onChange={(e) => setAddress(e.target.value)} /></div>
               </div>
-              <DialogFooter><Button onClick={saveClient}>Salvar</Button></DialogFooter>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setOpen(false)}>Cancelar</Button>
+                <Button variant="success" onClick={saveClient}>Salvar</Button>
+              </DialogFooter>
             </DialogContent>
           </Dialog>
         </div>
@@ -205,8 +208,8 @@ function ClientsPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-1" onClick={e => e.stopPropagation()}>
-                  <Button variant="ghost" size="icon" onClick={() => editClient(c)}><Pencil className="h-4 w-4 text-muted-foreground" /></Button>
-                  <Button variant="ghost" size="icon" onClick={() => remove(c.id)}><Trash2 className="h-4 w-4 text-muted-foreground" /></Button>
+                  <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary hover:bg-primary/10" onClick={() => editClient(c)}><Pencil className="h-4 w-4" /></Button>
+                  <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-rose-600 hover:bg-rose-50" onClick={() => remove(c.id)}><Trash2 className="h-4 w-4" /></Button>
                 </div>
               </li>
               );
