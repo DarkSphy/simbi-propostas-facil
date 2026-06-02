@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,8 @@ import { formatBRL, statusBadge } from "@/lib/format";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { differenceInDays, parseISO } from "date-fns";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, UserPlus, MapPin, Mail, Phone } from "lucide-react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/requests")({
   head: () => ({ meta: [{ title: "Pedidos Vitrine · Simbi" }] }),
@@ -17,13 +18,14 @@ export const Route = createFileRoute("/_authenticated/requests")({
 
 function RequestsList() {
   const { user } = useAuth();
+  const qc = useQueryClient();
   const [search, setSearch] = useState("");
   
   const { data: proposals = [], isLoading } = useQuery({
     queryKey: ["proposals-list"],
     queryFn: async () => {
       const { data, error } = await supabase.from("proposals")
-        .select("id,title,total,status,created_at,public_slug,clients(name,phone),proposal_items(description)")
+        .select("id,title,total,status,created_at,public_slug,clients(id,name,phone,email,address,is_lead),proposal_items(description)")
         .eq("user_id", user!.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
@@ -67,6 +69,19 @@ function RequestsList() {
     // Se o número não tiver DDI, assume Brasil
     const finalPhone = phone.length <= 11 ? `55${phone}` : phone;
     window.open(`https://wa.me/${finalPhone}?text=${encodeURIComponent(msg)}`, "_blank");
+  }
+
+  async function handleMakeClient(e: React.MouseEvent, clientId: string) {
+    e.preventDefault();
+    if (!clientId) return;
+    const { error } = await supabase.from("clients").update({ is_lead: false }).eq("id", clientId);
+    if (error) {
+      toast.error("Erro ao converter lead.");
+    } else {
+      toast.success("Lead convertido em Cliente Definitivo!");
+      qc.invalidateQueries({ queryKey: ["proposals-list"] });
+      qc.invalidateQueries({ queryKey: ["clients"] });
+    }
   }
 
   return (
@@ -117,6 +132,16 @@ function RequestsList() {
                   <div className="flex-1 min-w-0 pl-2">
                     <div className="truncate text-base font-semibold transition-colors group-hover:text-primary">{p.title}</div>
                     <div className="mt-0.5 truncate text-sm text-muted-foreground">{(p as any).clients?.name ?? "Sem cliente"} · {new Date(p.created_at).toLocaleDateString("pt-BR")}</div>
+                    
+                    {/* Lead Details */}
+                    {p.clients && (
+                      <div className="mt-2 flex flex-col gap-1 text-xs text-muted-foreground/80">
+                        {p.clients.phone && <div className="flex items-center gap-1.5"><Phone className="h-3 w-3" /> {p.clients.phone}</div>}
+                        {p.clients.email && <div className="flex items-center gap-1.5"><Mail className="h-3 w-3" /> {p.clients.email}</div>}
+                        {p.clients.address && <div className="flex items-center gap-1.5"><MapPin className="h-3 w-3" /> {p.clients.address}</div>}
+                      </div>
+                    )}
+
                     {p.proposal_items && p.proposal_items.length > 0 && (
                       <div className="mt-3 flex flex-wrap gap-1.5">
                         {p.proposal_items.map((item: any, i: number) => (
@@ -127,10 +152,15 @@ function RequestsList() {
                       </div>
                     )}
                   </div>
-                  <div className="w-auto min-w-[130px] flex flex-col items-end gap-2 shrink-0">
+                  <div className="w-auto min-w-[150px] flex flex-col items-end gap-2 shrink-0">
                     {statusBadge(p.status)}
-                    <Button size="sm" variant="default" className="h-8 text-[11px] uppercase font-bold tracking-wider rounded-full bg-blue-500 hover:bg-blue-600 text-white shadow-md shadow-blue-500/20 px-4 transition-transform hover:scale-105" onClick={(e) => handleFollowUp(e, p)}>
-                      <MessageCircle className="mr-1.5 h-3.5 w-3.5" /> Responder
+                    {p.clients?.is_lead === true && (
+                      <Button size="sm" variant="outline" className="h-8 text-[11px] uppercase font-bold tracking-wider rounded-full w-full justify-center px-4 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 transition-colors" onClick={(e) => handleMakeClient(e, p.clients.id)}>
+                        <UserPlus className="mr-1.5 h-3.5 w-3.5" /> Tornar Cliente
+                      </Button>
+                    )}
+                    <Button size="sm" variant="default" className="h-8 text-[11px] uppercase font-bold tracking-wider rounded-full w-full justify-center bg-blue-500 hover:bg-blue-600 text-white shadow-md shadow-blue-500/20 px-4 transition-transform hover:scale-105" onClick={(e) => handleFollowUp(e, p)}>
+                      <MessageCircle className="mr-1.5 h-3.5 w-3.5" /> Responder no Whats
                     </Button>
                   </div>
                 </Link>

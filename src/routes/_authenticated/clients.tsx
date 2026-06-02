@@ -45,9 +45,11 @@ function ClientsPage() {
   });
 
   const filteredClients = clients.filter((c: any) => 
-    c.name.toLowerCase().includes(search.toLowerCase()) || 
-    (c.email && c.email.toLowerCase().includes(search.toLowerCase())) ||
-    (c.phone && c.phone.includes(search))
+    c.is_lead !== true && (
+      c.name.toLowerCase().includes(search.toLowerCase()) || 
+      (c.email && c.email.toLowerCase().includes(search.toLowerCase())) ||
+      (c.phone && c.phone.includes(search))
+    )
   );
 
   const { data: crmData, isLoading: crmLoading } = useQuery({

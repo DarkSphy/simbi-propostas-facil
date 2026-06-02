@@ -1,97 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Package, ShoppingCart, Send, Instagram, Phone, Mail, MapPin, CheckCircle2, Check, Linkedin, Globe } from "lucide-react";
+import { Send, Instagram, Phone, Mail, Globe, MapPin, Search } from "lucide-react";
 import { formatBRL } from "@/lib/format";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { motion, useScroll, useSpring, useMotionValue, useTransform, type Variants } from "framer-motion";
 import { getErrorMessage } from "@/lib/utils/error";
-
-function ProgressBar() {
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
-  return <motion.div style={{ scaleX, transformOrigin: "0%" }} className="fixed top-0 left-0 right-0 h-1 bg-primary z-50" />;
-}
-
-function MarqueeBanner({ words }: { words: string[] }) {
-  if (!words || words.length === 0) return null;
-  
-  return (
-    <div className="overflow-hidden bg-primary/5 border-y border-border py-2.5 flex items-center">
-      <div className="flex whitespace-nowrap animate-marquee">
-        {[...Array(4)].map((_, i) => (
-          <div key={i} className="flex items-center gap-8 mx-4">
-            {words.map((w, idx) => <span key={idx} className="text-xs font-bold tracking-[0.2em] uppercase text-primary/80">{w} ✦</span>)}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function BackgroundEffects({ isDark }: { isDark: boolean }) {
-  if (isDark) {
-    return (
-      <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none opacity-40">
-        {[...Array(25)].map((_, i) => (
-          <div key={i} className="absolute rounded-full bg-white animate-float" style={{
-            width: Math.random() * 3 + 1 + 'px',
-            height: Math.random() * 3 + 1 + 'px',
-            left: Math.random() * 100 + '%',
-            top: Math.random() * 100 + '%',
-            animationDelay: Math.random() * 5 + 's',
-            animationDuration: Math.random() * 10 + 10 + 's'
-          }} />
-        ))}
-      </div>
-    );
-  }
-  return (
-    <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
-      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary/10 blur-[100px] animate-glow" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-primary/5 blur-[80px] animate-glow" style={{ animationDelay: '2s' }} />
-    </div>
-  );
-}
-
-function TiltCard({ children, className, onClick }: { children: React.ReactNode, className?: string, onClick?: () => void }) {
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const rotateX = useTransform(y, [-100, 100], [8, -8]);
-  const rotateY = useTransform(x, [-100, 100], [-8, 8]);
-
-  function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    x.set(e.clientX - centerX);
-    y.set(e.clientY - centerY);
-  }
-
-  function handleMouseLeave() {
-    x.set(0);
-    y.set(0);
-  }
-
-  return (
-    <motion.div
-      style={{ rotateX, rotateY, transformPerspective: 1000 }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      onClick={onClick}
-      className={className}
-      transition={{ type: "spring", stiffness: 300, damping: 20 }}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
 
 export const Route = createFileRoute("/u/$profileSlug")({
   component: VitrinePageWrapper,
@@ -109,42 +27,25 @@ export const Route = createFileRoute("/u/$profileSlug")({
       .eq("is_public", true)
       .order("created_at", { ascending: false });
 
-    return { profile, items: items || [] };
+    const { data: categories } = await supabase.from("catalog_categories")
+      .select("*")
+      .eq("user_id", profile.id)
+      .order("name", { ascending: true });
+
+    return { profile, items: items || [], categories: categories || [] };
   },
   head: ({ loaderData }) => {
     if (!loaderData?.profile) return {};
     const { profile } = loaderData;
-    const title = profile.company_name || profile.full_name || "Vitrine";
+    const title = profile.company_name || profile.full_name || "Portfólio";
     const desc = profile.vitrine_pitch_text || `Conheça os produtos e serviços de ${title}.`;
     const image = profile.logo_url || "https://simbi-propostas-facil.lovable.app/og-vitrine.png";
     
-    // JSON-LD for Local Business / Store
-    const jsonLd = {
-      "@context": "https://schema.org",
-      "@type": "LocalBusiness",
-      "name": title,
-      "image": image,
-      "description": desc,
-      "url": `https://simbi-propostas-facil.lovable.app/u/${profile.profile_slug}`,
-      "telephone": profile.whatsapp || ""
-    };
-
     return {
       meta: [
-        { title: `${title} | Catálogo & Serviços` },
+        { title: `${title} | Portfólio` },
         { name: "description", content: desc },
-        { property: "og:title", content: title },
-        { property: "og:description", content: desc },
-        { property: "og:image", content: image },
-        { property: "twitter:card", content: "summary_large_image" },
-        { property: "twitter:image", content: image },
       ],
-      scripts: [
-        {
-          type: "application/ld+json",
-          children: JSON.stringify(jsonLd)
-        }
-      ]
     };
   },
   errorComponent: () => <div className="min-h-screen flex items-center justify-center bg-background"><div className="p-10 text-center font-semibold text-lg text-muted-foreground border border-border rounded-2xl bg-card shadow-sm">Perfil não encontrado.</div></div>
@@ -170,359 +71,251 @@ function VitrinePageWrapper() {
 }
 
 function VitrinePage() {
-  const { profile, items } = Route.useLoaderData();
-  const [cart, setCart] = useState<Record<string, number>>({});
+  const { profile, items, categories } = Route.useLoaderData();
   const [open, setOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<any>(null);
+  
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [address, setAddress] = useState("");
   const [sending, setSending] = useState(false);
-  const [done, setDone] = useState(false);
-  const [filterType, setFilterType] = useState<"all" | "product" | "service">("all");
 
-  const filteredItems = items.filter((it: any) => filterType === "all" ? true : it.type === filterType);
+  // Group items by category
+  const categorizedItems: Record<string, any[]> = { "Outros Serviços": [] };
+  categories.forEach((c: any) => { categorizedItems[c.name] = []; });
+  
+  items.forEach((it: any) => {
+    if (it.category_id) {
+      const cat = categories.find((c: any) => c.id === it.category_id);
+      if (cat) categorizedItems[cat.name].push(it);
+      else categorizedItems["Outros Serviços"].push(it);
+    } else {
+      categorizedItems["Outros Serviços"].push(it);
+    }
+  });
 
-  const cartItems = items.filter((it: any) => cart[it.id]);
-  const totalCart = cartItems.reduce((acc: number, it: any) => acc + (Number(it.unit_price) * cart[it.id]), 0);
+  const activeCategories = Object.keys(categorizedItems).filter(k => categorizedItems[k].length > 0);
 
-  function toggleCart(id: string) {
-    setCart(prev => {
-      const newCart = { ...prev };
-      if (newCart[id]) delete newCart[id];
-      else newCart[id] = 1;
-      return newCart;
-    });
+  function openRequestDialog(item: any) {
+    setSelectedItem(item);
+    setOpen(true);
   }
 
   async function submit() {
-    if (!name.trim() || !phone.trim()) {
-      toast.error("Preencha nome e WhatsApp.");
+    if (!name.trim() || !phone.trim() || !address.trim()) {
+      toast.error("Preencha Nome, WhatsApp e Endereço.");
       return;
     }
     setSending(true);
     
-    const pItems = cartItems.map((it: any) => ({
-      description: it.name,
-      quantity: cart[it.id],
-      unit_price: Number(it.unit_price)
-    }));
-
-    const { data, error } = await supabase.rpc("submit_quote_request", {
-      p_profile_slug: profile.profile_slug,
-      p_client_name: name,
-      p_client_phone: phone,
-      p_items: pItems
-    });
+    // Fallback: Se a RPC com 5 parametros não existir, tenta a antiga.
+    let success = false;
+    try {
+      const { data, error } = await supabase.rpc("submit_quote_request", {
+        p_profile_slug: profile.profile_slug,
+        p_client_name: name,
+        p_client_phone: phone,
+        p_client_email: email,
+        p_client_address: address,
+        p_items: [{
+          description: selectedItem.name,
+          quantity: 1,
+          unit_price: selectedItem.unit_price || 0
+        }]
+      });
+      if (error) throw error;
+      success = true;
+    } catch (err: any) {
+      console.warn("Nova RPC falhou, tentando fallback");
+      const { error } = await supabase.rpc("submit_quote_request", {
+        p_profile_slug: profile.profile_slug,
+        p_client_name: name,
+        p_client_phone: phone,
+        p_items: [{
+          description: selectedItem.name,
+          quantity: 1,
+          unit_price: selectedItem.unit_price || 0
+        }]
+      });
+      if (!error) success = true;
+    }
 
     setSending(false);
-    if (error) {
-      toast.error(getErrorMessage(error));
+    
+    if (success) {
+      toast.success("Solicitação salva! Redirecionando para o WhatsApp...");
+      const msg = `Olá! Meu nome é *${name}*.\nMoro em: ${address}.\nTenho interesse no serviço: *${selectedItem.name}*.\nPodemos conversar?`;
+      const p = profile.phone?.replace(/\D/g, "") || "";
+      if (p) {
+        window.open(`https://wa.me/${p.length <= 11 ? '55'+p : p}?text=${encodeURIComponent(msg)}`, "_blank");
+      }
+      setOpen(false);
     } else {
-      setDone(true);
-      toast.success("Orçamento solicitado com sucesso!");
+      toast.error("Erro ao solicitar. Tente chamar diretamente no WhatsApp.");
     }
   }
 
-  if (done) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-5">
-        <div className="bg-card border border-border p-8 rounded-3xl shadow-2xl shadow-primary/10 max-w-md w-full text-center relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/50 to-primary" />
-          <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
-            <CheckCircle2 className="h-10 w-10" />
-          </div>
-          <h2 className="text-2xl font-bold mb-3 tracking-tight">Solicitação enviada!</h2>
-          <p className="text-muted-foreground mb-8 leading-relaxed">
-            Sua solicitação de orçamento foi enviada diretamente para <strong>{profile.name || 'o profissional'}</strong>. Em breve entrarão em contato via WhatsApp.
-          </p>
-          <Button className="w-full rounded-full h-12 text-base font-semibold" onClick={() => { setDone(false); setCart({}); setOpen(false); }}>
-            Voltar para a vitrine
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  const testimonials = profile.vitrine_testimonials ? 
-    (typeof profile.vitrine_testimonials === 'string' ? JSON.parse(profile.vitrine_testimonials) : profile.vitrine_testimonials) 
-    : [];
-
-  const getYoutubeId = (url: string) => {
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-    const match = url.match(regExp);
-    return (match && match[2].length === 11) ? match[2] : null;
-  };
-
-  const pitchYoutubeId = profile.vitrine_pitch_video_url ? getYoutubeId(profile.vitrine_pitch_video_url) : null;
-
-  const organicStyle = profile.vitrine_skin === "organic" ? {
-    "--background": "45 30% 96%",
-    "--foreground": "45 10% 20%",
-    "--card": "0 0% 100%",
-    "--card-foreground": "45 10% 20%",
-    "--border": "40 20% 85%",
-    "--muted": "40 20% 90%",
-    "--muted-foreground": "45 5% 40%",
-    "--radius": "1.5rem"
-  } as React.CSSProperties : {};
-
-  const containerAnim: Variants = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 }
+  const scrollToCat = (catName: string) => {
+    const el = document.getElementById(`cat-${catName}`);
+    if (el) {
+      const y = el.getBoundingClientRect().top + window.scrollY - 140;
+      window.scrollTo({ top: y, behavior: 'smooth' });
     }
   };
-
-  const itemAnim: Variants = {
-    hidden: { opacity: 0, y: 30, scale: 0.95 },
-    show: { 
-      opacity: 1, 
-      y: 0, 
-      scale: 1,
-      transition: { type: "spring", stiffness: 300, damping: 24 }
-    }
-  };
-
-  const isDark = profile.vitrine_skin === "dark" || profile.ui_theme === "dark";
 
   return (
-    <div className="min-h-screen bg-transparent text-foreground pb-32" style={organicStyle}>
-      <ProgressBar />
-      <BackgroundEffects isDark={isDark} />
+    <div className="min-h-screen bg-background text-foreground pb-20">
       
-      {/* Header Profile / Hero */}
-      <header className="relative border-b border-border shadow-sm overflow-hidden">
-        {profile.vitrine_hero_type === 'image' && profile.vitrine_hero_url && (
-          <div className="absolute inset-0 z-0">
-            <motion.img 
-              initial={{ scale: 1.1 }} animate={{ scale: 1 }} transition={{ duration: 10, ease: "easeOut" }}
-              src={profile.vitrine_hero_url} alt="Cover" className="w-full h-full object-cover" 
-            />
-            <div className="absolute inset-0 bg-background/80 backdrop-blur-sm dark:bg-background/90" />
-          </div>
-        )}
-        {profile.vitrine_hero_type === 'video' && profile.vitrine_hero_url && (
-          <div className="absolute inset-0 z-0">
-            <video src={profile.vitrine_hero_url} autoPlay loop muted playsInline className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-background/80 backdrop-blur-sm dark:bg-background/90" />
-          </div>
-        )}
+      {/* 1. Header & Identidade Visual */}
+      <header className="relative bg-card shadow-sm border-b border-border/50">
+        {/* Banner Cover */}
+        <div className="h-48 md:h-64 w-full bg-muted/30 relative overflow-hidden">
+          {profile.vitrine_hero_url ? (
+            <img src={profile.vitrine_hero_url} alt="Cover" className="w-full h-full object-cover" />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-r from-primary/80 to-primary" />
+          )}
+        </div>
         
-        <div className="relative z-10 max-w-4xl mx-auto px-5 py-12 md:py-16 text-center">
-          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+        {/* Avatar e Bio */}
+        <div className="max-w-3xl mx-auto px-5 relative pb-8">
+          <div className="flex justify-between items-end -mt-16 mb-4 relative z-10">
             {profile.logo_url ? (
-              <img src={profile.logo_url} alt={profile.company_name || profile.name} className="h-28 w-28 md:h-36 md:w-36 object-cover rounded-3xl mx-auto mb-6 shadow-2xl border-4 border-background/50 backdrop-blur-md" />
+              <img src={profile.logo_url} alt="Logo" className="h-32 w-32 rounded-full border-4 border-background object-cover shadow-lg bg-card" />
             ) : (
-              <div className="h-28 w-28 md:h-36 md:w-36 rounded-3xl bg-primary text-primary-foreground mx-auto mb-6 flex items-center justify-center text-5xl font-bold shadow-2xl border-4 border-background/50 backdrop-blur-md">
+              <div className="h-32 w-32 rounded-full border-4 border-background bg-primary text-primary-foreground flex items-center justify-center text-4xl font-bold shadow-lg">
                 {(profile.company_name || profile.name)?.[0]?.toUpperCase() || 'S'}
               </div>
             )}
-            <h1 className="text-4xl md:text-5xl font-serif tracking-tight mb-2 drop-shadow-sm">{profile.company_name || profile.name}</h1>
-            {profile.company_name && <p className="text-lg md:text-xl font-serif font-medium mb-4 text-foreground/80">{profile.name}</p>}
-          </motion.div>
+            
+            {/* Social Links */}
+            <div className="flex gap-2 mb-2">
+              {profile.instagram_url && (
+                <a href={profile.instagram_url} target="_blank" rel="noreferrer" className="h-10 w-10 rounded-full bg-muted/50 flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors border border-border">
+                  <Instagram className="h-5 w-5" />
+                </a>
+              )}
+              {profile.website_url && (
+                <a href={profile.website_url} target="_blank" rel="noreferrer" className="h-10 w-10 rounded-full bg-muted/50 flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors border border-border">
+                  <Globe className="h-5 w-5" />
+                </a>
+              )}
+            </div>
+          </div>
           
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} className="flex flex-wrap justify-center gap-4 text-sm text-foreground/80 mb-5 font-medium">
-            {profile.phone && <span className="flex items-center gap-1.5"><Phone className="h-4 w-4" /> {profile.phone}</span>}
-            {profile.email && <span className="flex items-center gap-1.5"><Mail className="h-4 w-4" /> {profile.email}</span>}
-          </motion.div>
-
-          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.4 }} className="flex justify-center gap-3 mb-6">
-            {profile.instagram_url && (
-              <a href={profile.instagram_url} target="_blank" rel="noreferrer" className="text-foreground hover:text-primary hover:bg-primary/10 transition-all p-2.5 bg-background/50 backdrop-blur-sm rounded-full hover:scale-110 shadow-sm border border-border/50">
-                <Instagram className="h-5 w-5" />
-              </a>
-            )}
-            {profile.linkedin_url && (
-              <a href={profile.linkedin_url} target="_blank" rel="noreferrer" className="text-foreground hover:text-primary hover:bg-primary/10 transition-all p-2.5 bg-background/50 backdrop-blur-sm rounded-full hover:scale-110 shadow-sm border border-border/50">
-                <Linkedin className="h-5 w-5" />
-              </a>
-            )}
-            {profile.website_url && (
-              <a href={profile.website_url} target="_blank" rel="noreferrer" className="text-foreground hover:text-primary hover:bg-primary/10 transition-all p-2.5 bg-background/50 backdrop-blur-sm rounded-full hover:scale-110 shadow-sm border border-border/50">
-                <Globe className="h-5 w-5" />
-              </a>
-            )}
-          </motion.div>
-
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="max-w-2xl mx-auto text-foreground/70 text-base md:text-lg leading-relaxed">
-            Selecione abaixo os produtos ou serviços que você tem interesse e clique em "Solicitar Orçamento" para receber uma proposta personalizada nossa.
-          </motion.p>
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight mb-1">{profile.company_name || profile.name}</h1>
+            <p className="text-muted-foreground text-sm font-medium mb-4 whitespace-pre-wrap">{profile.vitrine_pitch_text || "Profissional independente. Entre em contato para transformar suas ideias em realidade."}</p>
+          </div>
         </div>
       </header>
 
-      {/* Marquee Banner */}
-      <MarqueeBanner words={
-        profile.vitrine_marquee_words 
-        ? (typeof profile.vitrine_marquee_words === 'string' ? JSON.parse(profile.vitrine_marquee_words) : profile.vitrine_marquee_words)
-        : ["Inovação", "Design Premium", "Alta Qualidade", "Resultados", "Autoridade"]
-      } />
-
-      {/* Pitch Section */}
-      {(pitchYoutubeId || profile.vitrine_pitch_text) && (
-        <div className="max-w-4xl mx-auto px-5 py-12 border-b border-border/20">
-          <div className="bg-card/50 backdrop-blur-sm rounded-3xl p-6 md:p-8 border border-border/50 shadow-lg flex flex-col md:flex-row gap-8 items-center">
-            {pitchYoutubeId && (
-              <div className="w-full md:w-1/2 aspect-video rounded-2xl overflow-hidden shadow-2xl border border-white/10 relative">
-                <iframe 
-                  src={`https://www.youtube.com/embed/${pitchYoutubeId}?rel=0`}
-                  title="YouTube video player"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="w-full h-full absolute inset-0"
-                ></iframe>
-              </div>
-            )}
-            <div className={cn("w-full", pitchYoutubeId ? "md:w-1/2" : "text-center")}>
-              <h2 className="text-3xl font-serif tracking-tight mb-4 text-primary">Sobre a empresa</h2>
-              <p className="text-foreground/80 whitespace-pre-wrap leading-relaxed font-medium">{profile.vitrine_pitch_text || "Assista ao vídeo para nos conhecer melhor e entender como podemos te ajudar a alcançar seus objetivos!"}</p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Catalog Grid */}
-      <div className="max-w-4xl mx-auto px-5 py-10">
-        
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
-          <Button variant={filterType === 'all' ? 'default' : 'outline'} className="rounded-full shadow-sm" onClick={() => setFilterType('all')}>Todos</Button>
-          <Button variant={filterType === 'service' ? 'default' : 'outline'} className="rounded-full shadow-sm" onClick={() => setFilterType('service')}>Serviços</Button>
-          <Button variant={filterType === 'product' ? 'default' : 'outline'} className="rounded-full shadow-sm" onClick={() => setFilterType('product')}>Produtos</Button>
-        </div>
-
-        {filteredItems.length === 0 ? (
-          <div className="text-center p-10 bg-card rounded-3xl border border-border">
-            <Package className="h-10 w-10 text-muted-foreground/30 mx-auto mb-3" />
-            <p className="text-muted-foreground font-medium">Nenhum serviço disponível no momento.</p>
-          </div>
-        ) : (
-          <motion.div variants={containerAnim} initial="hidden" animate="show" className="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-8">
-            {filteredItems.map((it: any) => {
-              const selected = !!cart[it.id];
-              const isOutOfStock = it.stock_quantity === 0;
-              return (
-                <TiltCard 
-                  key={it.id} 
-                  onClick={() => !isOutOfStock && toggleCart(it.id)}
-                  className={cn(
-                    "flex flex-col bg-card/80 backdrop-blur-md rounded-3xl border transition-colors cursor-pointer overflow-hidden group",
-                    selected ? "border-primary ring-2 ring-primary/40 shadow-lg" : "border-border/50 hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_20px_50px_rgba(255,255,255,0.05)]",
-                    isOutOfStock && "opacity-75 grayscale cursor-not-allowed hover:shadow-none"
-                  )}
-                >
-                  <motion.div variants={itemAnim} className="flex flex-col h-full">
-                    {it.image_url ? (
-                      <div className="aspect-video w-full bg-muted/20 border-b border-border/30 relative overflow-hidden">
-                        <img src={it.image_url} alt={it.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                        {isOutOfStock ? (
-                          <div className="absolute top-3 right-3 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-md shadow-lg z-10 uppercase tracking-widest">
-                            Esgotado
-                          </div>
-                        ) : (
-                          <div className={cn("absolute top-3 right-3 h-8 w-8 rounded-full border-2 flex items-center justify-center transition-all shadow-lg z-10", selected ? "bg-primary border-primary text-primary-foreground scale-110" : "bg-black/40 border-white/20 backdrop-blur-md opacity-0 group-hover:opacity-100")}>
-                            {selected && <Check className="h-4 w-4" />}
-                          </div>
-                        )}
-                      </div>
-                    ) : (
-                      <div className="p-4 flex justify-end">
-                        {isOutOfStock ? (
-                          <div className="bg-red-100 text-red-700 border border-red-200 text-[10px] font-bold px-2 py-1 rounded-md shadow-sm uppercase tracking-widest">
-                            Esgotado
-                          </div>
-                        ) : (
-                          <div className={cn("h-6 w-6 rounded-full border-2 flex items-center justify-center transition-all shadow-sm", selected ? "bg-primary border-primary text-primary-foreground scale-110" : "bg-card border-border")}>
-                            {selected && <Check className="h-3.5 w-3.5" />}
-                          </div>
-                        )}
-                      </div>
-                    )}
-                    
-                    <div className="p-6 flex-1 flex flex-col relative">
-                      <div className="flex items-start justify-between gap-2 mb-3">
-                        <h3 className="font-serif font-bold text-xl leading-tight group-hover:text-primary transition-colors">{it.name}</h3>
-                      </div>
-                      {it.description && <p className="text-sm text-foreground/70 line-clamp-2 mb-5 font-medium">{it.description}</p>}
-                      <div className="mt-auto pt-3 border-t border-border/50 flex items-center justify-between">
-                        <span className="text-[10px] uppercase font-bold text-primary bg-primary/10 px-3 py-1 rounded-full tracking-widest">{it.type === 'product' ? 'Produto' : 'Serviço'}</span>
-                      </div>
-                    </div>
-                  </motion.div>
-                </TiltCard>
-              );
-            })}
-          </motion.div>
-        )}
-      </div>
-
-      {/* Testimonials */}
-      {testimonials.length > 0 && (
-        <div className="max-w-4xl mx-auto px-5 py-16 mb-10">
-          <h2 className="text-3xl font-serif tracking-tight text-center mb-10 text-primary">O que dizem os clientes</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {testimonials.map((t: any, i: number) => (
-              <div key={i} className="bg-card/50 backdrop-blur-sm border border-border/50 p-8 rounded-3xl shadow-lg flex flex-col hover:-translate-y-2 transition-transform duration-300">
-                <div className="flex text-amber-400 mb-4 text-base">★★★★★</div>
-                <p className="text-base text-foreground/80 flex-1 italic mb-6 leading-relaxed">"{t.text}"</p>
-                <div className="font-bold font-serif text-lg text-primary">{t.name}</div>
-              </div>
+      {/* 2. Menu de Categorias Fixo (Sticky) */}
+      {activeCategories.length > 1 && (
+        <div className="sticky top-0 z-30 bg-background/90 backdrop-blur-md border-b border-border/50 shadow-sm">
+          <div className="max-w-3xl mx-auto px-5 py-3 overflow-x-auto flex gap-2 hide-scrollbar">
+            {activeCategories.map(cat => (
+              <button 
+                key={cat}
+                onClick={() => scrollToCat(cat)}
+                className="whitespace-nowrap px-4 py-1.5 rounded-full text-sm font-semibold bg-muted/50 text-foreground hover:bg-primary hover:text-primary-foreground transition-colors border border-border"
+              >
+                {cat}
+              </button>
             ))}
           </div>
         </div>
       )}
 
-      {/* Floating Cart Button */}
-      {cartItems.length > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 p-5 bg-background/30 backdrop-blur-xl border-t border-white/10 z-40 pointer-events-none flex justify-center shadow-[0_-10px_40px_rgba(0,0,0,0.1)] dark:shadow-[0_-10px_40px_rgba(0,0,0,0.4)]">
-          <div className="pointer-events-auto">
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="relative group">
-              <div className="absolute -inset-1 bg-primary rounded-full blur opacity-40 group-hover:opacity-70 transition duration-500 animate-pulse"></div>
-              <Button 
-                size="lg" 
-                className="relative rounded-full shadow-2xl h-14 px-10 font-bold text-base gap-3 transition-transform"
-                onClick={() => setOpen(true)}
-              >
-                <ShoppingCart className="h-5 w-5" />
-                Solicitar Orçamento ({cartItems.length})
-              </Button>
-            </motion.div>
+      {/* 3. Lista de Serviços (Estilo iFood / Linktree) */}
+      <main className="max-w-3xl mx-auto px-5 py-8">
+        {activeCategories.length === 0 ? (
+          <div className="text-center py-20 text-muted-foreground">Nenhum serviço disponível no momento.</div>
+        ) : (
+          <div className="space-y-10">
+            {activeCategories.map(cat => (
+              <section key={cat} id={`cat-${cat}`}>
+                <h2 className="text-2xl font-bold mb-4 tracking-tight">{cat}</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {categorizedItems[cat].map(it => {
+                    const isOutOfStock = it.stock_quantity === 0;
+                    return (
+                      <div 
+                        key={it.id} 
+                        className={cn(
+                          "group flex items-center gap-4 p-4 rounded-2xl border border-border/50 bg-card hover:border-primary/30 hover:shadow-md transition-all cursor-pointer",
+                          isOutOfStock && "opacity-60 grayscale cursor-not-allowed"
+                        )}
+                        onClick={() => !isOutOfStock && openRequestDialog(it)}
+                      >
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-bold text-base leading-tight mb-1 group-hover:text-primary transition-colors">{it.name}</h3>
+                          {it.description && <p className="text-xs text-muted-foreground line-clamp-2 mb-2">{it.description}</p>}
+                          <div className="font-semibold text-sm text-foreground">
+                            {Number(it.unit_price) > 0 ? formatBRL(Number(it.unit_price)) : "Sob consulta"}
+                          </div>
+                        </div>
+                        {it.image_url ? (
+                          <div className="h-24 w-24 rounded-xl overflow-hidden shrink-0 bg-muted/20 relative">
+                            <img src={it.image_url} alt={it.name} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                            {isOutOfStock && (
+                              <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                                <span className="text-white text-[10px] font-bold uppercase tracking-wider">Esgotado</span>
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="h-24 w-24 rounded-xl shrink-0 bg-muted/30 flex items-center justify-center border border-border/50">
+                             <span className="text-muted-foreground/50 font-semibold text-xs">Sem foto</span>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </section>
+            ))}
           </div>
-        </div>
-      )}
+        )}
+      </main>
 
+      {/* 4. Modal de Captação (Lead to WhatsApp) */}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-md rounded-3xl">
           <DialogHeader>
-            <DialogTitle className="text-2xl">Finalizar Solicitação</DialogTitle>
+            <DialogTitle className="text-2xl">Pedir Orçamento</DialogTitle>
             <DialogDescription>
-              Você selecionou {cartItems.length} item(s) para solicitar orçamento.
+              Você está solicitando informações sobre <strong className="text-foreground">{selectedItem?.name}</strong>
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 pt-4">
             <div className="space-y-1.5">
               <Label className="text-sm font-semibold">Seu Nome Completo</Label>
-              <Input value={name} onChange={e => setName(e.target.value)} placeholder="João da Silva" className="h-11 rounded-xl" />
+              <Input value={name} onChange={e => setName(e.target.value)} placeholder="Ex: Maria Silva" className="h-11 rounded-xl" />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <Label className="text-sm font-semibold">WhatsApp</Label>
+                <Input value={phone} onChange={e => setPhone(e.target.value)} placeholder="(11) 99999-9999" className="h-11 rounded-xl" />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-sm font-semibold">Email (Opcional)</Label>
+                <Input value={email} onChange={e => setEmail(e.target.value)} placeholder="maria@email.com" className="h-11 rounded-xl" />
+              </div>
             </div>
             <div className="space-y-1.5">
-              <Label className="text-sm font-semibold">Seu WhatsApp</Label>
-              <Input value={phone} onChange={e => setPhone(e.target.value)} placeholder="(11) 99999-9999" className="h-11 rounded-xl" />
-            </div>
-            
-            <div className="pt-2 bg-muted/30 rounded-xl p-4 border border-border/50 max-h-40 overflow-y-auto mt-4">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">Resumo do Pedido</h4>
-              <ul className="space-y-2">
-                {cartItems.map((it: any) => (
-                  <li key={it.id} className="flex text-sm">
-                    <span className="font-medium text-foreground">• {it.name}</span>
-                  </li>
-                ))}
-              </ul>
+              <Label className="text-sm font-semibold">Endereço (Rua, Bairro e Cidade)</Label>
+              <Input value={address} onChange={e => setAddress(e.target.value)} placeholder="Ex: Rua Direita, Centro - SP" className="h-11 rounded-xl" />
             </div>
 
-            <Button className="w-full h-12 rounded-full font-bold text-base mt-2" onClick={submit} disabled={sending}>
-              {sending ? "Enviando..." : "Enviar Solicitação"}
+            <Button className="w-full h-12 rounded-xl font-bold text-base mt-2 bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/20" onClick={submit} disabled={sending}>
+              <Send className="w-4 h-4 mr-2" />
+              {sending ? "Preparando..." : "Ir para o WhatsApp"}
             </Button>
+            <p className="text-xs text-center text-muted-foreground mt-2">
+              Você será redirecionado para o WhatsApp do profissional com uma mensagem pré-preenchida.
+            </p>
           </div>
         </DialogContent>
       </Dialog>
