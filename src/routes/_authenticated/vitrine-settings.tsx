@@ -225,15 +225,48 @@ function VitrineSettings() {
           <div className="space-y-4">
             <div className="flex flex-wrap gap-2">
               <Button type="button" variant={heroType === 'color' ? 'default' : 'outline'} onClick={() => setHeroType('color')} size="sm">Cor Sólida (Padrão)</Button>
-              <Button type="button" variant={heroType === 'image' ? 'default' : 'outline'} onClick={() => setHeroType('image')} size="sm"><ImageIcon className="h-4 w-4 mr-1.5" /> Imagem</Button>
+              <Button type="button" variant={heroType === 'image' ? 'default' : 'outline'} onClick={() => setHeroType('image')} size="sm"><ImageIcon className="h-4 w-4 mr-1.5" /> Imagem de Capa</Button>
               <Button type="button" variant={heroType === 'video' ? 'default' : 'outline'} onClick={() => setHeroType('video')} size="sm"><Video className="h-4 w-4 mr-1.5" /> Vídeo em Loop (MP4)</Button>
             </div>
             
             {heroType !== 'color' && (
-              <div className="space-y-2 p-4 bg-muted/30 rounded-xl border border-border/50">
-                <Label className="text-muted-foreground font-semibold">URL da {heroType === 'image' ? 'Imagem' : 'Vídeo'} (Link direto)</Label>
-                <Input value={heroUrl} onChange={(e) => setHeroUrl(e.target.value)} placeholder={`https://exemplo.com/fundo.${heroType === 'image' ? 'jpg' : 'mp4'}`} />
-                <p className="text-xs text-muted-foreground mt-1">Dica: Use imagens/vídeos de alta qualidade para um visual premium (ex: Imgur, AWS S3).</p>
+              <div className="space-y-4 p-4 bg-muted/30 rounded-xl border border-border/50">
+                {heroType === 'image' && (
+                  <div className="space-y-2">
+                    <Label className="text-muted-foreground font-semibold">Upload de Imagem (Máx 5MB)</Label>
+                    <Input 
+                      type="file" 
+                      accept="image/*"
+                      onChange={async (e) => {
+                        if (!e.target.files || e.target.files.length === 0) return;
+                        const file = e.target.files[0];
+                        if (file.size > 5 * 1024 * 1024) { toast.error('A imagem deve ter no máximo 5MB.'); return; }
+                        
+                        const toastId = toast.loading("Enviando imagem...");
+                        const ext = file.name.split('.').pop();
+                        const filePath = `${user?.id}/vitrine-hero/${Date.now()}.${ext}`;
+                        
+                        const { error } = await supabase.storage.from("proposal-images").upload(filePath, file);
+                        if (error) {
+                          toast.error("Erro ao fazer upload da imagem.", { id: toastId });
+                          return;
+                        }
+                        const { data } = supabase.storage.from("proposal-images").getPublicUrl(filePath);
+                        setHeroUrl(data.publicUrl);
+                        toast.success("Upload concluído!", { id: toastId });
+                      }} 
+                    />
+                  </div>
+                )}
+
+                {heroType === 'video' && (
+                  <div className="space-y-2">
+                    <Label className="text-muted-foreground font-semibold">URL do Vídeo MP4 (Link direto)</Label>
+                    <Input value={heroUrl} onChange={(e) => setHeroUrl(e.target.value)} placeholder={`https://exemplo.com/fundo.mp4`} />
+                    <p className="text-xs text-muted-foreground mt-1">Dica: O vídeo deve ser um arquivo MP4 direto hospedado online.</p>
+                  </div>
+                )}
+                
                 {heroUrl && heroType === 'image' && (
                   <div className="mt-3 aspect-[21/9] w-full rounded-lg border border-border overflow-hidden bg-muted relative">
                     <img src={heroUrl} alt="Preview" className="w-full h-full object-cover" />
