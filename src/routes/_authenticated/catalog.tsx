@@ -306,68 +306,64 @@ function Catalog() {
         <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden mt-4">
           <ul className="divide-y divide-border/50">
             {filteredItems.map(it => (
-                    <Package className="h-5 w-5 text-muted-foreground/50" />
-                  </div>
-                )}
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium">{it.name}</span>
-                    <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                      {it.type === "product" ? "Produto" : "Serviço"}
-                    </span>
-                    {it.catalog_categories?.name && (
-                      <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold tracking-wider text-primary truncate max-w-[150px]">
-                        {it.catalog_categories.name}
+              <li key={it.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 hover:bg-muted/30 transition-colors gap-4">
+                <div className="flex items-center gap-4 flex-1 min-w-0 pr-4">
+                  {it.image_url ? (
+                    <div className="h-12 w-12 shrink-0 rounded-lg border border-border overflow-hidden bg-muted/20">
+                      <img src={it.image_url} alt={it.name} className="h-full w-full object-cover" />
+                    </div>
+                  ) : (
+                    <div className="h-12 w-12 shrink-0 rounded-lg border border-border border-dashed bg-muted/10 grid place-items-center">
+                      <Package className="h-5 w-5 text-muted-foreground/50" />
+                    </div>
+                  )}
+                  <div className="flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="font-semibold text-base">{it.name}</span>
+                      <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                        {it.type === "product" ? "Produto" : "Serviço"}
                       </span>
-                    )}
-                    {it.is_public ? (
-                      <TooltipProvider delayDuration={0}>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <span className="flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-emerald-700">
-                              <Eye className="h-3 w-3" /> Vitrine
-                            </span>
-                          </TooltipTrigger>
-                          <TooltipContent>Visível no seu link público</TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    ) : (
-                      <TooltipProvider delayDuration={0}>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <span className="flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-slate-500">
-                              <EyeOff className="h-3 w-3" /> Oculto
-                            </span>
-                          </TooltipTrigger>
-                          <TooltipContent>Item privado (Apenas você pode adicionar)</TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    )}
-                    {it.stock_quantity !== null && it.stock_quantity !== undefined && (
-                      <span className={cn(
-                        "rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider",
-                        it.stock_quantity === 0 ? "bg-red-100 text-red-700" : "bg-blue-100 text-blue-700"
-                      )}>
-                        {it.stock_quantity === 0 ? "Esgotado" : `Estoque: ${it.stock_quantity}`}
-                      </span>
-                    )}
+                      {it.catalog_categories?.name && (
+                        <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold tracking-wider text-primary truncate max-w-[150px]">
+                          {it.catalog_categories.name}
+                        </span>
+                      )}
+                      {it.is_public ? (
+                        <span className="flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-emerald-700">
+                          <Eye className="h-3 w-3" /> Vitrine
+                        </span>
+                      ) : (
+                        <span className="flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+                          <EyeOff className="h-3 w-3" /> Oculto
+                        </span>
+                      )}
+                      {it.stock_quantity !== null && it.stock_quantity !== undefined && (
+                        <span className={cn(
+                          "rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider",
+                          it.stock_quantity === 0 ? "bg-red-100 text-red-700" : "bg-blue-100 text-blue-700"
+                        )}>
+                          {it.stock_quantity === 0 ? "Esgotado" : `Estoque: ${it.stock_quantity}`}
+                        </span>
+                      )}
+                    </div>
+                    {it.description && <div className="mt-1 text-sm text-muted-foreground line-clamp-2">{it.description}</div>}
                   </div>
-                  {it.description && <div className="mt-1 text-sm text-muted-foreground">{it.description}</div>}
                 </div>
-                <div className="text-right font-medium">{formatBRL(Number(it.unit_price))}</div>
-                <div className="flex items-center gap-1">
-                  <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground" onClick={() => editItem(it)}>
-                    <Pencil className="h-4 w-4" />
-                  </Button>
-                  <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive" onClick={() => handleRemove(it.id)}>
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                <div className="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto">
+                  <div className="text-right font-bold text-primary mr-4">{formatBRL(Number(it.unit_price))}</div>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary hover:bg-primary/10" onClick={() => editItem(it)}>
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-rose-600 hover:bg-rose-50" onClick={() => handleRemove(it.id)}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
               </li>
             ))}
           </ul>
-        )}
-      </div>
+        </div>
         </>
       ) : activeTab === "categories" ? (
         <CategoriesManager categories={categories} user={user} qc={qc} />
