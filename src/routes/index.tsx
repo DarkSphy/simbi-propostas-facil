@@ -96,10 +96,10 @@ function Hero() {
       <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <h1 className="text-5xl font-bold tracking-tight text-white sm:text-7xl">
-            Do orçamento fechado à entrega do serviço. Tudo em um só lugar.
+            A verdadeira caixa de ferramentas digital do MEI e prestador de serviços.
           </h1>
           <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-white/70">
-            Destaque-se da concorrência com orçamentos elegantes. Crie em minutos, envie propostas, assine contratos digitais e emita Ordens de Serviço (OS) integrado ao WhatsApp. Sem burocracia, feito para quem bota a mão na massa.
+            Esqueça a bagunça no WhatsApp e no caderno. Com o Simbi você tem vitrine online, orçamentos magnéticos, contratos, estoque e financeiro em um único aplicativo.
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Button asChild size="lg" className="h-14 rounded-full bg-primary px-8 text-base text-primary-foreground shadow-lg shadow-primary/40 glow-primary transition-all hover:bg-primary/90 hover:glow-primary-hover hover:-translate-y-0.5">
@@ -149,12 +149,10 @@ function InfiniteLogos() {
 
 function Features() {
   const items = [
-    { icon: Share2, title: "O fim do 'orçamento de boca'", desc: "Antes: você mandava um áudio confuso ou foto de caderno. Depois: o cliente clica num link e vê um orçamento com sua logo, impecável." },
-    { icon: Zap, title: "Aprovação em um clique", desc: "Chega de 'vou pensar e te aviso'. O cliente lê no celular, aperta um botão verde de 'Aprovar' e você já pode começar o serviço." },
-    { icon: FileSignature, title: "Contratos instantâneos", desc: "Gere um contrato de prestação de serviços atrelado ao orçamento de forma automática. O cliente assina digitalmente na hora e você garante segurança jurídica." },
-    { icon: ClipboardList, title: "Ordens de Serviço (OS)", desc: "Gere Ordens de Serviço (OS) profissionais a partir dos orçamentos aprovados, prontas para impressão e com espaço para relatório técnico." },
-    { icon: CalendarDays, title: "Agenda integrada", desc: "Organize suas visitas técnicas e tarefas em um calendário inteligente conectado diretamente ao histórico de clientes e propostas." },
-    { icon: Calculator, title: "Calculadora de custo real", desc: "Calcule a margem exata de lucro de cada trabalho. Insira custos de insumos, horas trabalhadas e despesas para nunca mais precificar no prejuízo." },
+    { icon: Smartphone, title: "[ 1. Atração ] Vitrine & Catálogo", desc: "Seu link na Bio. Exiba seus serviços de forma profissional. Deixe os clientes pedirem orçamentos direto pelo catálogo, com controle de estoque automático." },
+    { icon: FileSignature, title: "[ 2. Fechamento ] Orçamentos & Contratos", desc: "O fim do orçamento de boca. Envie propostas impecáveis com aprovação em 1 clique e gere contratos com assinatura digital instantânea." },
+    { icon: ClipboardList, title: "[ 3. Execução ] CRM & Ordens de Serviço", desc: "Acompanhe tudo no funil visual. Saiba exatamente quais orçamentos estão pendentes e gere Ordens de Serviço (OS) prontas para a execução técnica." },
+    { icon: BarChart3, title: "[ 4. Gestão ] Financeiro & Agenda", desc: "Fluxo de caixa automático assim que uma proposta é aprovada, e agenda integrada para você nunca mais perder um compromisso ou esquecer uma cobrança." },
   ];
 
   return (
@@ -162,8 +160,8 @@ function Features() {
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-base font-semibold leading-7 text-primary">Feito para quem bota a mão na massa</h2>
-          <p className="mt-2 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">Do papel amassado para o digital.</p>
-          <p className="mt-4 text-lg text-muted-foreground">O Simbi transforma a forma como você passa preço. Mostre que o seu serviço não é um 'quebra-galho', é um trabalho profissional.</p>
+          <p className="mt-2 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">Tudo o que você precisa.</p>
+          <p className="mt-4 text-lg text-muted-foreground">O Simbi consolida os 5 aplicativos que você usa hoje de forma confusa, em uma única esteira profissional e integrada.</p>
         </div>
         
         <div className="mx-auto mt-16 max-w-6xl sm:mt-20">
@@ -190,17 +188,17 @@ function HowItWorks() {
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div>
-            <h2 className="text-base font-semibold leading-7 text-primary">Simples e direto</h2>
-            <p className="mt-2 text-4xl font-bold tracking-tight text-white sm:text-5xl">Fluxo perfeito.</p>
+            <h2 className="text-base font-semibold leading-7 text-primary">O fim do retrabalho</h2>
+            <p className="mt-2 text-4xl font-bold tracking-tight text-white sm:text-5xl">Canivete Suíço.</p>
             <p className="mt-4 text-lg text-white/70">
-              Pare de perder horas formatando documentos. Focamos no que importa: clareza e velocidade.
+              Do primeiro contato ao pagamento, o Simbi automatiza cada etapa do seu serviço.
             </p>
             
             <div className="mt-10 space-y-8">
               {[
-                { title: "Adicione Itens Cadastrados", desc: "Escolha produtos ou serviços salvos anteriormente (com fotos e descrições) direto para a proposta." },
-                { title: "Compartilhe o Link", desc: "O cliente recebe uma página com a sua marca, impecável." },
-                { title: "Receba a Notificação", desc: "Mude o status e acompanhe o pagamento no seu dashboard." }
+                { title: "O cliente acessa sua Vitrine", desc: "Ele escolhe o serviço ou produto no seu link exclusivo e clica em pedir orçamento." },
+                { title: "Você envia a Proposta Mágica", desc: "Em 1 minuto, pelo celular, você aprova, envia o link e o cliente assina o contrato." },
+                { title: "O sistema faz o resto", desc: "O estoque baixa automaticamente, o financeiro atualiza e a Ordem de Serviço fica pronta para uso." }
               ].map((step, i) => (
                 <div key={i} className="flex gap-4">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/20 font-bold text-white">
