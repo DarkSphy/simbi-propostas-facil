@@ -12,10 +12,8 @@ import { PrintCustomizer, PrintSettings } from "@/components/PrintCustomizer";
 export const Route = createFileRoute("/p/$profileSlug/$proposalSlug")({
   loader: async ({ params }) => {
     try {
-      const { data: prop } = await supabase.from("proposals")
-        .select("title,profiles(logo_url,theme_color)")
-        .eq("public_slug", params.proposalSlug).single();
-      return { prop };
+      const { data: prop } = await supabase.rpc("get_proposal_by_slug", { p_slug: params.proposalSlug });
+      return { prop: prop ? { title: prop.title, profiles: prop.profiles } : null };
     } catch (e) {
       return { prop: null };
     }
@@ -80,20 +78,14 @@ function PublicProposal() {
 
   useEffect(() => {
     (async () => {
-      const { data: prop, error } = await supabase.from("proposals")
-        .select("*,clients(name,phone),proposal_items(*)")
-        .eq("public_slug", slug).single();
-      
+      const { data: prop, error } = await supabase.rpc("get_proposal_by_slug", { p_slug: slug });
+
       if (error || !prop) {
         setLoading(false);
         return;
       }
 
-      const { data: prof } = await supabase.from("profiles")
-        .select("full_name,company_name,whatsapp,logo_url,theme_color,background_color,background_image_url,header_texture,header_type,font_family,item_layout,instagram_url,linkedin_url,website_url,payment_link")
-        .eq("id", prop.user_id).single();
-        
-      setData({ ...prop, profiles: prof || {} });
+      setData(prop);
       setLoading(false);
 
       // Registrar o log de visualização

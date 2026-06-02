@@ -57,21 +57,15 @@ function PublicProposal() {
 
   useEffect(() => {
     (async () => {
-      const { data: prop, error } = await supabase.from("proposals")
-        .select("*,clients(name,phone),proposal_items(*)")
-        .eq("public_slug", slug).single();
-      
+      const { data: prop, error } = await supabase.rpc("get_proposal_by_slug", { p_slug: slug });
+
       if (error || !prop) {
         setLoading(false);
         return;
       }
 
-      const { data: prof } = await supabase.from("profiles")
-        .select("full_name,company_name,whatsapp,logo_url,theme_color,background_color,background_image_url,header_texture,header_type,font_family,item_layout,instagram_url,linkedin_url,website_url,payment_link")
-        .eq("id", prop.user_id).single();
-        
-      setData({ ...prop, profiles: prof || {} });
-      
+      setData(prop);
+
       const initialOptionalSelection: Record<string, boolean> = {};
       if (prop.proposal_items) {
         const isFinal = prop.status === 'approved' || prop.status === 'rejected';
@@ -82,7 +76,7 @@ function PublicProposal() {
         });
       }
       setSelectedOptionalItems(initialOptionalSelection);
-      
+
       setLoading(false);
 
       // Registrar o log de visualização

@@ -19,17 +19,12 @@ function PublicContractPage() {
   const { data: contract, isLoading } = useQuery({
     queryKey: ["public_contract", contractSlug],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("contracts")
-        .select("*, proposals(title, clients(name))")
-        .eq("public_slug", contractSlug)
-        .single();
-      
+      const { data, error } = await supabase.rpc("get_contract_by_slug", { p_slug: contractSlug });
       if (error) {
         console.error("Contract fetch error:", error);
         throw error;
       }
-      return data;
+      return data as any;
     },
   });
 
@@ -40,22 +35,17 @@ function PublicContractPage() {
   const isSignedByClient = !!contract.client_signature;
 
   const handleClientSign = async (signatureData: string) => {
-    // Because we use RLS, we need to ensure the public policy allows anonymous updates.
-    // The policy "Anyone can update contracts by slug" allows this.
-    const { error } = await supabase
-      .from("contracts")
-      .update({ 
-        client_signature: signatureData,
-        status: 'signed'
-      })
-      .eq("public_slug", contractSlug);
-    
-    if (error) { 
-      toast.error("Erro ao salvar assinatura. Tente novamente."); 
+    const { error } = await supabase.rpc("sign_contract_by_slug", {
+      p_slug: contractSlug,
+      p_signature: signatureData,
+    });
+
+    if (error) {
+      toast.error("Erro ao salvar assinatura. Tente novamente.");
       console.error(error);
-      return; 
+      return;
     }
-    
+
     toast.success("Contrato assinado com sucesso!");
     setShowCanvas(false);
     qc.invalidateQueries({ queryKey: ["public_contract", contractSlug] });
