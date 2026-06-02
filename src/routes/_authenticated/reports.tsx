@@ -22,7 +22,7 @@ function ReportsPage() {
     queryFn: async () => {
       const { data, error } = await supabase.from("proposals")
         .select("id,title,total,status,created_at,clients(name)")
-        .eq("user_id", user?.id)
+        .eq("user_id", user!.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data ?? [];
@@ -35,7 +35,7 @@ function ReportsPage() {
     queryFn: async () => {
       const { data, error } = await supabase.from("clients")
         .select("id,created_at")
-        .eq("user_id", user?.id);
+        .eq("user_id", user!.id);
       if (error) throw error;
       return data ?? [];
     },

@@ -23,7 +23,7 @@ function WorkOrdersPage() {
       const { data, error } = await supabase.from("proposals")
         .select("id,title,total,status,created_at,clients(name)")
         .eq("status", "in_progress")
-        .eq("user_id", user?.id)
+        .eq("user_id", user!.id)
         .order("created_at", { ascending: false });
       if (error) throw error; return data ?? [];
     },

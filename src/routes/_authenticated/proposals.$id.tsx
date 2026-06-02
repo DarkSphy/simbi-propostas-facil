@@ -26,7 +26,7 @@ function ProposalDetail() {
       const { data, error } = await supabase.from("proposals")
         .select("*,clients(name,phone),proposal_items(*)")
         .eq("id", id)
-        .eq("user_id", user?.id)
+        .eq("user_id", user!.id)
         .single();
       if (error) throw error;
       

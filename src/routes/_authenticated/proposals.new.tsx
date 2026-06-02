@@ -81,7 +81,7 @@ function NewProposal() {
   const { data: catalogItems = [] } = useQuery({
     queryKey: ["catalog-items"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("catalog_items").select("*").eq("user_id", user?.id).order("name");
+      const { data, error } = await supabase.from("catalog_items").select("*").eq("user_id", user!.id).order("name");
       if (error) throw error;
       return data ?? [];
     },
@@ -91,7 +91,7 @@ function NewProposal() {
   const { data: templates = [] } = useQuery({
     queryKey: ["proposal-templates"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("proposal_templates").select("*").eq("user_id", user?.id).order("name");
+      const { data, error } = await supabase.from("proposal_templates").select("*").eq("user_id", user!.id).order("name");
       if (error && error.code !== '42P01') throw error; // Ignore table does not exist error initially
       return data ?? [];
     },
