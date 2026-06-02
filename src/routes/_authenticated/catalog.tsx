@@ -25,7 +25,7 @@ export const Route = createFileRoute("/_authenticated/catalog")({
 function Catalog() {
   const { user } = useAuth();
   const qc = useQueryClient();
-  const [activeTab, setActiveTab] = useState<"items" | "categories">("items");
+  const [activeTab, setActiveTab] = useState<"items" | "categories" | "stock">("items");
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -364,8 +364,9 @@ function Catalog() {
             ))}
           </ul>
         </div>
-        </>
-      ) : activeTab === "categories" ? (
+      )}
+      </>
+    ) : activeTab === "categories" ? (
         <CategoriesManager categories={categories} user={user} qc={qc} />
       ) : (
         <StockManager items={items} user={user} qc={qc} />

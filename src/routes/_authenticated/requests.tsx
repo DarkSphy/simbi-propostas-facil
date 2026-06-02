@@ -74,7 +74,7 @@ function RequestsList() {
   async function handleMakeClient(e: React.MouseEvent, clientId: string) {
     e.preventDefault();
     if (!clientId) return;
-    const { error } = await supabase.from("clients").update({ is_lead: false }).eq("id", clientId);
+    const { error } = await supabase.from("clients").update({ is_lead: false } as any).eq("id", clientId);
     if (error) {
       toast.error("Erro ao converter lead.");
     } else {
@@ -136,9 +136,9 @@ function RequestsList() {
                     {/* Lead Details */}
                     {p.clients && (
                       <div className="mt-2 flex flex-col gap-1 text-xs text-muted-foreground/80">
-                        {p.clients.phone && <div className="flex items-center gap-1.5"><Phone className="h-3 w-3" /> {p.clients.phone}</div>}
-                        {p.clients.email && <div className="flex items-center gap-1.5"><Mail className="h-3 w-3" /> {p.clients.email}</div>}
-                        {p.clients.address && <div className="flex items-center gap-1.5"><MapPin className="h-3 w-3" /> {p.clients.address}</div>}
+                        {(p.clients as any).phone && <div className="flex items-center gap-1.5"><Phone className="h-3 w-3" /> {(p.clients as any).phone}</div>}
+                        {(p.clients as any).email && <div className="flex items-center gap-1.5"><Mail className="h-3 w-3" /> {(p.clients as any).email}</div>}
+                        {(p.clients as any).address && <div className="flex items-center gap-1.5"><MapPin className="h-3 w-3" /> {(p.clients as any).address}</div>}
                       </div>
                     )}
 
@@ -154,8 +154,8 @@ function RequestsList() {
                   </div>
                   <div className="w-auto min-w-[150px] flex flex-col items-end gap-2 shrink-0">
                     {statusBadge(p.status)}
-                    {p.clients?.is_lead === true && (
-                      <Button size="sm" variant="outline" className="h-8 text-[11px] uppercase font-bold tracking-wider rounded-full w-full justify-center px-4 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 transition-colors" onClick={(e) => handleMakeClient(e, p.clients.id)}>
+                    {(p.clients as any)?.is_lead === true && (
+                      <Button size="sm" variant="outline" className="h-8 text-[11px] uppercase font-bold tracking-wider rounded-full w-full justify-center px-4 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 transition-colors" onClick={(e) => handleMakeClient(e, (p.clients as any).id)}>
                         <UserPlus className="mr-1.5 h-3.5 w-3.5" /> Tornar Cliente
                       </Button>
                     )}

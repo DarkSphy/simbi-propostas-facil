@@ -68,7 +68,8 @@ export const Route = createFileRoute("/u/$profileSlug")({
 });
 
 function VitrinePageWrapper() {
-  const { profile } = Route.useLoaderData();
+  const { profile: rawProfile } = Route.useLoaderData();
+  const profile = rawProfile as any;
   
   useEffect(() => {
     const root = document.documentElement;
@@ -87,7 +88,8 @@ function VitrinePageWrapper() {
 }
 
 function VitrinePage() {
-  const { profile, items, categories } = Route.useLoaderData();
+  const { profile: rawProfile, items, categories } = Route.useLoaderData();
+  const profile = rawProfile as any;
   const [open, setOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
   
