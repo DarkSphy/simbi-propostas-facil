@@ -14,45 +14,178 @@ export type Database = {
   }
   public: {
     Tables: {
-      catalog_items: {
+      appointments: {
         Row: {
+          client_id: string | null
           created_at: string
+          date: string
           description: string | null
           id: string
-          name: string
-          type: Database["public"]["Enums"]["item_type"]
-          unit_price: number
+          proposal_id: string | null
+          status: string | null
+          time: string | null
+          title: string
+          updated_at: string
           user_id: string
-          image_url: string | null
-          stock_quantity: number | null
+        }
+        Insert: {
+          client_id?: string | null
+          created_at?: string
+          date: string
+          description?: string | null
+          id?: string
+          proposal_id?: string | null
+          status?: string | null
+          time?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          client_id?: string | null
+          created_at?: string
+          date?: string
+          description?: string | null
+          id?: string
+          proposal_id?: string | null
+          status?: string | null
+          time?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointments_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointments_proposal_id_fkey"
+            columns: ["proposal_id"]
+            isOneToOne: false
+            referencedRelation: "proposals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      catalog_categories: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          user_id: string
         }
         Insert: {
           created_at?: string
-          description?: string | null
           id?: string
           name: string
-          type: Database["public"]["Enums"]["item_type"]
-          unit_price?: number
           user_id: string
-          image_url?: string | null
-          stock_quantity?: number | null
         }
         Update: {
           created_at?: string
-          description?: string | null
           id?: string
           name?: string
-          type?: Database["public"]["Enums"]["item_type"]
-          unit_price?: number
           user_id?: string
-          image_url?: string | null
-          stock_quantity?: number | null
         }
         Relationships: []
       }
+      catalog_items: {
+        Row: {
+          category_id: string | null
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          is_public: boolean
+          name: string
+          stock_quantity: number | null
+          type: Database["public"]["Enums"]["item_type"]
+          unit_price: number
+          user_id: string
+        }
+        Insert: {
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_public?: boolean
+          name: string
+          stock_quantity?: number | null
+          type: Database["public"]["Enums"]["item_type"]
+          unit_price?: number
+          user_id: string
+        }
+        Update: {
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_public?: boolean
+          name?: string
+          stock_quantity?: number | null
+          type?: Database["public"]["Enums"]["item_type"]
+          unit_price?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "catalog_items_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "catalog_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      client_notes: {
+        Row: {
+          client_id: string | null
+          content: string
+          created_at: string | null
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          client_id?: string | null
+          content: string
+          created_at?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          client_id?: string | null
+          content?: string
+          created_at?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_notes_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clients: {
         Row: {
+          address: string | null
           created_at: string
+          document: string | null
           email: string | null
           id: string
           name: string
@@ -61,7 +194,9 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          address?: string | null
           created_at?: string
+          document?: string | null
           email?: string | null
           id?: string
           name: string
@@ -70,7 +205,9 @@ export type Database = {
           user_id: string
         }
         Update: {
+          address?: string | null
           created_at?: string
+          document?: string | null
           email?: string | null
           id?: string
           name?: string
@@ -80,123 +217,95 @@ export type Database = {
         }
         Relationships: []
       }
-      profiles: {
+      contracts: {
         Row: {
-          company_name: string | null
+          client_signature: string | null
+          content: string
           created_at: string
-          full_name: string | null
           id: string
-          logo_url: string | null
-          theme_color: string | null
+          professional_signature: string | null
+          proposal_id: string
+          public_slug: string
+          status: string
+          type: string
           updated_at: string
-          whatsapp: string | null
-          name?: string | null
-          profile_slug?: string | null
-          vitrine_hero_url?: string | null
-          vitrine_hero_type?: string | null
-          vitrine_pitch_text?: string | null
-          vitrine_pitch_video_url?: string | null
-          vitrine_marquee_words?: string | null
-          vitrine_skin?: string | null
-          ui_theme?: string | null
-          vitrine_testimonials?: string | null
-          instagram_url?: string | null
-          linkedin_url?: string | null
-          website_url?: string | null
-          email?: string | null
-          phone?: string | null
+          user_id: string
         }
         Insert: {
-          company_name?: string | null
+          client_signature?: string | null
+          content: string
           created_at?: string
-          full_name?: string | null
-          id: string
-          logo_url?: string | null
-          theme_color?: string | null
+          id?: string
+          professional_signature?: string | null
+          proposal_id: string
+          public_slug?: string
+          status?: string
+          type: string
           updated_at?: string
-          whatsapp?: string | null
-          name?: string | null
-          profile_slug?: string | null
-          vitrine_hero_url?: string | null
-          vitrine_hero_type?: string | null
-          vitrine_pitch_text?: string | null
-          vitrine_pitch_video_url?: string | null
-          vitrine_marquee_words?: string | null
-          vitrine_skin?: string | null
-          ui_theme?: string | null
-          vitrine_testimonials?: string | null
-          instagram_url?: string | null
-          linkedin_url?: string | null
-          website_url?: string | null
-          email?: string | null
-          phone?: string | null
+          user_id: string
         }
         Update: {
-          company_name?: string | null
+          client_signature?: string | null
+          content?: string
           created_at?: string
-          full_name?: string | null
           id?: string
-          logo_url?: string | null
-          theme_color?: string | null
+          professional_signature?: string | null
+          proposal_id?: string
+          public_slug?: string
+          status?: string
+          type?: string
           updated_at?: string
-          whatsapp?: string | null
-          name?: string | null
-          profile_slug?: string | null
-          vitrine_hero_url?: string | null
-          vitrine_hero_type?: string | null
-          vitrine_pitch_text?: string | null
-          vitrine_pitch_video_url?: string | null
-          vitrine_marquee_words?: string | null
-          vitrine_skin?: string | null
-          ui_theme?: string | null
-          vitrine_testimonials?: string | null
-          instagram_url?: string | null
-          linkedin_url?: string | null
-          website_url?: string | null
-          email?: string | null
-          phone?: string | null
+          user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "contracts_proposal_id_fkey"
+            columns: ["proposal_id"]
+            isOneToOne: false
+            referencedRelation: "proposals"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       financial_transactions: {
         Row: {
-          id: string
-          user_id: string
-          type: Database["public"]["Enums"]["transaction_type"]
-          status: Database["public"]["Enums"]["transaction_status"]
           amount: number
+          created_at: string
           description: string
           due_date: string
+          id: string
           paid_date: string | null
           proposal_id: string | null
-          created_at: string
+          status: Database["public"]["Enums"]["transaction_status"]
+          type: Database["public"]["Enums"]["transaction_type"]
           updated_at: string
+          user_id: string
         }
         Insert: {
-          id?: string
-          user_id: string
-          type: Database["public"]["Enums"]["transaction_type"]
-          status?: Database["public"]["Enums"]["transaction_status"]
           amount: number
+          created_at?: string
           description: string
           due_date: string
+          id?: string
           paid_date?: string | null
           proposal_id?: string | null
-          created_at?: string
+          status?: Database["public"]["Enums"]["transaction_status"]
+          type: Database["public"]["Enums"]["transaction_type"]
           updated_at?: string
+          user_id: string
         }
         Update: {
-          id?: string
-          user_id?: string
-          type?: Database["public"]["Enums"]["transaction_type"]
-          status?: Database["public"]["Enums"]["transaction_status"]
           amount?: number
+          created_at?: string
           description?: string
           due_date?: string
+          id?: string
           paid_date?: string | null
           proposal_id?: string | null
-          created_at?: string
+          status?: Database["public"]["Enums"]["transaction_status"]
+          type?: Database["public"]["Enums"]["transaction_type"]
           updated_at?: string
+          user_id?: string
         }
         Relationships: [
           {
@@ -205,7 +314,7 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "proposals"
             referencedColumns: ["id"]
-          }
+          },
         ]
       }
       notifications: {
@@ -234,6 +343,179 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      profiles: {
+        Row: {
+          address: string | null
+          background_color: string | null
+          background_image_url: string | null
+          company_name: string | null
+          created_at: string
+          document: string | null
+          font_family: string | null
+          full_name: string | null
+          header_texture: string | null
+          header_type: string | null
+          id: string
+          instagram_url: string | null
+          item_layout: string | null
+          linkedin_url: string | null
+          logo_url: string | null
+          payment_link: string | null
+          profile_slug: string | null
+          theme_color: string | null
+          updated_at: string
+          vitrine_hero_type: string | null
+          vitrine_hero_url: string | null
+          vitrine_pitch_text: string | null
+          vitrine_pitch_video_url: string | null
+          vitrine_skin: string | null
+          vitrine_testimonials: Json | null
+          website_url: string | null
+          whatsapp: string | null
+        }
+        Insert: {
+          address?: string | null
+          background_color?: string | null
+          background_image_url?: string | null
+          company_name?: string | null
+          created_at?: string
+          document?: string | null
+          font_family?: string | null
+          full_name?: string | null
+          header_texture?: string | null
+          header_type?: string | null
+          id: string
+          instagram_url?: string | null
+          item_layout?: string | null
+          linkedin_url?: string | null
+          logo_url?: string | null
+          payment_link?: string | null
+          profile_slug?: string | null
+          theme_color?: string | null
+          updated_at?: string
+          vitrine_hero_type?: string | null
+          vitrine_hero_url?: string | null
+          vitrine_pitch_text?: string | null
+          vitrine_pitch_video_url?: string | null
+          vitrine_skin?: string | null
+          vitrine_testimonials?: Json | null
+          website_url?: string | null
+          whatsapp?: string | null
+        }
+        Update: {
+          address?: string | null
+          background_color?: string | null
+          background_image_url?: string | null
+          company_name?: string | null
+          created_at?: string
+          document?: string | null
+          font_family?: string | null
+          full_name?: string | null
+          header_texture?: string | null
+          header_type?: string | null
+          id?: string
+          instagram_url?: string | null
+          item_layout?: string | null
+          linkedin_url?: string | null
+          logo_url?: string | null
+          payment_link?: string | null
+          profile_slug?: string | null
+          theme_color?: string | null
+          updated_at?: string
+          vitrine_hero_type?: string | null
+          vitrine_hero_url?: string | null
+          vitrine_pitch_text?: string | null
+          vitrine_pitch_video_url?: string | null
+          vitrine_skin?: string | null
+          vitrine_testimonials?: Json | null
+          website_url?: string | null
+          whatsapp?: string | null
+        }
+        Relationships: []
+      }
+      proposal_images: {
+        Row: {
+          created_at: string
+          id: string
+          proposal_id: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          proposal_id: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          proposal_id?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "proposal_images_proposal_id_fkey"
+            columns: ["proposal_id"]
+            isOneToOne: false
+            referencedRelation: "proposals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      proposal_items: {
+        Row: {
+          catalog_item_id: string | null
+          description: string
+          id: string
+          image_url: string | null
+          is_optional: boolean
+          proposal_id: string
+          quantity: number
+          selected_by_client: boolean
+          sort_order: number
+          unit_price: number
+        }
+        Insert: {
+          catalog_item_id?: string | null
+          description: string
+          id?: string
+          image_url?: string | null
+          is_optional?: boolean
+          proposal_id: string
+          quantity?: number
+          selected_by_client?: boolean
+          sort_order?: number
+          unit_price?: number
+        }
+        Update: {
+          catalog_item_id?: string | null
+          description?: string
+          id?: string
+          image_url?: string | null
+          is_optional?: boolean
+          proposal_id?: string
+          quantity?: number
+          selected_by_client?: boolean
+          sort_order?: number
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "proposal_items_catalog_item_id_fkey"
+            columns: ["catalog_item_id"]
+            isOneToOne: false
+            referencedRelation: "catalog_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "proposal_items_proposal_id_fkey"
+            columns: ["proposal_id"]
+            isOneToOne: false
+            referencedRelation: "proposals"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       proposal_logs: {
         Row: {
@@ -270,85 +552,32 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "proposals"
             referencedColumns: ["id"]
-          }
+          },
         ]
       }
-      proposal_images: {
+      proposal_templates: {
         Row: {
+          content: Json
           created_at: string
           id: string
-          proposal_id: string
-          url: string
+          name: string
+          user_id: string | null
         }
         Insert: {
+          content: Json
           created_at?: string
           id?: string
-          proposal_id: string
-          url: string
+          name: string
+          user_id?: string | null
         }
         Update: {
+          content?: Json
           created_at?: string
           id?: string
-          proposal_id?: string
-          url?: string
+          name?: string
+          user_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "proposal_images_proposal_id_fkey"
-            columns: ["proposal_id"]
-            isOneToOne: false
-            referencedRelation: "proposals"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      proposal_items: {
-        Row: {
-          description: string
-          id: string
-          proposal_id: string
-          quantity: number
-          sort_order: number
-          unit_price: number
-          image_url: string | null
-          catalog_item_id: string | null
-        }
-        Insert: {
-          description: string
-          id?: string
-          proposal_id: string
-          quantity?: number
-          sort_order?: number
-          unit_price?: number
-          image_url?: string | null
-          catalog_item_id?: string | null
-        }
-        Update: {
-          description?: string
-          id?: string
-          proposal_id?: string
-          quantity?: number
-          sort_order?: number
-          unit_price?: number
-          image_url?: string | null
-          catalog_item_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "proposal_items_proposal_id_fkey"
-            columns: ["proposal_id"]
-            isOneToOne: false
-            referencedRelation: "proposals"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "proposal_items_catalog_item_id_fkey"
-            columns: ["catalog_item_id"]
-            isOneToOne: false
-            referencedRelation: "catalog_items"
-            referencedColumns: ["id"]
-          }
-        ]
+        Relationships: []
       }
       proposals: {
         Row: {
@@ -364,6 +593,7 @@ export type Database = {
           total: number
           updated_at: string
           user_id: string
+          valid_until: string | null
           viewed_at: string | null
         }
         Insert: {
@@ -379,6 +609,7 @@ export type Database = {
           total?: number
           updated_at?: string
           user_id: string
+          valid_until?: string | null
           viewed_at?: string | null
         }
         Update: {
@@ -394,6 +625,7 @@ export type Database = {
           total?: number
           updated_at?: string
           user_id?: string
+          valid_until?: string | null
           viewed_at?: string | null
         }
         Relationships: [
@@ -411,6 +643,19 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      accept_proposal_with_options: {
+        Args: { p_selected_item_ids: string[]; p_slug: string }
+        Returns: undefined
+      }
+      submit_quote_request: {
+        Args: {
+          p_client_name: string
+          p_client_phone: string
+          p_items: Json
+          p_profile_slug: string
+        }
+        Returns: Json
+      }
       update_proposal_status: {
         Args: { p_slug: string; p_status: string }
         Returns: undefined
@@ -418,9 +663,17 @@ export type Database = {
     }
     Enums: {
       item_type: "product" | "service"
-      proposal_status: "sent" | "viewed" | "approved" | "rejected" | "in_progress" | "canceled" | "finished" | "paid"
-      transaction_type: "income" | "expense"
+      proposal_status:
+        | "sent"
+        | "viewed"
+        | "approved"
+        | "rejected"
+        | "in_progress"
+        | "canceled"
+        | "finished"
+        | "paid"
       transaction_status: "pending" | "paid" | "cancelled"
+      transaction_type: "income" | "expense"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -549,9 +802,18 @@ export const Constants = {
   public: {
     Enums: {
       item_type: ["product", "service"],
-      proposal_status: ["sent", "viewed", "approved", "rejected", "in_progress", "canceled", "finished", "paid"],
-      transaction_type: ["income", "expense"],
+      proposal_status: [
+        "sent",
+        "viewed",
+        "approved",
+        "rejected",
+        "in_progress",
+        "canceled",
+        "finished",
+        "paid",
+      ],
       transaction_status: ["pending", "paid", "cancelled"],
+      transaction_type: ["income", "expense"],
     },
   },
 } as const
