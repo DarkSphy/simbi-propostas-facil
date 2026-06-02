@@ -1,7 +1,8 @@
+import { useState, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
-import { ArrowRight, Check, Smartphone, Share2, Zap, MessageCircle, FileText, BarChart3, Star, Quote, Package, Grid, Calculator, FileSignature, ClipboardList, CalendarDays, Receipt, Tag, Bell, Settings, Wrench, Shield, CheckSquare, Layers, LineChart, Banknote } from "lucide-react";
+import { ArrowRight, Check, Smartphone, Share2, Zap, MessageCircle, FileText, BarChart3, Star, Quote, Package, Grid, Calculator, FileSignature, ClipboardList, CalendarDays, Receipt, Tag, Bell, Settings, Wrench, Shield, CheckSquare, Layers, LineChart, Banknote, Power } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -25,6 +26,7 @@ function Landing() {
       <Header />
       <Hero />
       <SocialProofBar />
+      <InteractiveWheel />
       <InfiniteLogos />
       <FeaturePillCloud />
       <Features />
@@ -52,19 +54,29 @@ function Landing() {
 }
 
 function Header() {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <header className="absolute inset-x-0 top-0 z-50">
+    <header className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${scrolled ? "bg-white dark:bg-card shadow-md py-0 border-b border-border" : "bg-transparent py-2"}`}>
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 lg:px-8">
-        <Logo inverted />
-        <nav className="hidden items-center gap-8 text-sm font-medium text-white/80 md:flex">
-          <a href="#recursos" className="transition-colors hover:text-white">Recursos</a>
-          <a href="#como-funciona" className="transition-colors hover:text-white">Como funciona</a>
-          <a href="#depoimentos" className="transition-colors hover:text-white">Depoimentos</a>
-          <a href="#planos" className="transition-colors hover:text-white">Planos</a>
+        <Logo inverted={!scrolled} />
+        <nav className={`hidden items-center gap-8 text-sm font-medium md:flex ${scrolled ? "text-foreground" : "text-white/80"}`}>
+          <a href="#recursos" className={`transition-colors ${scrolled ? "hover:text-primary" : "hover:text-white"}`}>Recursos</a>
+          <a href="#como-funciona" className={`transition-colors ${scrolled ? "hover:text-primary" : "hover:text-white"}`}>Como funciona</a>
+          <a href="#depoimentos" className={`transition-colors ${scrolled ? "hover:text-primary" : "hover:text-white"}`}>Depoimentos</a>
+          <a href="#planos" className={`transition-colors ${scrolled ? "hover:text-primary" : "hover:text-white"}`}>Planos</a>
         </nav>
         <div className="flex items-center gap-3 sm:gap-4">
-          <Link to="/login" className="text-sm font-semibold text-white transition-colors hover:text-white/80">Entrar</Link>
-          <Button asChild size="sm" className="rounded-full bg-white px-4 sm:px-5 text-black hover:bg-white/90 shadow-sm">
+          <Link to="/login" className={`text-sm font-semibold transition-colors ${scrolled ? "text-foreground hover:text-primary" : "text-white hover:text-white/80"}`}>Entrar</Link>
+          <Button asChild size="sm" className={`rounded-full px-4 sm:px-5 shadow-sm transition-all ${scrolled ? "bg-primary text-primary-foreground hover:bg-primary/90" : "bg-white text-black hover:bg-white/90"}`}>
             <Link to="/register">Testar grátis</Link>
           </Button>
         </div>
@@ -224,8 +236,29 @@ function HowItWorks() {
           </div>
           
           <div className="relative">
+            {/* Floating Notifications */}
+            <div className="absolute -right-4 sm:-right-12 top-10 z-20 flex items-center gap-3 rounded-2xl bg-white p-4 shadow-2xl border border-border animate-[bounce_4s_infinite]">
+               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-green-100 text-green-600">
+                 <Check className="h-5 w-5" />
+               </div>
+               <div>
+                 <p className="text-sm font-bold text-gray-900">Proposta Aprovada!</p>
+                 <p className="text-xs text-gray-500">Há 2 min</p>
+               </div>
+            </div>
+            
+            <div className="absolute -left-4 sm:-left-12 bottom-10 z-20 flex items-center gap-3 rounded-2xl bg-white p-4 shadow-2xl border border-border animate-[bounce_5s_infinite]" style={{ animationDelay: "1s" }}>
+               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/20 text-primary">
+                 <Banknote className="h-5 w-5" />
+               </div>
+               <div>
+                 <p className="text-sm font-bold text-gray-900">Pagamento Recebido</p>
+                 <p className="text-xs text-gray-500">R$ 1.650,00 via Pix</p>
+               </div>
+            </div>
+
             {/* Dark mode mock */}
-            <div className="rounded-3xl border border-white/10 bg-[#111] p-6 shadow-2xl">
+            <div className="rounded-3xl border border-white/10 bg-[#111] p-6 shadow-2xl relative z-10 transition-transform hover:scale-[1.02] duration-500">
                 <div className="flex items-center gap-3 border-b border-white/10 pb-4">
                 <div className="h-8 w-8 rounded bg-primary/20 flex items-center justify-center text-primary font-bold">O</div>
                 <div>
@@ -247,7 +280,7 @@ function HowItWorks() {
                   <span className="text-white text-xl font-bold text-primary">R$ 1.650,00</span>
                 </div>
                 <div className="mt-6">
-                  <div className="w-full rounded-xl bg-primary py-3 text-center text-sm font-semibold text-primary-foreground">
+                  <div className="w-full rounded-xl bg-primary py-3 text-center text-sm font-semibold text-primary-foreground hover:bg-primary/90 cursor-pointer shadow-lg shadow-primary/20 transition-all">
                     Aprovar Proposta
                   </div>
                 </div>
@@ -575,21 +608,25 @@ function SocialProofBar() {
 }
 
 function FeaturePillCloud() {
+  const [activeTab, setActiveTab] = useState("Todos");
+  
+  const categories = ["Todos", "Vendas", "Estoque", "Financeiro", "Gestão"];
+
   const pills = [
-    { icon: FileSignature, label: "Propostas Comerciais" },
-    { icon: ClipboardList, label: "Ordem de Serviço" },
-    { icon: Package, label: "Controle de Estoque" },
-    { icon: Smartphone, label: "Catálogo e Vitrine Online" },
-    { icon: CheckSquare, label: "Aprovação em 1 clique" },
-    { icon: Calculator, label: "Cálculo de Orçamento" },
-    { icon: Receipt, label: "Emissão de Recibos" },
-    { icon: Wrench, label: "Gestão de Serviços" },
-    { icon: LineChart, label: "Dashboard Financeiro" },
-    { icon: Banknote, label: "Gestão de Fluxo de Caixa" },
-    { icon: Settings, label: "Automações" },
-    { icon: Layers, label: "CRM Visual" },
-    { icon: Shield, label: "Assinatura Digital de Contrato" },
-    { icon: Tag, label: "Categorias de Produtos" },
+    { icon: FileSignature, label: "Propostas Comerciais", category: "Vendas" },
+    { icon: ClipboardList, label: "Ordem de Serviço", category: "Gestão" },
+    { icon: Package, label: "Controle de Estoque", category: "Estoque" },
+    { icon: Smartphone, label: "Catálogo e Vitrine", category: "Vendas" },
+    { icon: CheckSquare, label: "Aprovação em 1 clique", category: "Vendas" },
+    { icon: Calculator, label: "Cálculo de Orçamento", category: "Vendas" },
+    { icon: Receipt, label: "Emissão de Recibos", category: "Financeiro" },
+    { icon: Wrench, label: "Gestão de Serviços", category: "Gestão" },
+    { icon: LineChart, label: "Dashboard Financeiro", category: "Financeiro" },
+    { icon: Banknote, label: "Gestão de Fluxo de Caixa", category: "Financeiro" },
+    { icon: Settings, label: "Automações", category: "Gestão" },
+    { icon: Layers, label: "CRM Visual", category: "Gestão" },
+    { icon: Shield, label: "Assinatura de Contrato", category: "Vendas" },
+    { icon: Tag, label: "Categorias de Produtos", category: "Estoque" },
   ];
 
   return (
@@ -599,13 +636,104 @@ function FeaturePillCloud() {
           Recursos e possibilidades infinitas para uma gestão <br className="hidden sm:block" /> inteligente, ágil e moderna? Tem no Simbi!
         </h2>
         
-        <div className="flex flex-wrap items-center justify-center gap-3 md:gap-4 mt-12 max-w-5xl mx-auto">
-          {pills.map((pill, i) => (
-            <div key={i} className="flex items-center gap-2 rounded-full bg-white dark:bg-card border border-border shadow-sm px-4 md:px-6 py-2.5 md:py-3 transition-all hover:border-primary hover:shadow-elevated hover:scale-105 cursor-default group">
-              <pill.icon className="h-5 w-5 text-primary/70 group-hover:text-primary transition-colors" />
-              <span className="text-sm md:text-base font-medium text-foreground/80 group-hover:text-foreground">{pill.label}</span>
-            </div>
+        <div className="flex flex-wrap justify-center gap-2 mt-8 mb-12">
+          {categories.map(cat => (
+            <button
+              key={cat}
+              onClick={() => setActiveTab(cat)}
+              className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${activeTab === cat ? "bg-primary text-primary-foreground shadow-md" : "bg-transparent text-muted-foreground hover:bg-muted hover:text-foreground"}`}
+            >
+              {cat}
+            </button>
           ))}
+        </div>
+
+        <div className="flex flex-wrap items-center justify-center gap-3 md:gap-4 max-w-5xl mx-auto">
+          {pills.map((pill, i) => {
+            const isActive = activeTab === "Todos" || activeTab === pill.category;
+            return (
+              <div key={i} className={`flex items-center gap-2 rounded-full bg-white dark:bg-card border border-border shadow-sm px-4 md:px-6 py-2.5 md:py-3 transition-all duration-300 cursor-default group ${isActive ? "opacity-100 hover:border-primary hover:shadow-elevated hover:scale-105" : "opacity-30 scale-95"}`}>
+                <pill.icon className={`h-5 w-5 transition-colors ${isActive ? "text-primary/70 group-hover:text-primary" : "text-muted-foreground"}`} />
+                <span className={`text-sm md:text-base font-medium transition-colors ${isActive ? "text-foreground/80 group-hover:text-foreground" : "text-muted-foreground"}`}>{pill.label}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function InteractiveWheel() {
+  const [active, setActive] = useState(false);
+
+  return (
+    <section className="py-24 sm:py-32 bg-background border-t border-border overflow-hidden">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8 text-center">
+        <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl mb-6">
+          Tudo perfeitamente interligado
+        </h2>
+        <p className="text-muted-foreground text-lg mb-16 max-w-2xl mx-auto">
+          Ative o modo Simbi e veja como todas as etapas do seu serviço se conectam de forma automática, economizando horas do seu dia.
+        </p>
+        
+        <div className="relative mx-auto w-[320px] h-[320px] sm:w-[450px] sm:h-[450px] flex items-center justify-center mt-10">
+          {/* Central Button */}
+          <button 
+            onClick={() => setActive(!active)}
+            className={`z-20 relative h-28 w-28 sm:h-36 sm:w-36 rounded-full flex flex-col items-center justify-center transition-all duration-500 shadow-2xl border-4 ${active ? "bg-primary border-primary/30 text-white shadow-[0_0_50px_rgba(42,157,143,0.5)] scale-105" : "bg-card border-border text-muted-foreground hover:bg-muted hover:scale-105"}`}
+          >
+            <Power className={`h-10 w-10 sm:h-12 sm:w-12 mb-1 transition-all duration-700 ${active ? "text-white animate-pulse" : "text-muted-foreground"}`} />
+            <span className="font-bold text-sm sm:text-base">{active ? "Conectado" : "Ligar Simbi"}</span>
+          </button>
+          
+          {/* Connection Lines (SVG) */}
+          <svg className={`absolute inset-0 h-full w-full pointer-events-none transition-opacity duration-1000 z-0 ${active ? "opacity-100" : "opacity-0"}`} viewBox="-225 -225 450 450">
+            {[0, 60, 120, 180, 240, 300].map((angle, i) => {
+              const x = Math.cos((angle * Math.PI) / 180) * 160;
+              const y = Math.sin((angle * Math.PI) / 180) * 160;
+              return (
+                <line key={i} x1="0" y1="0" x2={x} y2={y} stroke="currentColor" strokeWidth="2" className="text-primary/40" strokeDasharray="6 4">
+                  <animate attributeName="stroke-dashoffset" from="100" to="0" dur="2s" repeatCount="indefinite" />
+                </line>
+              );
+            })}
+          </svg>
+
+          {/* Orbiting Items */}
+          {[
+            { icon: FileSignature, label: "Propostas", angle: 0 },
+            { icon: ClipboardList, label: "Serviços", angle: 60 },
+            { icon: Package, label: "Estoque", angle: 120 },
+            { icon: Smartphone, label: "Vitrine", angle: 180 },
+            { icon: Receipt, label: "Recibos", angle: 240 },
+            { icon: LineChart, label: "Caixa", angle: 300 },
+          ].map((item, i) => {
+            // Responsiveness logic for radius
+            const isMobile = typeof window !== 'undefined' ? window.innerWidth < 640 : false;
+            const radius = isMobile ? 120 : 180;
+            const x = Math.cos((item.angle * Math.PI) / 180) * radius;
+            const y = Math.sin((item.angle * Math.PI) / 180) * radius;
+            
+            return (
+              <div 
+                key={i}
+                className={`absolute flex flex-col items-center justify-center transition-all duration-1000 ease-out z-10`}
+                style={{ 
+                  transform: `translate(${active ? x : 0}px, ${active ? y : 0}px)`,
+                  opacity: active ? 1 : 0,
+                  scale: active ? 1 : 0.2
+                }}
+              >
+                <div className={`h-14 w-14 sm:h-16 sm:w-16 rounded-full flex items-center justify-center shadow-xl border-2 bg-card transition-colors duration-500 delay-300 ${active ? "border-primary text-primary" : "border-border text-muted-foreground"}`}>
+                  <item.icon className="h-6 w-6 sm:h-8 sm:w-8" />
+                </div>
+                <span className={`mt-3 text-sm sm:text-base font-bold transition-opacity duration-500 delay-500 ${active ? "opacity-100 text-foreground" : "opacity-0"}`}>
+                  {item.label}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
