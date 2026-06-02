@@ -45,7 +45,7 @@ function Catalog() {
     queryFn: async () => {
       const { data, error } = await supabase.from("catalog_items")
         .select(`*, catalog_categories(name)`)
-        .eq("user_id", user?.id)
+        .eq("user_id", user!.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data ?? [];
@@ -57,7 +57,7 @@ function Catalog() {
     queryFn: async () => {
       const { data, error } = await supabase.from("catalog_categories")
         .select("*")
-        .eq("user_id", user?.id)
+        .eq("user_id", user!.id)
         .order("name", { ascending: true });
       if (error) throw error;
       return data ?? [];

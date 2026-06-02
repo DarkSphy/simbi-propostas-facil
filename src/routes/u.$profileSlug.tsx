@@ -9,7 +9,8 @@ import { Package, ShoppingCart, Send, Instagram, Phone, Mail, MapPin, CheckCircl
 import { formatBRL } from "@/lib/format";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { motion, useScroll, useSpring, useMotionValue, useTransform } from "framer-motion";
+import { motion, useScroll, useSpring, useMotionValue, useTransform, type Variants } from "framer-motion";
+import { getErrorMessage } from "@/lib/utils/error";
 
 function ProgressBar() {
   const { scrollYProgress } = useScroll();
@@ -178,10 +179,10 @@ function VitrinePage() {
   const [done, setDone] = useState(false);
   const [filterType, setFilterType] = useState<"all" | "product" | "service">("all");
 
-  const filteredItems = items.filter(it => filterType === "all" ? true : it.type === filterType);
+  const filteredItems = items.filter((it: any) => filterType === "all" ? true : it.type === filterType);
 
-  const cartItems = items.filter(it => cart[it.id]);
-  const totalCart = cartItems.reduce((acc, it) => acc + (Number(it.unit_price) * cart[it.id]), 0);
+  const cartItems = items.filter((it: any) => cart[it.id]);
+  const totalCart = cartItems.reduce((acc: number, it: any) => acc + (Number(it.unit_price) * cart[it.id]), 0);
 
   function toggleCart(id: string) {
     setCart(prev => {
@@ -199,7 +200,7 @@ function VitrinePage() {
     }
     setSending(true);
     
-    const pItems = cartItems.map(it => ({
+    const pItems = cartItems.map((it: any) => ({
       description: it.name,
       quantity: cart[it.id],
       unit_price: Number(it.unit_price)
@@ -264,7 +265,7 @@ function VitrinePage() {
     "--radius": "1.5rem"
   } as React.CSSProperties : {};
 
-  const containerAnim = {
+  const containerAnim: Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -272,7 +273,7 @@ function VitrinePage() {
     }
   };
 
-  const itemAnim = {
+  const itemAnim: Variants = {
     hidden: { opacity: 0, y: 30, scale: 0.95 },
     show: { 
       opacity: 1, 
@@ -396,7 +397,7 @@ function VitrinePage() {
           </div>
         ) : (
           <motion.div variants={containerAnim} initial="hidden" animate="show" className="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-8">
-            {filteredItems.map(it => {
+            {filteredItems.map((it: any) => {
               const selected = !!cart[it.id];
               const isOutOfStock = it.stock_quantity === 0;
               return (
@@ -511,7 +512,7 @@ function VitrinePage() {
             <div className="pt-2 bg-muted/30 rounded-xl p-4 border border-border/50 max-h-40 overflow-y-auto mt-4">
               <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">Resumo do Pedido</h4>
               <ul className="space-y-2">
-                {cartItems.map(it => (
+                {cartItems.map((it: any) => (
                   <li key={it.id} className="flex text-sm">
                     <span className="font-medium text-foreground">• {it.name}</span>
                   </li>

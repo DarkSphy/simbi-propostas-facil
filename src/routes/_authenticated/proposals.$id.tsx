@@ -6,6 +6,7 @@ import { ArrowLeft, Share2, MessageCircle, Trash2, Copy, Eye, CheckCircle2, XCir
 import { formatBRL, statusBadge } from "@/lib/format";
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
+import { getErrorMessage } from "@/lib/utils/error";
 
 export const Route = createFileRoute("/_authenticated/proposals/$id")({
   head: () => ({ meta: [{ title: "Proposta · Simbi" }] }),
@@ -25,7 +26,7 @@ function ProposalDetail() {
       const { data, error } = await supabase.from("proposals")
         .select("*,clients(name,phone),proposal_items(*)")
         .eq("id", id)
-        .eq("user_id", user?.id)
+        .eq("user_id", user!.id)
         .single();
       if (error) throw error;
       

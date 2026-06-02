@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AuthShell, Field } from "./login";
 import { useAuth } from "@/lib/auth";
+import { getErrorMessage } from "@/lib/utils/error";
 
 export const Route = createFileRoute("/register")({
   head: () => ({ meta: [{ title: "Criar conta · Simbi" }] }),

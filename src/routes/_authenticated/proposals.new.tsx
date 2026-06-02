@@ -81,7 +81,7 @@ function NewProposal() {
   const { data: catalogItems = [] } = useQuery({
     queryKey: ["catalog-items"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("catalog_items").select("*").eq("user_id", user?.id).order("name");
+      const { data, error } = await supabase.from("catalog_items").select("*").eq("user_id", user!.id).order("name");
       if (error) throw error;
       return data ?? [];
     },
@@ -91,7 +91,7 @@ function NewProposal() {
   const { data: templates = [] } = useQuery({
     queryKey: ["proposal-templates"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("proposal_templates").select("*").eq("user_id", user?.id).order("name");
+      const { data, error } = await supabase.from("proposal_templates").select("*").eq("user_id", user!.id).order("name");
       if (error && error.code !== '42P01') throw error; // Ignore table does not exist error initially
       return data ?? [];
     },
@@ -249,7 +249,7 @@ function NewProposal() {
       const cleanItems = items.filter(i => i.description && i.description.trim());
       if (cleanItems.length > 0) {
         const { error: iErr } = await supabase.from("proposal_items").insert(
-          cleanItems.map((it, idx) => ({ proposal_id: propId, description: it.description, quantity: it.quantity, unit_price: it.unit_price, sort_order: idx, image_url: it.image_url || null, is_optional: it.is_optional || false, catalog_item_id: it.catalog_item_id || null }))
+          cleanItems.map((it, idx) => ({ proposal_id: propId as string, description: it.description, quantity: Number(it.quantity), unit_price: Number(it.unit_price), sort_order: idx, image_url: it.image_url || null, is_optional: it.is_optional || false, catalog_item_id: it.catalog_item_id || null }))
         );
         if (iErr) throw iErr;
       }

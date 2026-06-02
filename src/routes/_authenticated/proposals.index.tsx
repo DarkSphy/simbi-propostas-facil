@@ -24,7 +24,7 @@ function ProposalsList() {
     queryFn: async () => {
       const { data, error } = await supabase.from("proposals")
         .select("id,title,total,status,created_at,public_slug,clients(name,phone)")
-        .eq("user_id", user?.id)
+        .eq("user_id", user!.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data ?? [];
@@ -35,7 +35,7 @@ function ProposalsList() {
   const { data: profile } = useQuery({
     queryKey: ["profile", user?.id],
     queryFn: async () => {
-      const { data } = await supabase.from("profiles").select("profile_slug").eq("id", user?.id).single();
+      const { data } = await supabase.from("profiles").select("profile_slug").eq("id", user!.id).single();
       return data;
     },
     enabled: !!user,

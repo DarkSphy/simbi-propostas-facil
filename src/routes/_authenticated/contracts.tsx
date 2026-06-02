@@ -12,6 +12,7 @@ import { Plus, Search, FileSignature, Trash2, Edit, ExternalLink } from "lucide-
 import { toast } from "sonner";
 import { SERVICE_CONTRACT_TEMPLATE, PRODUCT_CONTRACT_TEMPLATE } from "@/lib/templates";
 import { formatBRL } from "@/lib/format";
+import { getErrorMessage } from "@/lib/utils/error";
 
 export const Route = createFileRoute("/_authenticated/contracts")({
   head: () => ({ meta: [{ title: "Contratos · Simbi" }] }),
@@ -35,7 +36,7 @@ function ContractsPage() {
       const { data, error } = await supabase
         .from("contracts")
         .select("*, proposals(title, clients(name))")
-        .eq("user_id", user?.id)
+        .eq("user_id", user!.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data || [];
@@ -50,7 +51,7 @@ function ContractsPage() {
       const { data, error } = await supabase
         .from("proposals")
         .select("id, title, status, total, clients(*), proposal_items(*)")
-        .eq("user_id", user?.id)
+        .eq("user_id", user!.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data || [];
@@ -62,7 +63,7 @@ function ContractsPage() {
   const { data: profile } = useQuery({
     queryKey: ["profile"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("profiles").select("*").eq("id", user?.id).single();
+      const { data, error } = await supabase.from("profiles").select("*").eq("id", user!.id).single();
       if (error) throw error;
       return data;
     },

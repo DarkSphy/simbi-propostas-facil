@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Store, Link as LinkIcon, Image as ImageIcon, Video, Youtube, Palette, MessageSquareQuote, Check, Trash2, Plus, Type } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getErrorMessage } from "@/lib/utils/error";
 
 export const Route = createFileRoute("/_authenticated/vitrine-settings")({
   head: () => ({ meta: [{ title: "Minha Vitrine · Simbi" }] }),
@@ -35,14 +36,15 @@ function VitrineSettings() {
   useEffect(() => {
     async function load() {
       if (!user) return;
-      const { data } = await supabase.from("profiles").select("*").eq("id", user.id).single();
+      const { data: rawData } = await supabase.from("profiles").select("*").eq("id", user.id).single();
+      const data: any = rawData;
       if (data) {
         setProfileSlug(data.profile_slug ?? "");
-        setHeroType(data.vitrine_hero_type ?? "color");
+        setHeroType((data.vitrine_hero_type as "color" | "image" | "video") ?? "color");
         setHeroUrl(data.vitrine_hero_url ?? "");
         setPitchVideoUrl(data.vitrine_pitch_video_url ?? "");
         setPitchText(data.vitrine_pitch_text ?? "");
-        setSkin(data.vitrine_skin ?? "minimal");
+        setSkin((data.vitrine_skin as "minimal" | "dark" | "organic") ?? "minimal");
         if (data.vitrine_testimonials) {
           try {
             setTestimonials(typeof data.vitrine_testimonials === 'string' ? JSON.parse(data.vitrine_testimonials) : data.vitrine_testimonials);
@@ -98,8 +100,8 @@ function VitrineSettings() {
       vitrine_pitch_text: pitchText,
       vitrine_skin: skin,
       vitrine_testimonials: testimonials,
-      vitrine_marquee_words: marqueeWords.split(",").map(w => w.trim()).filter(Boolean)
-    }).eq("id", user.id);
+      vitrine_marquee_words: marqueeWords.split(",").map(w => w.trim()).filter(Boolean),
+    } as any).eq("id", user.id);
 
     setSaving(false);
     if (error) {

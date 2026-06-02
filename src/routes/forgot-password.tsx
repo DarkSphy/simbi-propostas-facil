@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { AuthShell, Field } from "./login";
+import { getErrorMessage } from "@/lib/utils/error";
 
 export const Route = createFileRoute("/forgot-password")({
   head: () => ({ meta: [{ title: "Recuperar senha · Simbi" }] }),

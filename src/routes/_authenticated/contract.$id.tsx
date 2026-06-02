@@ -31,7 +31,7 @@ function ContractDetailsPage() {
         .from("contracts")
         .select("*, proposals(title, clients(name))")
         .eq("id", id)
-        .eq("user_id", user?.id)
+        .eq("user_id", user!.id)
         .single();
       if (error) throw error;
       return data;
@@ -168,7 +168,7 @@ function ContractDetailsPage() {
               {isSignedByPro ? (
                 <div className="w-full flex flex-col items-center">
                   <div className="h-32 flex items-end justify-center mb-2">
-                    <img src={contract.professional_signature} alt="Assinatura Profissional" className="max-h-full max-w-full" />
+                    <img src={contract.professional_signature ?? undefined} alt="Assinatura Profissional" className="max-h-full max-w-full" />
                   </div>
                   <div className="w-full border-t border-gray-900 pt-2 text-center text-sm font-bold uppercase tracking-wider text-gray-700">
                     Contratado(a) / Vendedor(a)
@@ -202,7 +202,7 @@ function ContractDetailsPage() {
               {isSignedByClient ? (
                 <div className="w-full flex flex-col items-center">
                   <div className="h-32 flex items-end justify-center mb-2">
-                    <img src={contract.client_signature} alt="Assinatura Cliente" className="max-h-full max-w-full" />
+                    <img src={contract.client_signature ?? undefined} alt="Assinatura Cliente" className="max-h-full max-w-full" />
                   </div>
                   <div className="w-full border-t border-gray-900 pt-2 text-center text-sm font-bold uppercase tracking-wider text-gray-700">
                     {contract.proposals?.clients?.name || "Contratante / Comprador(a)"}

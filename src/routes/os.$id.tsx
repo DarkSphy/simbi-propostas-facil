@@ -27,7 +27,7 @@ function OSPrintPage() {
         .from("proposals")
         .select("*, clients(*)")
         .eq("id", id)
-        .eq("user_id", user?.id)
+        .eq("user_id", user!.id)
         .single();
       if (error) {
         console.error("OS Supabase Error:", error);
@@ -38,7 +38,7 @@ function OSPrintPage() {
       const { data: profile } = await supabase
         .from("profiles")
         .select("*")
-        .eq("id", user?.id)
+        .eq("id", user!.id)
         .single();
       
       const { data: items, error: itemsError } = await supabase
