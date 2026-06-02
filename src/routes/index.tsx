@@ -60,9 +60,9 @@ function Header() {
           <a href="#depoimentos" className="transition-colors hover:text-white">Depoimentos</a>
           <a href="#planos" className="transition-colors hover:text-white">Planos</a>
         </nav>
-        <div className="flex items-center gap-4">
-          <Link to="/login" className="hidden text-sm font-semibold text-white transition-colors hover:text-white/80 sm:block">Log in</Link>
-          <Button asChild size="sm" className="rounded-full bg-white px-5 text-black hover:bg-white/90">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <Link to="/login" className="text-sm font-semibold text-white transition-colors hover:text-white/80">Entrar</Link>
+          <Button asChild size="sm" className="rounded-full bg-white px-4 sm:px-5 text-black hover:bg-white/90 shadow-sm">
             <Link to="/register">Testar grátis</Link>
           </Button>
         </div>
