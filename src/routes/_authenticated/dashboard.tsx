@@ -258,7 +258,7 @@ function Dashboard() {
       <div className="grid gap-6 lg:grid-cols-3 mb-8">
         
         {/* REVENUE CHART */}
-        <motion.div variants={itemVariants} className="lg:col-span-2 overflow-hidden rounded-3xl border border-border bg-card shadow-card p-6 relative">
+        <motion.div variants={itemVariants} className="lg:col-span-2 overflow-hidden rounded-3xl border border-border/50 bg-card premium-card p-6 relative">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500" />
           <h2 className="text-lg font-bold tracking-tight mb-2">Evolução do Faturamento</h2>
           <p className="text-xs text-muted-foreground mb-6 flex items-center gap-4">
@@ -294,7 +294,7 @@ function Dashboard() {
 
         {/* CONVERSION & TOP CLIENTS */}
         <div className="flex flex-col gap-6">
-          <motion.div variants={itemVariants} className="overflow-hidden rounded-3xl border border-border bg-card shadow-card p-6 flex flex-col items-center justify-center relative">
+          <motion.div variants={itemVariants} className="overflow-hidden rounded-3xl border border-border/50 bg-card premium-card p-6 flex flex-col items-center justify-center relative">
             <h2 className="text-lg font-bold tracking-tight w-full text-left mb-2">Taxa de Conversão</h2>
             <div className="relative w-40 h-40 mt-2">
               <ResponsiveContainer width="100%" height="100%">
@@ -326,7 +326,7 @@ function Dashboard() {
 
           {/* TOP CLIENTS */}
           {topClients.length > 0 && (
-            <motion.div variants={itemVariants} className="overflow-hidden rounded-3xl border border-border bg-card shadow-card p-5 flex-1">
+            <motion.div variants={itemVariants} className="overflow-hidden rounded-3xl border border-border/50 bg-card premium-card p-5 flex-1">
               <div className="flex items-center gap-2 mb-4">
                 <Crown className="h-5 w-5 text-amber-500" />
                 <h2 className="text-md font-bold tracking-tight">Melhores Clientes</h2>
@@ -421,7 +421,7 @@ function Dashboard() {
             </div>
           </motion.div>
         ) : (
-          <motion.div variants={itemVariants} className="overflow-hidden rounded-3xl border border-border bg-card shadow-card transition-all">
+          <motion.div variants={itemVariants} className="overflow-hidden rounded-3xl border border-border/50 bg-card premium-card transition-all">
             <div className="flex items-center justify-between border-b border-border bg-transparent px-6 py-5">
               <h2 className="text-lg font-bold tracking-tight">Últimas propostas</h2>
               <Link to="/proposals" className="text-sm font-medium text-primary hover:underline">Ver todas</Link>
@@ -456,7 +456,7 @@ function Dashboard() {
       </div>
 
       {/* ATIVIDADES RECENTES (ERP Timeline) */}
-      <motion.div variants={itemVariants} className="mt-8 overflow-hidden rounded-3xl border border-border bg-card shadow-card p-6">
+      <motion.div variants={itemVariants} className="mt-8 overflow-hidden rounded-3xl border border-border/50 bg-card premium-card p-6">
         <div className="flex items-center gap-2 border-b border-border pb-4 mb-6">
           <Activity className="h-5 w-5 text-primary" />
           <h2 className="text-lg font-bold tracking-tight">Atividades Recentes</h2>
@@ -494,7 +494,7 @@ function Dashboard() {
 
 function Stat({ icon: Icon, label, value, highlighted, primary }: any) {
   return (
-    <div className={`group relative overflow-hidden rounded-3xl border ${primary ? 'border-primary bg-primary/5' : 'border-border bg-card'} p-5 shadow-card transition-all hover:shadow-elevated hover:-translate-y-1`}>
+    <div className={`group relative overflow-hidden rounded-3xl border border-border/50 ${primary ? 'bg-primary/5' : 'bg-card'} p-5 premium-card transition-all`}>
       <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-primary/5 opacity-0 transition-opacity group-hover:opacity-100" />
       <div className="relative flex items-center justify-between">
         <span className={`text-[11px] font-semibold uppercase tracking-widest ${primary ? 'text-primary' : 'text-muted-foreground'} transition-colors group-hover:text-primary`}>{label}</span>

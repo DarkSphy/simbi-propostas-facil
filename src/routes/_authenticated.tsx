@@ -50,7 +50,7 @@ function AuthLayout() {
         <AppSidebar />
         <div className="flex flex-1 flex-col overflow-hidden">
           {/* Topbar / Command Center */}
-          <header className="print:hidden sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-border bg-background/95 px-4 backdrop-blur shadow-sm">
+          <header className="print:hidden sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-border/40 glass-panel px-4 shadow-sm">
             <SidebarTrigger className="text-muted-foreground hover:text-foreground" />
             
             <div className="hidden sm:flex items-center gap-1.5 text-sm font-medium text-muted-foreground">
