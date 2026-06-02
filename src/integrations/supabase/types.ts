@@ -647,6 +647,12 @@ export type Database = {
         Args: { p_selected_item_ids: string[]; p_slug: string }
         Returns: undefined
       }
+      get_contract_by_slug: { Args: { p_slug: string }; Returns: Json }
+      get_proposal_by_slug: { Args: { p_slug: string }; Returns: Json }
+      sign_contract_by_slug: {
+        Args: { p_signature: string; p_slug: string }
+        Returns: undefined
+      }
       submit_quote_request: {
         Args: {
           p_client_name: string
