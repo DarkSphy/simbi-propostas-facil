@@ -234,28 +234,37 @@ function VitrineSettings() {
                 {heroType === 'image' && (
                   <div className="space-y-2">
                     <Label className="text-muted-foreground font-semibold">Upload de Imagem (Máx 5MB)</Label>
-                    <Input 
-                      type="file" 
-                      accept="image/*"
-                      onChange={async (e) => {
-                        if (!e.target.files || e.target.files.length === 0) return;
-                        const file = e.target.files[0];
-                        if (file.size > 5 * 1024 * 1024) { toast.error('A imagem deve ter no máximo 5MB.'); return; }
-                        
-                        const toastId = toast.loading("Enviando imagem...");
-                        const ext = file.name.split('.').pop();
-                        const filePath = `${user?.id}/vitrine-hero/${Date.now()}.${ext}`;
-                        
-                        const { error } = await supabase.storage.from("proposal-images").upload(filePath, file);
-                        if (error) {
-                          toast.error("Erro ao fazer upload da imagem.", { id: toastId });
-                          return;
-                        }
-                        const { data } = supabase.storage.from("proposal-images").getPublicUrl(filePath);
-                        setHeroUrl(data.publicUrl);
-                        toast.success("Upload concluído!", { id: toastId });
-                      }} 
-                    />
+                    
+                    <Label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-primary/30 rounded-xl cursor-pointer bg-primary/5 hover:bg-primary/10 transition-colors">
+                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                        <ImageIcon className="w-8 h-8 mb-3 text-primary/50" />
+                        <p className="mb-2 text-sm text-muted-foreground"><span className="font-semibold text-primary">Clique para fazer upload</span> ou arraste e solte</p>
+                        <p className="text-xs text-muted-foreground/60">PNG, JPG ou WEBP (Max. 5MB)</p>
+                      </div>
+                      <input 
+                        type="file" 
+                        accept="image/*"
+                        className="hidden"
+                        onChange={async (e) => {
+                          if (!e.target.files || e.target.files.length === 0) return;
+                          const file = e.target.files[0];
+                          if (file.size > 5 * 1024 * 1024) { toast.error('A imagem deve ter no máximo 5MB.'); return; }
+                          
+                          const toastId = toast.loading("Enviando imagem...");
+                          const ext = file.name.split('.').pop();
+                          const filePath = `${user?.id}/vitrine-hero/${Date.now()}.${ext}`;
+                          
+                          const { error } = await supabase.storage.from("proposal-images").upload(filePath, file);
+                          if (error) {
+                            toast.error("Erro ao fazer upload da imagem.", { id: toastId });
+                            return;
+                          }
+                          const { data } = supabase.storage.from("proposal-images").getPublicUrl(filePath);
+                          setHeroUrl(data.publicUrl);
+                          toast.success("Upload concluído!", { id: toastId });
+                        }} 
+                      />
+                    </Label>
                   </div>
                 )}
 
@@ -346,7 +355,7 @@ function VitrineSettings() {
 
         {/* Salvar */}
         <div className="flex justify-end pt-4">
-          <Button size="lg" className="rounded-full shadow-lg h-12 px-8 text-base shadow-primary/20 hover:scale-105 transition-transform" onClick={save} disabled={saving}>
+          <Button variant="success" size="lg" className="rounded-full shadow-lg h-12 px-8 text-base shadow-emerald-500/20 hover:scale-105 transition-transform" onClick={save} disabled={saving}>
             <Check className="mr-2 h-5 w-5" /> {saving ? "Salvando..." : "Salvar Configurações"}
           </Button>
         </div>
