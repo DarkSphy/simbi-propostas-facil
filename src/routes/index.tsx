@@ -667,68 +667,98 @@ function FeaturePillCloud() {
 function InteractiveWheel() {
   const [active, setActive] = useState(false);
 
+  const functionalities = [
+    // Inner Ring
+    { icon: FileSignature, label: "Propostas", angle: 0, ring: 1 },
+    { icon: ClipboardList, label: "Serviços", angle: 60, ring: 1 },
+    { icon: Package, label: "Estoque", angle: 120, ring: 1 },
+    { icon: Smartphone, label: "Vitrine", angle: 180, ring: 1 },
+    { icon: Receipt, label: "Recibos", angle: 240, ring: 1 },
+    { icon: LineChart, label: "Caixa", angle: 300, ring: 1 },
+    // Outer Ring
+    { icon: Shield, label: "Assinaturas", angle: 30, ring: 2 },
+    { icon: MessageCircle, label: "Notificações", angle: 90, ring: 2 },
+    { icon: CalendarDays, label: "Agenda", angle: 150, ring: 2 },
+    { icon: CheckSquare, label: "Aprovações", angle: 210, ring: 2 },
+    { icon: Layers, label: "Funil CRM", angle: 270, ring: 2 },
+    { icon: Settings, label: "Automação", angle: 330, ring: 2 },
+  ];
+
   return (
-    <section className="py-24 sm:py-32 bg-background border-t border-border overflow-hidden">
+    <section className="py-24 sm:py-40 bg-background border-t border-border overflow-hidden">
       <div className="mx-auto max-w-7xl px-6 lg:px-8 text-center">
         <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl mb-6">
-          Tudo perfeitamente interligado
+          O verdadeiro Canivete Suíço
         </h2>
         <p className="text-muted-foreground text-lg mb-16 max-w-2xl mx-auto">
-          Ative o modo Simbi e veja como todas as etapas do seu serviço se conectam de forma automática, economizando horas do seu dia.
+          Ative o Simbi e veja como dezenas de ferramentas independentes se unem em um único cérebro central para escalar o seu negócio.
         </p>
         
-        <div className="relative mx-auto w-[320px] h-[320px] sm:w-[450px] sm:h-[450px] flex items-center justify-center mt-10">
+        <div className="relative mx-auto w-[350px] h-[350px] sm:w-[600px] sm:h-[600px] flex items-center justify-center mt-10">
           {/* Central Button */}
           <button 
             onClick={() => setActive(!active)}
-            className={`z-20 relative h-28 w-28 sm:h-36 sm:w-36 rounded-full flex flex-col items-center justify-center transition-all duration-500 shadow-2xl border-4 ${active ? "bg-primary border-primary/30 text-white shadow-[0_0_50px_rgba(42,157,143,0.5)] scale-105" : "bg-card border-border text-muted-foreground hover:bg-muted hover:scale-105"}`}
+            className={`z-30 relative h-28 w-28 sm:h-40 sm:w-40 rounded-full flex flex-col items-center justify-center transition-all duration-700 shadow-2xl border-4 ${active ? "bg-primary border-primary/30 text-white shadow-[0_0_80px_rgba(42,157,143,0.6)] scale-105" : "bg-card border-border text-muted-foreground hover:bg-muted hover:scale-105"}`}
           >
-            <Power className={`h-10 w-10 sm:h-12 sm:w-12 mb-1 transition-all duration-700 ${active ? "text-white animate-pulse" : "text-muted-foreground"}`} />
-            <span className="font-bold text-sm sm:text-base">{active ? "Conectado" : "Ligar Simbi"}</span>
+            <Power className={`h-10 w-10 sm:h-14 sm:w-14 mb-2 transition-all duration-700 ${active ? "text-white animate-pulse" : "text-muted-foreground"}`} />
+            <span className="font-black text-sm sm:text-lg tracking-tight">{active ? "Sincronizado" : "Ligar Simbi"}</span>
           </button>
           
           {/* Connection Lines (SVG) */}
-          <svg className={`absolute inset-0 h-full w-full pointer-events-none transition-opacity duration-1000 z-0 ${active ? "opacity-100" : "opacity-0"}`} viewBox="-225 -225 450 450">
-            {[0, 60, 120, 180, 240, 300].map((angle, i) => {
-              const x = Math.cos((angle * Math.PI) / 180) * 160;
-              const y = Math.sin((angle * Math.PI) / 180) * 160;
+          <svg className={`absolute inset-0 h-full w-full pointer-events-none transition-opacity duration-1000 z-0 ${active ? "opacity-100" : "opacity-0"}`} viewBox="-300 -300 600 600">
+            {/* Outer ring circular trace */}
+            <circle cx="0" cy="0" r="240" fill="none" stroke="currentColor" strokeWidth="1" className="text-primary/10" strokeDasharray="8 8" />
+            {/* Inner ring circular trace */}
+            <circle cx="0" cy="0" r="150" fill="none" stroke="currentColor" strokeWidth="1" className="text-primary/20" strokeDasharray="4 4" />
+            
+            {/* Spokes */}
+            {functionalities.map((item, i) => {
+              const r = item.ring === 1 ? 150 : 240;
+              const x = Math.cos((item.angle * Math.PI) / 180) * r;
+              const y = Math.sin((item.angle * Math.PI) / 180) * r;
               return (
-                <line key={i} x1="0" y1="0" x2={x} y2={y} stroke="currentColor" strokeWidth="2" className="text-primary/40" strokeDasharray="6 4">
-                  <animate attributeName="stroke-dashoffset" from="100" to="0" dur="2s" repeatCount="indefinite" />
+                <line key={i} x1="0" y1="0" x2={x} y2={y} stroke="currentColor" strokeWidth="2" className="text-primary/30" strokeDasharray="6 6">
+                  <animate attributeName="stroke-dashoffset" from="100" to="0" dur={item.ring === 1 ? "2s" : "3s"} repeatCount="indefinite" />
                 </line>
               );
             })}
           </svg>
 
           {/* Orbiting Items */}
-          {[
-            { icon: FileSignature, label: "Propostas", angle: 0 },
-            { icon: ClipboardList, label: "Serviços", angle: 60 },
-            { icon: Package, label: "Estoque", angle: 120 },
-            { icon: Smartphone, label: "Vitrine", angle: 180 },
-            { icon: Receipt, label: "Recibos", angle: 240 },
-            { icon: LineChart, label: "Caixa", angle: 300 },
-          ].map((item, i) => {
-            // Responsiveness logic for radius
+          {functionalities.map((item, i) => {
             const isMobile = typeof window !== 'undefined' ? window.innerWidth < 640 : false;
-            const radius = isMobile ? 120 : 180;
+            // Define radii based on ring and screen size
+            const radius = item.ring === 1 
+              ? (isMobile ? 110 : 150) 
+              : (isMobile ? 170 : 240);
+              
             const x = Math.cos((item.angle * Math.PI) / 180) * radius;
             const y = Math.sin((item.angle * Math.PI) / 180) * radius;
+            
+            // Outer ring has slightly smaller icons to give 3D depth perspective
+            const iconContainerClasses = item.ring === 1 
+              ? "h-14 w-14 sm:h-16 sm:w-16 border-2" 
+              : "h-10 w-10 sm:h-14 sm:w-14 border border-border/50";
+              
+            const iconClasses = item.ring === 1 
+              ? "h-6 w-6 sm:h-8 sm:w-8" 
+              : "h-5 w-5 sm:h-6 sm:w-6";
             
             return (
               <div 
                 key={i}
-                className={`absolute flex flex-col items-center justify-center transition-all duration-1000 ease-out z-10`}
+                className={`absolute flex flex-col items-center justify-center transition-all duration-[1200ms] ease-[cubic-bezier(0.34,1.56,0.64,1)] z-10`}
                 style={{ 
                   transform: `translate(${active ? x : 0}px, ${active ? y : 0}px)`,
-                  opacity: active ? 1 : 0,
-                  scale: active ? 1 : 0.2
+                  opacity: active ? (item.ring === 2 && isMobile ? 0.8 : 1) : 0,
+                  scale: active ? 1 : 0.1,
+                  transitionDelay: `${i * 50}ms`
                 }}
               >
-                <div className={`h-14 w-14 sm:h-16 sm:w-16 rounded-full flex items-center justify-center shadow-xl border-2 bg-card transition-colors duration-500 delay-300 ${active ? "border-primary text-primary" : "border-border text-muted-foreground"}`}>
-                  <item.icon className="h-6 w-6 sm:h-8 sm:w-8" />
+                <div className={`${iconContainerClasses} rounded-full flex items-center justify-center shadow-xl bg-card transition-colors duration-500 hover:scale-110 cursor-pointer ${active ? "border-primary/50 text-primary hover:bg-primary/10" : "border-border text-muted-foreground"}`}>
+                  <item.icon className={iconClasses} />
                 </div>
-                <span className={`mt-3 text-sm sm:text-base font-bold transition-opacity duration-500 delay-500 ${active ? "opacity-100 text-foreground" : "opacity-0"}`}>
+                <span className={`mt-2 ${item.ring === 1 ? "text-sm sm:text-base font-bold" : "text-xs sm:text-sm font-semibold text-muted-foreground"} transition-opacity duration-500 bg-background/50 backdrop-blur-sm px-2 rounded-md ${active ? "opacity-100" : "opacity-0"}`} style={{ transitionDelay: `${i * 50 + 400}ms` }}>
                   {item.label}
                 </span>
               </div>
