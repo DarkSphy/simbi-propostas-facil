@@ -15,6 +15,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { toast } from "sonner";
 import { formatBRL } from "@/lib/format";
 import { Link } from "@tanstack/react-router";
+import { usePlanLimits } from "@/hooks/usePlanLimits";
+import { UpgradeGate } from "@/components/UpgradeGate";
 
 export const Route = createFileRoute("/_authenticated/proposals/new")({
   head: () => ({ meta: [{ title: "Nova proposta · Simbi" }] }),
@@ -40,6 +42,8 @@ function NewProposal() {
   const [validDays, setValidDays] = useState<string>("");
   const [items, setItems] = useState<Item[]>([{ description: "", quantity: 1, unit_price: "", is_optional: false }]);
   const [saving, setSaving] = useState(false);
+  const { canCreate, refetch: refetchLimits } = usePlanLimits();
+  const [showUpgrade, setShowUpgrade] = useState(false);
   
   // Dialogs
   const [catalogOpen, setCatalogOpen] = useState(false);
