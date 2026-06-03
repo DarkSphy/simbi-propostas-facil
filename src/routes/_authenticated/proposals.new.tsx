@@ -481,6 +481,7 @@ function NewProposal() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 
