@@ -23,6 +23,7 @@ import { Route as OsIdRouteImport } from './routes/os.$id'
 import { Route as CContractSlugRouteImport } from './routes/c.$contractSlug'
 import { Route as AuthenticatedWorkOrdersRouteImport } from './routes/_authenticated/work-orders'
 import { Route as AuthenticatedVitrineSettingsRouteImport } from './routes/_authenticated/vitrine-settings'
+import { Route as AuthenticatedUpgradeRouteImport } from './routes/_authenticated/upgrade'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedRequestsRouteImport } from './routes/_authenticated/requests'
 import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
@@ -33,12 +34,14 @@ import { Route as AuthenticatedContractsRouteImport } from './routes/_authentica
 import { Route as AuthenticatedClientsRouteImport } from './routes/_authenticated/clients'
 import { Route as AuthenticatedCatalogRouteImport } from './routes/_authenticated/catalog'
 import { Route as AuthenticatedCalculatorRouteImport } from './routes/_authenticated/calculator'
+import { Route as AuthenticatedBillingRouteImport } from './routes/_authenticated/billing'
 import { Route as AuthenticatedAgendaRouteImport } from './routes/_authenticated/agenda'
 import { Route as AuthenticatedProposalsIndexRouteImport } from './routes/_authenticated/proposals.index'
 import { Route as PProfileSlugProposalSlugRouteImport } from './routes/p.$profileSlug.$proposalSlug'
 import { Route as AuthenticatedProposalsNewRouteImport } from './routes/_authenticated/proposals.new'
 import { Route as AuthenticatedProposalsIdRouteImport } from './routes/_authenticated/proposals.$id'
 import { Route as AuthenticatedContractIdRouteImport } from './routes/_authenticated/contract.$id'
+import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
@@ -110,6 +113,11 @@ const AuthenticatedVitrineSettingsRoute =
     path: '/vitrine-settings',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedUpgradeRoute = AuthenticatedUpgradeRouteImport.update({
+  id: '/upgrade',
+  path: '/upgrade',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -160,6 +168,11 @@ const AuthenticatedCalculatorRoute = AuthenticatedCalculatorRouteImport.update({
   path: '/calculator',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedBillingRoute = AuthenticatedBillingRouteImport.update({
+  id: '/billing',
+  path: '/billing',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedAgendaRoute = AuthenticatedAgendaRouteImport.update({
   id: '/agenda',
   path: '/agenda',
@@ -194,6 +207,12 @@ const AuthenticatedContractIdRoute = AuthenticatedContractIdRouteImport.update({
   path: '/contract/$id',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const ApiPublicPaymentsWebhookRoute =
+  ApiPublicPaymentsWebhookRouteImport.update({
+    id: '/api/public/payments/webhook',
+    path: '/api/public/payments/webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -204,6 +223,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/agenda': typeof AuthenticatedAgendaRoute
+  '/billing': typeof AuthenticatedBillingRoute
   '/calculator': typeof AuthenticatedCalculatorRoute
   '/catalog': typeof AuthenticatedCatalogRoute
   '/clients': typeof AuthenticatedClientsRoute
@@ -214,6 +234,7 @@ export interface FileRoutesByFullPath {
   '/reports': typeof AuthenticatedReportsRoute
   '/requests': typeof AuthenticatedRequestsRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/upgrade': typeof AuthenticatedUpgradeRoute
   '/vitrine-settings': typeof AuthenticatedVitrineSettingsRoute
   '/work-orders': typeof AuthenticatedWorkOrdersRoute
   '/c/$contractSlug': typeof CContractSlugRoute
@@ -225,6 +246,7 @@ export interface FileRoutesByFullPath {
   '/proposals/new': typeof AuthenticatedProposalsNewRoute
   '/p/$profileSlug/$proposalSlug': typeof PProfileSlugProposalSlugRoute
   '/proposals/': typeof AuthenticatedProposalsIndexRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -235,6 +257,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/agenda': typeof AuthenticatedAgendaRoute
+  '/billing': typeof AuthenticatedBillingRoute
   '/calculator': typeof AuthenticatedCalculatorRoute
   '/catalog': typeof AuthenticatedCatalogRoute
   '/clients': typeof AuthenticatedClientsRoute
@@ -245,6 +268,7 @@ export interface FileRoutesByTo {
   '/reports': typeof AuthenticatedReportsRoute
   '/requests': typeof AuthenticatedRequestsRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/upgrade': typeof AuthenticatedUpgradeRoute
   '/vitrine-settings': typeof AuthenticatedVitrineSettingsRoute
   '/work-orders': typeof AuthenticatedWorkOrdersRoute
   '/c/$contractSlug': typeof CContractSlugRoute
@@ -256,6 +280,7 @@ export interface FileRoutesByTo {
   '/proposals/new': typeof AuthenticatedProposalsNewRoute
   '/p/$profileSlug/$proposalSlug': typeof PProfileSlugProposalSlugRoute
   '/proposals': typeof AuthenticatedProposalsIndexRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -268,6 +293,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/_authenticated/agenda': typeof AuthenticatedAgendaRoute
+  '/_authenticated/billing': typeof AuthenticatedBillingRoute
   '/_authenticated/calculator': typeof AuthenticatedCalculatorRoute
   '/_authenticated/catalog': typeof AuthenticatedCatalogRoute
   '/_authenticated/clients': typeof AuthenticatedClientsRoute
@@ -278,6 +304,7 @@ export interface FileRoutesById {
   '/_authenticated/reports': typeof AuthenticatedReportsRoute
   '/_authenticated/requests': typeof AuthenticatedRequestsRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/upgrade': typeof AuthenticatedUpgradeRoute
   '/_authenticated/vitrine-settings': typeof AuthenticatedVitrineSettingsRoute
   '/_authenticated/work-orders': typeof AuthenticatedWorkOrdersRoute
   '/c/$contractSlug': typeof CContractSlugRoute
@@ -289,6 +316,7 @@ export interface FileRoutesById {
   '/_authenticated/proposals/new': typeof AuthenticatedProposalsNewRoute
   '/p/$profileSlug/$proposalSlug': typeof PProfileSlugProposalSlugRoute
   '/_authenticated/proposals/': typeof AuthenticatedProposalsIndexRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -301,6 +329,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/terms'
     | '/agenda'
+    | '/billing'
     | '/calculator'
     | '/catalog'
     | '/clients'
@@ -311,6 +340,7 @@ export interface FileRouteTypes {
     | '/reports'
     | '/requests'
     | '/settings'
+    | '/upgrade'
     | '/vitrine-settings'
     | '/work-orders'
     | '/c/$contractSlug'
@@ -322,6 +352,7 @@ export interface FileRouteTypes {
     | '/proposals/new'
     | '/p/$profileSlug/$proposalSlug'
     | '/proposals/'
+    | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -332,6 +363,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/terms'
     | '/agenda'
+    | '/billing'
     | '/calculator'
     | '/catalog'
     | '/clients'
@@ -342,6 +374,7 @@ export interface FileRouteTypes {
     | '/reports'
     | '/requests'
     | '/settings'
+    | '/upgrade'
     | '/vitrine-settings'
     | '/work-orders'
     | '/c/$contractSlug'
@@ -353,6 +386,7 @@ export interface FileRouteTypes {
     | '/proposals/new'
     | '/p/$profileSlug/$proposalSlug'
     | '/proposals'
+    | '/api/public/payments/webhook'
   id:
     | '__root__'
     | '/'
@@ -364,6 +398,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/terms'
     | '/_authenticated/agenda'
+    | '/_authenticated/billing'
     | '/_authenticated/calculator'
     | '/_authenticated/catalog'
     | '/_authenticated/clients'
@@ -374,6 +409,7 @@ export interface FileRouteTypes {
     | '/_authenticated/reports'
     | '/_authenticated/requests'
     | '/_authenticated/settings'
+    | '/_authenticated/upgrade'
     | '/_authenticated/vitrine-settings'
     | '/_authenticated/work-orders'
     | '/c/$contractSlug'
@@ -385,6 +421,7 @@ export interface FileRouteTypes {
     | '/_authenticated/proposals/new'
     | '/p/$profileSlug/$proposalSlug'
     | '/_authenticated/proposals/'
+    | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -401,6 +438,7 @@ export interface RootRouteChildren {
   PSlugRoute: typeof PSlugRoute
   UProfileSlugRoute: typeof UProfileSlugRoute
   PProfileSlugProposalSlugRoute: typeof PProfileSlugProposalSlugRoute
+  ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -503,6 +541,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedVitrineSettingsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/upgrade': {
+      id: '/_authenticated/upgrade'
+      path: '/upgrade'
+      fullPath: '/upgrade'
+      preLoaderRoute: typeof AuthenticatedUpgradeRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/settings': {
       id: '/_authenticated/settings'
       path: '/settings'
@@ -573,6 +618,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCalculatorRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/billing': {
+      id: '/_authenticated/billing'
+      path: '/billing'
+      fullPath: '/billing'
+      preLoaderRoute: typeof AuthenticatedBillingRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/agenda': {
       id: '/_authenticated/agenda'
       path: '/agenda'
@@ -615,11 +667,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedContractIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/api/public/payments/webhook': {
+      id: '/api/public/payments/webhook'
+      path: '/api/public/payments/webhook'
+      fullPath: '/api/public/payments/webhook'
+      preLoaderRoute: typeof ApiPublicPaymentsWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 interface AuthenticatedRouteChildren {
   AuthenticatedAgendaRoute: typeof AuthenticatedAgendaRoute
+  AuthenticatedBillingRoute: typeof AuthenticatedBillingRoute
   AuthenticatedCalculatorRoute: typeof AuthenticatedCalculatorRoute
   AuthenticatedCatalogRoute: typeof AuthenticatedCatalogRoute
   AuthenticatedClientsRoute: typeof AuthenticatedClientsRoute
@@ -630,6 +690,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
   AuthenticatedRequestsRoute: typeof AuthenticatedRequestsRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedUpgradeRoute: typeof AuthenticatedUpgradeRoute
   AuthenticatedVitrineSettingsRoute: typeof AuthenticatedVitrineSettingsRoute
   AuthenticatedWorkOrdersRoute: typeof AuthenticatedWorkOrdersRoute
   AuthenticatedContractIdRoute: typeof AuthenticatedContractIdRoute
@@ -640,6 +701,7 @@ interface AuthenticatedRouteChildren {
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAgendaRoute: AuthenticatedAgendaRoute,
+  AuthenticatedBillingRoute: AuthenticatedBillingRoute,
   AuthenticatedCalculatorRoute: AuthenticatedCalculatorRoute,
   AuthenticatedCatalogRoute: AuthenticatedCatalogRoute,
   AuthenticatedClientsRoute: AuthenticatedClientsRoute,
@@ -650,6 +712,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedReportsRoute: AuthenticatedReportsRoute,
   AuthenticatedRequestsRoute: AuthenticatedRequestsRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedUpgradeRoute: AuthenticatedUpgradeRoute,
   AuthenticatedVitrineSettingsRoute: AuthenticatedVitrineSettingsRoute,
   AuthenticatedWorkOrdersRoute: AuthenticatedWorkOrdersRoute,
   AuthenticatedContractIdRoute: AuthenticatedContractIdRoute,
@@ -676,7 +739,18 @@ const rootRouteChildren: RootRouteChildren = {
   PSlugRoute: PSlugRoute,
   UProfileSlugRoute: UProfileSlugRoute,
   PProfileSlugProposalSlugRoute: PProfileSlugProposalSlugRoute,
+  ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
