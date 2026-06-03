@@ -188,6 +188,7 @@ export type Database = {
           document: string | null
           email: string | null
           id: string
+          is_lead: boolean | null
           name: string
           notes: string | null
           phone: string | null
@@ -199,6 +200,7 @@ export type Database = {
           document?: string | null
           email?: string | null
           id?: string
+          is_lead?: boolean | null
           name: string
           notes?: string | null
           phone?: string | null
@@ -210,6 +212,7 @@ export type Database = {
           document?: string | null
           email?: string | null
           id?: string
+          is_lead?: boolean | null
           name?: string
           notes?: string | null
           phone?: string | null
@@ -367,6 +370,7 @@ export type Database = {
           updated_at: string
           vitrine_hero_type: string | null
           vitrine_hero_url: string | null
+          vitrine_marquee_words: Json | null
           vitrine_pitch_text: string | null
           vitrine_pitch_video_url: string | null
           vitrine_skin: string | null
@@ -396,6 +400,7 @@ export type Database = {
           updated_at?: string
           vitrine_hero_type?: string | null
           vitrine_hero_url?: string | null
+          vitrine_marquee_words?: Json | null
           vitrine_pitch_text?: string | null
           vitrine_pitch_video_url?: string | null
           vitrine_skin?: string | null
@@ -425,6 +430,7 @@ export type Database = {
           updated_at?: string
           vitrine_hero_type?: string | null
           vitrine_hero_url?: string | null
+          vitrine_marquee_words?: Json | null
           vitrine_pitch_text?: string | null
           vitrine_pitch_video_url?: string | null
           vitrine_skin?: string | null
@@ -655,6 +661,8 @@ export type Database = {
       }
       submit_quote_request: {
         Args: {
+          p_client_address: string
+          p_client_email: string
           p_client_name: string
           p_client_phone: string
           p_items: Json
