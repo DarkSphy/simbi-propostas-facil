@@ -204,6 +204,10 @@ function NewProposal() {
         toast.error("Sua sessão expirou.");
         return; 
       }
+      if (!editingId && !canCreate("proposals")) {
+        setShowUpgrade(true);
+        return;
+      }
       
       setSaving(true);
       
