@@ -147,14 +147,16 @@ function VitrinePage() {
     } catch (err: any) {
       console.warn("Nova RPC falhou, tentando fallback");
       const { error } = await supabase.rpc("submit_quote_request", {
-        p_profile_slug: profile.profile_slug,
+        p_profile_slug: profile.profile_slug!,
         p_client_name: name,
         p_client_phone: phone,
+        p_client_email: "",
+        p_client_address: "",
         p_items: [{
           description: selectedItem.name,
           quantity: 1,
           unit_price: selectedItem.unit_price || 0
-        }]
+        }] as any,
       });
       if (!error) success = true;
     }

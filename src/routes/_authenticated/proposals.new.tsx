@@ -15,6 +15,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { toast } from "sonner";
 import { formatBRL } from "@/lib/format";
 import { Link } from "@tanstack/react-router";
+import { usePlanLimits } from "@/hooks/usePlanLimits";
+import { UpgradeGate } from "@/components/UpgradeGate";
 
 export const Route = createFileRoute("/_authenticated/proposals/new")({
   head: () => ({ meta: [{ title: "Nova proposta · Simbi" }] }),
@@ -40,6 +42,8 @@ function NewProposal() {
   const [validDays, setValidDays] = useState<string>("");
   const [items, setItems] = useState<Item[]>([{ description: "", quantity: 1, unit_price: "", is_optional: false }]);
   const [saving, setSaving] = useState(false);
+  const { canCreate, refetch: refetchLimits } = usePlanLimits();
+  const [showUpgrade, setShowUpgrade] = useState(false);
   
   // Dialogs
   const [catalogOpen, setCatalogOpen] = useState(false);
@@ -200,6 +204,10 @@ function NewProposal() {
         toast.error("Sua sessão expirou.");
         return; 
       }
+      if (!editingId && !canCreate("proposals")) {
+        setShowUpgrade(true);
+        return;
+      }
       
       setSaving(true);
       
@@ -267,6 +275,8 @@ function NewProposal() {
   }
 
   return (
+    <>
+    <UpgradeGate open={showUpgrade} onOpenChange={setShowUpgrade} resource="proposals" />
     <div className="mx-auto max-w-3xl px-5 py-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
         <div>
@@ -471,6 +481,7 @@ function NewProposal() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 
