@@ -14,7 +14,8 @@ import {
   Clock, 
   Plus, 
   XCircle,
-  FileText
+  FileText,
+  Printer
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -135,13 +136,16 @@ function FinancePage() {
   });
 
   return (
-    <div className="mx-auto max-w-6xl px-5 py-8 pb-32">
+    <div className="mx-auto max-w-6xl px-5 py-8 pb-32 print:p-0 print:pb-0">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Financeiro</h1>
           <p className="text-muted-foreground mt-1">Gestão de contas a pagar e receber</p>
         </div>
         <div className="flex gap-2">
+          <Button variant="outline" className="print:hidden hidden sm:flex" onClick={() => window.print()}>
+            <Printer className="mr-2 h-4 w-4" /> Imprimir Relatório
+          </Button>
           <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
             <DialogTrigger asChild>
               <Button onClick={() => setAddType("expense")} variant="outline" className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700">
@@ -225,8 +229,8 @@ function FinancePage() {
       </div>
 
       {/* Tabela de Transações */}
-      <div className="rounded-2xl border border-border bg-card shadow-soft">
-        <div className="border-b border-border px-5 py-4">
+      <div className="rounded-2xl border border-border bg-card shadow-soft print:shadow-none print:border-none">
+        <div className="border-b border-border px-5 py-4 print:hidden">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full max-w-md grid-cols-3">
               <TabsTrigger value="all">Todas</TabsTrigger>
@@ -234,6 +238,11 @@ function FinancePage() {
               <TabsTrigger value="expense">Despesas</TabsTrigger>
             </TabsList>
           </Tabs>
+        </div>
+        
+        <div className="hidden print:block border-b border-border px-5 py-4">
+          <h2 className="text-xl font-bold">Relatório de Contas a Pagar e Receber</h2>
+          <p className="text-sm text-gray-500">Impresso em {new Date().toLocaleDateString('pt-BR')} - {activeTab === "all" ? "Todas as movimentações" : activeTab === "income" ? "Apenas Receitas" : "Apenas Despesas"}</p>
         </div>
         
         {isLoading ? (

@@ -3,7 +3,7 @@ import {
   Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarGroupLabel,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar,
 } from "@/components/ui/sidebar";
-import { LayoutDashboard, FileText, FileSignature, Users, History, Settings, LogOut, Package, ClipboardList, Calculator, BarChart3, CalendarDays, Grid, Inbox, Store, CircleDollarSign } from "lucide-react";
+import { LayoutDashboard, FileText, FileSignature, Users, History, Settings, LogOut, Package, ClipboardList, Calculator, BarChart3, CalendarDays, Grid, Inbox, Store, CircleDollarSign, Briefcase, ReceiptText, ShoppingCart } from "lucide-react";
 import { Logo } from "./Logo";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
@@ -20,6 +20,7 @@ const navGroups = [
     label: "Vendas & Contratos",
     items: [
       { title: "Propostas", url: "/proposals", icon: FileText },
+      { title: "Pedidos", url: "/orders", icon: ShoppingCart },
       { title: "Contratos", url: "/contracts", icon: FileSignature },
       { title: "Ordem de Serviço", url: "/work-orders", icon: ClipboardList },
     ]
@@ -33,9 +34,10 @@ const navGroups = [
     ]
   },
   {
-    label: "Clientes & Dados",
+    label: "Cadastros & Dados",
     items: [
       { title: "Clientes", url: "/clients", icon: Users },
+      { title: "Fornecedores", url: "/suppliers", icon: Briefcase },
       { title: "Histórico", url: "/history", icon: History },
     ]
   },
@@ -43,6 +45,7 @@ const navGroups = [
     label: "Gestão",
     items: [
       { title: "Financeiro", url: "/finance", icon: CircleDollarSign },
+      { title: "Notas Fiscais", url: "/invoices", icon: ReceiptText },
       { title: "Calculadora", url: "/calculator", icon: Calculator },
       { title: "Relatórios", url: "/reports", icon: BarChart3 },
       { title: "Configurações", url: "/settings", icon: Settings },
