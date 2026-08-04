@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
-import { ArrowRight, Check, Smartphone, Share2, Zap, MessageCircle, FileText, BarChart3, Star, Quote, Package, Grid, Calculator, FileSignature, ClipboardList, CalendarDays, Receipt, Tag, Bell, Settings, Wrench, Shield, CheckSquare, Layers, LineChart, Banknote, Power, Crown, LayoutDashboard, Users, DollarSign, TrendingUp, Search } from "lucide-react";
+import { ArrowRight, Check, Smartphone, Share2, Zap, MessageCircle, FileText, BarChart3, Star, Quote, Package, Grid, Calculator, FileSignature, ClipboardList, CalendarDays, Receipt, Tag, Bell, Settings, Wrench, Shield, CheckSquare, Layers, LineChart, Banknote, Power, Crown, LayoutDashboard, Users, DollarSign, TrendingUp, Search, Menu, X, CheckCircle2, Sun, Moon, ShoppingCart, Store, Inbox, Briefcase, History, CircleDollarSign, ReceiptText } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -474,122 +474,227 @@ function Footer() {
 /* ---------------- Mockups ---------------- */
 
 function MockDashboardHero() {
+  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [activeMenu, setActiveMenu] = useState("dashboard");
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const navGroups = [
+    {
+      label: "Visão Geral",
+      items: [
+        { id: "dashboard", title: "Dashboard", icon: LayoutDashboard, desc: "Acompanhe suas métricas de vendas, faturamento e receba alertas inteligentes." },
+        { id: "agenda", title: "Agenda", icon: CalendarDays, desc: "Receba agendamentos 24h por dia direto da sua Vitrine, sem conflitos de horário." },
+      ]
+    },
+    {
+      label: "Vendas & Contratos",
+      items: [
+        { id: "propostas", title: "Propostas", icon: FileText, desc: "Crie orçamentos em 1 minuto e envie um link profissional para aprovação." },
+        { id: "pedidos", title: "Pedidos", icon: ShoppingCart, desc: "Controle de pedidos de venda direta e faturamento rápido." },
+        { id: "contratos", title: "Contratos", icon: FileSignature, desc: "Gere contratos automáticos com assinatura digital instantânea." },
+        { id: "os", title: "Ordem de Serviço", icon: ClipboardList, desc: "Acompanhe a execução técnica dos serviços aprovados." },
+      ]
+    },
+    {
+      label: "Catálogo & Vitrine",
+      items: [
+        { id: "produtos", title: "Produtos & Serviços", icon: Grid, desc: "Seu catálogo completo com gestão de estoque integrada que baixa automaticamente." },
+        { id: "vitrine", title: "Minha Vitrine", icon: Store, desc: "Seu link exclusivo para clientes verem seus serviços e agendarem horários." },
+        { id: "pedidos_vitrine", title: "Pedidos Vitrine", icon: Inbox, desc: "Receba leads e pedidos de orçamentos diretamente dos visitantes." },
+      ]
+    },
+    {
+      label: "Cadastros & Dados",
+      items: [
+        { id: "clientes", title: "Clientes", icon: Users, desc: "CRM completo. Saiba todo o histórico, propostas e financeiro de cada cliente." },
+        { id: "fornecedores", title: "Fornecedores", icon: Briefcase, desc: "Gestão dos seus parceiros de negócio e compras de estoque." },
+        { id: "historico", title: "Histórico", icon: History, desc: "Timeline de tudo que aconteceu na sua conta para auditoria." },
+      ]
+    },
+    {
+      label: "Gestão",
+      items: [
+        { id: "financeiro", title: "Financeiro", icon: CircleDollarSign, desc: "Contas a pagar e receber, fluxo de caixa e relatórios precisos." },
+        { id: "notas", title: "Notas Fiscais", icon: ReceiptText, desc: "Emissão de recibos e NFS-e automáticas." },
+        { id: "calculadora", title: "Calculadora", icon: Calculator, desc: "Calcule sua margem de lucro e preço de hora com precisão." },
+        { id: "relatorios", title: "Relatórios", icon: BarChart3, desc: "Gráficos detalhados sobre o crescimento da sua empresa." },
+        { id: "configuracoes", title: "Configurações", icon: Settings, desc: "Personalize cores, logo, e mensagens automáticas." },
+        { id: "assinatura", title: "Assinatura", icon: Crown, desc: "Gerencie seu plano Simbi Pro e limites de uso." },
+      ]
+    }
+  ];
+
+  const activeItem = navGroups.flatMap(g => g.items).find(i => i.id === activeMenu);
+
+  const handleMenuClick = (id: string) => {
+    setActiveMenu(id);
+    setIsMobileMenuOpen(false);
+  };
+
   return (
-    <div className="overflow-hidden rounded-xl bg-card text-left shadow-2xl relative border border-border/50 flex flex-col md:flex-row h-[500px]">
-      {/* Sidebar Mock */}
-      <div className="w-16 md:w-64 bg-muted/30 border-r border-border p-4 flex flex-col gap-2 shrink-0">
-        <div className="flex items-center gap-3 mb-6 px-2">
-          <div className="h-8 w-8 rounded-lg bg-primary/20 flex items-center justify-center text-primary font-bold">S</div>
-          <div className="font-bold text-foreground hidden md:block">Simbi Admin</div>
-        </div>
+    <div className={isDarkMode ? "dark" : ""}>
+      <div className="overflow-hidden rounded-xl bg-background text-foreground shadow-2xl relative border border-border flex h-[600px] w-full text-left font-sans transition-colors duration-300">
         
-        {[
-          { i: LayoutDashboard, t: "Dashboard", a: true },
-          { i: CalendarDays, t: "Agenda", a: false },
-          { i: FileSignature, t: "Propostas", a: false },
-          { i: Users, t: "Clientes", a: false },
-          { i: Package, t: "Estoque", a: false },
-          { i: BarChart3, t: "Financeiro", a: false },
-        ].map((item, idx) => (
-          <div key={idx} className={`flex items-center gap-3 px-3 py-2.5 rounded-lg ${item.a ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted'}`}>
-            <item.i className="h-5 w-5 shrink-0" />
-            <span className="font-medium hidden md:block">{item.t}</span>
-          </div>
-        ))}
-      </div>
-
-      {/* Main Content Mock */}
-      <div className="flex-1 flex flex-col overflow-hidden bg-background">
-        {/* Header Mock */}
-        <div className="h-16 border-b border-border flex items-center justify-between px-6 shrink-0">
-          <div className="text-xl font-bold">Resumo do Mês</div>
-          <div className="flex items-center gap-3">
-            <div className="h-8 w-48 bg-muted rounded-md hidden md:flex items-center px-3 text-muted-foreground text-sm">
-              <Search className="h-4 w-4 mr-2" /> Buscar...
+        {/* Sidebar */}
+        <div className={`absolute z-20 md:relative w-64 h-full bg-card border-r border-border flex flex-col shrink-0 transition-transform duration-300 md:translate-x-0 ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}`}>
+          <div className="flex items-center gap-3 px-4 py-5 border-b border-border/50 shrink-0">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-emerald-400 text-white font-bold text-lg shadow-[0_0_15px_rgba(42,157,143,0.4)]">S</div>
+            <div>
+              <div className="font-bold text-lg leading-tight">Simbi</div>
+              <div className="text-[9px] uppercase tracking-wider font-semibold text-muted-foreground">Do orçamento ao serviço</div>
             </div>
-            <div className="h-9 w-9 rounded-full bg-primary/20" />
+            <button className="md:hidden ml-auto p-2" onClick={() => setIsMobileMenuOpen(false)}>
+              <X className="h-5 w-5 text-muted-foreground" />
+            </button>
+          </div>
+          
+          <div className="flex-1 overflow-y-auto px-2 py-4 space-y-4">
+            {navGroups.map((group, gIdx) => (
+              <div key={gIdx}>
+                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/60 px-3 mb-2">{group.label}</div>
+                <div className="space-y-0.5">
+                  {group.items.map((item) => {
+                    const isActive = activeMenu === item.id;
+                    return (
+                      <button 
+                        key={item.id}
+                        onClick={() => handleMenuClick(item.id)}
+                        className={`w-full flex items-center gap-3 px-3 py-1.5 rounded-r-lg text-sm transition-all border-l-[3px] ${isActive ? 'bg-gradient-to-r from-primary/20 to-transparent text-foreground border-primary font-bold' : 'text-muted-foreground hover:bg-muted border-transparent hover:text-foreground font-medium'}`}
+                      >
+                        <item.icon className={`h-[1.125rem] w-[1.125rem] shrink-0 ${isActive ? 'text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.6)]' : 'opacity-70'}`} />
+                        {item.title}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="p-4 border-t border-border/50 shrink-0">
+            <div className="flex items-center gap-3 rounded-xl bg-muted/30 p-3 border border-border/50 shadow-inner">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary/80 to-primary/40 text-white font-bold shadow-md">B</div>
+              <div className="flex flex-col overflow-hidden">
+                <span className="truncate text-sm font-bold opacity-90">brunoffbernardo</span>
+                <span className="truncate text-[10px] uppercase tracking-wider text-emerald-400 font-bold">Simbi Pro</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Dashboard Cards & Content */}
-        <div className="p-6 overflow-y-auto space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Card 1 */}
-            <div className="p-5 rounded-xl border border-border bg-card shadow-sm">
-              <div className="flex items-center gap-2 text-muted-foreground mb-3">
-                <DollarSign className="h-4 w-4" />
-                <span className="text-sm font-medium">Faturamento (Mês)</span>
-              </div>
-              <div className="text-3xl font-black">R$ 12.450,00</div>
-              <div className="mt-2 text-xs font-medium text-emerald-500 flex items-center">
-                <TrendingUp className="h-3 w-3 mr-1" /> +14% em relação ao mês passado
+        {/* Main Content */}
+        <div className="flex-1 flex flex-col min-w-0 bg-background relative overflow-hidden">
+          {/* Header */}
+          <div className="h-16 border-b border-border flex items-center justify-between px-4 sm:px-6 shrink-0 bg-card/50 backdrop-blur-sm z-10">
+            <div className="flex items-center gap-3">
+              <button className="md:hidden p-2 -ml-2" onClick={() => setIsMobileMenuOpen(true)}>
+                <Menu className="h-5 w-5 text-foreground" />
+              </button>
+              <div className="text-sm text-muted-foreground hidden sm:flex items-center gap-2">
+                Simbi <ArrowRight className="h-3 w-3" /> <span className="text-foreground font-medium">Dashboard</span>
               </div>
             </div>
-            {/* Card 2 */}
-            <div className="p-5 rounded-xl border border-border bg-card shadow-sm">
-              <div className="flex items-center gap-2 text-muted-foreground mb-3">
-                <CheckSquare className="h-4 w-4" />
-                <span className="text-sm font-medium">Propostas Aprovadas</span>
+            <div className="flex items-center gap-2 sm:gap-4">
+              <div className="h-9 w-32 sm:w-64 bg-muted rounded-full hidden sm:flex items-center px-4 text-muted-foreground text-sm border border-border/50">
+                <Search className="h-4 w-4 mr-2 opacity-50" /> <span className="opacity-70 truncate">Buscar clientes, propostas ou OS...</span>
               </div>
-              <div className="text-3xl font-black">18</div>
-              <div className="mt-2 text-xs font-medium text-emerald-500 flex items-center">
-                <TrendingUp className="h-3 w-3 mr-1" /> 4 aguardando resposta
-              </div>
-            </div>
-            {/* Card 3 */}
-            <div className="p-5 rounded-xl border border-border bg-card shadow-sm">
-              <div className="flex items-center gap-2 text-muted-foreground mb-3">
-                <CalendarDays className="h-4 w-4" />
-                <span className="text-sm font-medium">Agendamentos (Hoje)</span>
-              </div>
-              <div className="text-3xl font-black">5</div>
-              <div className="mt-2 text-xs font-medium text-muted-foreground flex items-center">
-                2 novos pelo site
-              </div>
+              <Button size="sm" className="h-9 rounded-full px-4 text-xs font-bold bg-indigo-600 text-white hover:bg-indigo-700 hidden sm:flex shadow-md">+ Novo</Button>
+              
+              <button onClick={() => setIsDarkMode(!isDarkMode)} className="h-9 w-9 rounded-full hover:bg-muted flex items-center justify-center transition-colors">
+                {isDarkMode ? <Sun className="h-4 w-4 text-muted-foreground hover:text-foreground" /> : <Moon className="h-4 w-4 text-muted-foreground hover:text-foreground" />}
+              </button>
+              <button className="h-9 w-9 rounded-full hover:bg-muted flex items-center justify-center relative transition-colors">
+                <Bell className="h-4 w-4 text-muted-foreground hover:text-foreground" />
+              </button>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="border border-border rounded-xl p-5 bg-card">
-              <h3 className="font-bold mb-4">Próximos Agendamentos</h3>
-              <div className="space-y-4">
-                {[
-                  { n: "Carlos Silva", s: "Troca de Óleo", t: "09:00" },
-                  { n: "Mariana Costa", s: "Revisão Geral", t: "11:30" },
-                  { n: "Roberto Almeida", s: "Orçamento Suspensão", t: "14:00" },
-                ].map((a, i) => (
-                  <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
-                    <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">{a.n[0]}</div>
-                      <div>
-                        <div className="font-semibold text-sm">{a.n}</div>
-                        <div className="text-xs text-muted-foreground">{a.s}</div>
-                      </div>
-                    </div>
-                    <div className="font-bold text-sm bg-background px-2 py-1 rounded-md border border-border">{a.t}</div>
-                  </div>
-                ))}
+          {/* Dashboard Body */}
+          <div className="flex-1 overflow-y-auto p-4 sm:p-8 space-y-6 sm:space-y-8 relative">
+            
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-1">Olá, Bruno.</h1>
+                <p className="text-muted-foreground text-sm">Acompanhe seu desempenho e métricas de vendas.</p>
+              </div>
+              <Button className="h-10 rounded-full px-6 text-sm font-bold bg-indigo-600/10 text-indigo-400 hover:bg-indigo-600/20 border border-indigo-500/30 shadow-[0_0_15px_rgba(79,70,229,0.15)] transition-all">
+                + Nova proposta
+              </Button>
+            </div>
+
+            <div className="rounded-2xl border border-indigo-500/20 bg-indigo-500/5 p-4 sm:p-5 flex items-start gap-4">
+              <div className="h-10 w-10 shrink-0 rounded-full bg-indigo-600/20 text-indigo-400 flex items-center justify-center">
+                <Bell className="h-5 w-5" />
+              </div>
+              <div>
+                <h3 className="font-bold text-foreground mb-1">Central de Alertas</h3>
+                <p className="text-sm text-indigo-400 font-medium">Tudo sob controle! Nenhum alerta crítico no momento.</p>
               </div>
             </div>
 
-            <div className="border border-border rounded-xl p-5 bg-card flex flex-col">
-              <h3 className="font-bold mb-4">Receitas Recentes</h3>
-              <div className="flex-1 flex items-end gap-2 mt-4 opacity-70">
-                {/* Fake Bar Chart */}
-                {[40, 70, 45, 90, 65, 100, 80].map((h, i) => (
-                  <div key={i} className="w-full bg-primary/20 rounded-t-sm transition-all hover:bg-primary/50 relative group" style={{ height: `${h}%` }}>
-                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-foreground text-background text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                      R$ {h * 50}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+              {[
+                { title: "PROPOSTAS", val: "3", icon: FileText, c: "text-indigo-400" },
+                { title: "APROVADAS", val: "0", icon: CheckCircle2, c: "text-emerald-400" },
+                { title: "TICKET MÉDIO", val: "R$ 0,00", icon: TrendingUp, c: "text-muted-foreground" },
+                { title: "TOTAL APROVADO", val: "R$ 0,00", icon: DollarSign, c: "text-indigo-400" },
+              ].map((card, i) => (
+                <div key={i} className="p-4 sm:p-5 rounded-2xl border border-border/50 bg-card/50 shadow-sm flex flex-col justify-between h-28 sm:h-32 transition-transform hover:-translate-y-1 hover:border-primary/30 cursor-default">
+                  <div className="flex items-center justify-between text-muted-foreground">
+                    <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider">{card.title}</span>
+                    <div className={`h-6 w-6 rounded-md bg-background border border-border/50 flex items-center justify-center`}>
+                      <card.icon className={`h-3.5 w-3.5 ${card.c} opacity-80`} />
                     </div>
                   </div>
-                ))}
+                  <div className={`text-xl sm:text-3xl font-black ${i === 3 ? 'text-indigo-400' : 'text-foreground'}`}>{card.val}</div>
+                </div>
+              ))}
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+              <div className="lg:col-span-2 rounded-2xl border border-border/50 bg-card/50 shadow-sm p-4 sm:p-6 h-64 sm:h-80 flex flex-col border-t-[3px] border-t-indigo-500">
+                <h3 className="font-bold text-lg mb-4">Evolução do Faturamento</h3>
+                <div className="flex items-center gap-4 text-xs font-medium text-muted-foreground mb-6">
+                  <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-indigo-500" /> Faturamento Aprovado</div>
+                  <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-purple-300" /> Valor Previsto (Aguardando Aprovação)</div>
+                </div>
+                <div className="flex-1 border-b border-l border-border/30 relative">
+                  {/* Decorative chart lines */}
+                  <div className="absolute inset-0 bg-[linear-gradient(transparent_90%,rgba(128,128,128,0.05)_90%)] bg-[length:100%_25%]" />
+                  <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-indigo-500/5 to-transparent" />
+                </div>
               </div>
-              <div className="flex justify-between text-xs text-muted-foreground mt-2 border-t border-border pt-2">
-                <span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span><span>Dom</span>
+              <div className="rounded-2xl border border-border/50 bg-card/50 shadow-sm p-4 sm:p-6 h-64 sm:h-80 flex flex-col items-center justify-center text-center">
+                <h3 className="font-bold text-lg w-full text-left mb-auto">Taxa de Conversão</h3>
+                <div className="relative h-32 w-32 sm:h-40 sm:w-40 rounded-full border-[12px] sm:border-[16px] border-muted flex items-center justify-center">
+                  <div className="flex flex-col items-center">
+                    <span className="text-2xl sm:text-3xl font-black text-indigo-400">0%</span>
+                    <span className="text-[9px] sm:text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">Fechamento</span>
+                  </div>
+                </div>
               </div>
             </div>
+            
+            {/* Overlay Card for Active Feature (if not dashboard) */}
+            {activeMenu !== "dashboard" && activeItem && (
+              <div className="absolute inset-0 z-10 flex items-center justify-center p-4">
+                <div className="absolute inset-0 bg-background/70 backdrop-blur-md" onClick={() => setActiveMenu("dashboard")} />
+                <div className="relative bg-card border border-border/50 shadow-2xl rounded-3xl p-6 sm:p-10 max-w-lg w-full text-center animate-in fade-in zoom-in-95 duration-300 ring-1 ring-white/5">
+                  <div className="h-16 w-16 mx-auto rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-6 shadow-inner ring-1 ring-primary/20">
+                    <activeItem.icon className="h-8 w-8 drop-shadow-md" />
+                  </div>
+                  <h2 className="text-2xl font-black text-foreground mb-3">{activeItem.title}</h2>
+                  <p className="text-muted-foreground text-sm sm:text-base leading-relaxed mb-8">
+                    {activeItem.desc}
+                  </p>
+                  <Button onClick={() => setActiveMenu("dashboard")} className="w-full rounded-xl h-12 font-bold bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20 hover:scale-[1.02] transition-all">
+                    Incrível, entendi! <Check className="ml-2 h-5 w-5" />
+                  </Button>
+                </div>
+              </div>
+            )}
+
           </div>
-
         </div>
       </div>
     </div>
