@@ -24,9 +24,12 @@ import { Route as CContractSlugRouteImport } from './routes/c.$contractSlug'
 import { Route as AuthenticatedWorkOrdersRouteImport } from './routes/_authenticated/work-orders'
 import { Route as AuthenticatedVitrineSettingsRouteImport } from './routes/_authenticated/vitrine-settings'
 import { Route as AuthenticatedUpgradeRouteImport } from './routes/_authenticated/upgrade'
+import { Route as AuthenticatedSuppliersRouteImport } from './routes/_authenticated/suppliers'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedRequestsRouteImport } from './routes/_authenticated/requests'
 import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
+import { Route as AuthenticatedOrdersRouteImport } from './routes/_authenticated/orders'
+import { Route as AuthenticatedInvoicesRouteImport } from './routes/_authenticated/invoices'
 import { Route as AuthenticatedHistoryRouteImport } from './routes/_authenticated/history'
 import { Route as AuthenticatedFinanceRouteImport } from './routes/_authenticated/finance'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
@@ -40,6 +43,7 @@ import { Route as AuthenticatedProposalsIndexRouteImport } from './routes/_authe
 import { Route as PProfileSlugProposalSlugRouteImport } from './routes/p.$profileSlug.$proposalSlug'
 import { Route as AuthenticatedProposalsNewRouteImport } from './routes/_authenticated/proposals.new'
 import { Route as AuthenticatedProposalsIdRouteImport } from './routes/_authenticated/proposals.$id'
+import { Route as AuthenticatedOrdersNewRouteImport } from './routes/_authenticated/orders.new'
 import { Route as AuthenticatedContractIdRouteImport } from './routes/_authenticated/contract.$id'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
@@ -118,6 +122,11 @@ const AuthenticatedUpgradeRoute = AuthenticatedUpgradeRouteImport.update({
   path: '/upgrade',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedSuppliersRoute = AuthenticatedSuppliersRouteImport.update({
+  id: '/suppliers',
+  path: '/suppliers',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -131,6 +140,16 @@ const AuthenticatedRequestsRoute = AuthenticatedRequestsRouteImport.update({
 const AuthenticatedReportsRoute = AuthenticatedReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedOrdersRoute = AuthenticatedOrdersRouteImport.update({
+  id: '/orders',
+  path: '/orders',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedInvoicesRoute = AuthenticatedInvoicesRouteImport.update({
+  id: '/invoices',
+  path: '/invoices',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedHistoryRoute = AuthenticatedHistoryRouteImport.update({
@@ -202,6 +221,11 @@ const AuthenticatedProposalsIdRoute =
     path: '/proposals/$id',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedOrdersNewRoute = AuthenticatedOrdersNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AuthenticatedOrdersRoute,
+} as any)
 const AuthenticatedContractIdRoute = AuthenticatedContractIdRouteImport.update({
   id: '/contract/$id',
   path: '/contract/$id',
@@ -231,9 +255,12 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/finance': typeof AuthenticatedFinanceRoute
   '/history': typeof AuthenticatedHistoryRoute
+  '/invoices': typeof AuthenticatedInvoicesRoute
+  '/orders': typeof AuthenticatedOrdersRouteWithChildren
   '/reports': typeof AuthenticatedReportsRoute
   '/requests': typeof AuthenticatedRequestsRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/suppliers': typeof AuthenticatedSuppliersRoute
   '/upgrade': typeof AuthenticatedUpgradeRoute
   '/vitrine-settings': typeof AuthenticatedVitrineSettingsRoute
   '/work-orders': typeof AuthenticatedWorkOrdersRoute
@@ -242,6 +269,7 @@ export interface FileRoutesByFullPath {
   '/p/$slug': typeof PSlugRoute
   '/u/$profileSlug': typeof UProfileSlugRoute
   '/contract/$id': typeof AuthenticatedContractIdRoute
+  '/orders/new': typeof AuthenticatedOrdersNewRoute
   '/proposals/$id': typeof AuthenticatedProposalsIdRoute
   '/proposals/new': typeof AuthenticatedProposalsNewRoute
   '/p/$profileSlug/$proposalSlug': typeof PProfileSlugProposalSlugRoute
@@ -265,9 +293,12 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/finance': typeof AuthenticatedFinanceRoute
   '/history': typeof AuthenticatedHistoryRoute
+  '/invoices': typeof AuthenticatedInvoicesRoute
+  '/orders': typeof AuthenticatedOrdersRouteWithChildren
   '/reports': typeof AuthenticatedReportsRoute
   '/requests': typeof AuthenticatedRequestsRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/suppliers': typeof AuthenticatedSuppliersRoute
   '/upgrade': typeof AuthenticatedUpgradeRoute
   '/vitrine-settings': typeof AuthenticatedVitrineSettingsRoute
   '/work-orders': typeof AuthenticatedWorkOrdersRoute
@@ -276,6 +307,7 @@ export interface FileRoutesByTo {
   '/p/$slug': typeof PSlugRoute
   '/u/$profileSlug': typeof UProfileSlugRoute
   '/contract/$id': typeof AuthenticatedContractIdRoute
+  '/orders/new': typeof AuthenticatedOrdersNewRoute
   '/proposals/$id': typeof AuthenticatedProposalsIdRoute
   '/proposals/new': typeof AuthenticatedProposalsNewRoute
   '/p/$profileSlug/$proposalSlug': typeof PProfileSlugProposalSlugRoute
@@ -301,9 +333,12 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/finance': typeof AuthenticatedFinanceRoute
   '/_authenticated/history': typeof AuthenticatedHistoryRoute
+  '/_authenticated/invoices': typeof AuthenticatedInvoicesRoute
+  '/_authenticated/orders': typeof AuthenticatedOrdersRouteWithChildren
   '/_authenticated/reports': typeof AuthenticatedReportsRoute
   '/_authenticated/requests': typeof AuthenticatedRequestsRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/suppliers': typeof AuthenticatedSuppliersRoute
   '/_authenticated/upgrade': typeof AuthenticatedUpgradeRoute
   '/_authenticated/vitrine-settings': typeof AuthenticatedVitrineSettingsRoute
   '/_authenticated/work-orders': typeof AuthenticatedWorkOrdersRoute
@@ -312,6 +347,7 @@ export interface FileRoutesById {
   '/p/$slug': typeof PSlugRoute
   '/u/$profileSlug': typeof UProfileSlugRoute
   '/_authenticated/contract/$id': typeof AuthenticatedContractIdRoute
+  '/_authenticated/orders/new': typeof AuthenticatedOrdersNewRoute
   '/_authenticated/proposals/$id': typeof AuthenticatedProposalsIdRoute
   '/_authenticated/proposals/new': typeof AuthenticatedProposalsNewRoute
   '/p/$profileSlug/$proposalSlug': typeof PProfileSlugProposalSlugRoute
@@ -337,9 +373,12 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/finance'
     | '/history'
+    | '/invoices'
+    | '/orders'
     | '/reports'
     | '/requests'
     | '/settings'
+    | '/suppliers'
     | '/upgrade'
     | '/vitrine-settings'
     | '/work-orders'
@@ -348,6 +387,7 @@ export interface FileRouteTypes {
     | '/p/$slug'
     | '/u/$profileSlug'
     | '/contract/$id'
+    | '/orders/new'
     | '/proposals/$id'
     | '/proposals/new'
     | '/p/$profileSlug/$proposalSlug'
@@ -371,9 +411,12 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/finance'
     | '/history'
+    | '/invoices'
+    | '/orders'
     | '/reports'
     | '/requests'
     | '/settings'
+    | '/suppliers'
     | '/upgrade'
     | '/vitrine-settings'
     | '/work-orders'
@@ -382,6 +425,7 @@ export interface FileRouteTypes {
     | '/p/$slug'
     | '/u/$profileSlug'
     | '/contract/$id'
+    | '/orders/new'
     | '/proposals/$id'
     | '/proposals/new'
     | '/p/$profileSlug/$proposalSlug'
@@ -406,9 +450,12 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/finance'
     | '/_authenticated/history'
+    | '/_authenticated/invoices'
+    | '/_authenticated/orders'
     | '/_authenticated/reports'
     | '/_authenticated/requests'
     | '/_authenticated/settings'
+    | '/_authenticated/suppliers'
     | '/_authenticated/upgrade'
     | '/_authenticated/vitrine-settings'
     | '/_authenticated/work-orders'
@@ -417,6 +464,7 @@ export interface FileRouteTypes {
     | '/p/$slug'
     | '/u/$profileSlug'
     | '/_authenticated/contract/$id'
+    | '/_authenticated/orders/new'
     | '/_authenticated/proposals/$id'
     | '/_authenticated/proposals/new'
     | '/p/$profileSlug/$proposalSlug'
@@ -548,6 +596,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedUpgradeRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/suppliers': {
+      id: '/_authenticated/suppliers'
+      path: '/suppliers'
+      fullPath: '/suppliers'
+      preLoaderRoute: typeof AuthenticatedSuppliersRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/settings': {
       id: '/_authenticated/settings'
       path: '/settings'
@@ -567,6 +622,20 @@ declare module '@tanstack/react-router' {
       path: '/reports'
       fullPath: '/reports'
       preLoaderRoute: typeof AuthenticatedReportsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/orders': {
+      id: '/_authenticated/orders'
+      path: '/orders'
+      fullPath: '/orders'
+      preLoaderRoute: typeof AuthenticatedOrdersRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/invoices': {
+      id: '/_authenticated/invoices'
+      path: '/invoices'
+      fullPath: '/invoices'
+      preLoaderRoute: typeof AuthenticatedInvoicesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/history': {
@@ -660,6 +729,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProposalsIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/orders/new': {
+      id: '/_authenticated/orders/new'
+      path: '/new'
+      fullPath: '/orders/new'
+      preLoaderRoute: typeof AuthenticatedOrdersNewRouteImport
+      parentRoute: typeof AuthenticatedOrdersRoute
+    }
     '/_authenticated/contract/$id': {
       id: '/_authenticated/contract/$id'
       path: '/contract/$id'
@@ -677,6 +753,17 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedOrdersRouteChildren {
+  AuthenticatedOrdersNewRoute: typeof AuthenticatedOrdersNewRoute
+}
+
+const AuthenticatedOrdersRouteChildren: AuthenticatedOrdersRouteChildren = {
+  AuthenticatedOrdersNewRoute: AuthenticatedOrdersNewRoute,
+}
+
+const AuthenticatedOrdersRouteWithChildren =
+  AuthenticatedOrdersRoute._addFileChildren(AuthenticatedOrdersRouteChildren)
+
 interface AuthenticatedRouteChildren {
   AuthenticatedAgendaRoute: typeof AuthenticatedAgendaRoute
   AuthenticatedBillingRoute: typeof AuthenticatedBillingRoute
@@ -687,9 +774,12 @@ interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedFinanceRoute: typeof AuthenticatedFinanceRoute
   AuthenticatedHistoryRoute: typeof AuthenticatedHistoryRoute
+  AuthenticatedInvoicesRoute: typeof AuthenticatedInvoicesRoute
+  AuthenticatedOrdersRoute: typeof AuthenticatedOrdersRouteWithChildren
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
   AuthenticatedRequestsRoute: typeof AuthenticatedRequestsRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedSuppliersRoute: typeof AuthenticatedSuppliersRoute
   AuthenticatedUpgradeRoute: typeof AuthenticatedUpgradeRoute
   AuthenticatedVitrineSettingsRoute: typeof AuthenticatedVitrineSettingsRoute
   AuthenticatedWorkOrdersRoute: typeof AuthenticatedWorkOrdersRoute
@@ -709,9 +799,12 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedFinanceRoute: AuthenticatedFinanceRoute,
   AuthenticatedHistoryRoute: AuthenticatedHistoryRoute,
+  AuthenticatedInvoicesRoute: AuthenticatedInvoicesRoute,
+  AuthenticatedOrdersRoute: AuthenticatedOrdersRouteWithChildren,
   AuthenticatedReportsRoute: AuthenticatedReportsRoute,
   AuthenticatedRequestsRoute: AuthenticatedRequestsRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedSuppliersRoute: AuthenticatedSuppliersRoute,
   AuthenticatedUpgradeRoute: AuthenticatedUpgradeRoute,
   AuthenticatedVitrineSettingsRoute: AuthenticatedVitrineSettingsRoute,
   AuthenticatedWorkOrdersRoute: AuthenticatedWorkOrdersRoute,
@@ -744,3 +837,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
