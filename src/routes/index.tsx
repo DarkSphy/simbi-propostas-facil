@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
-import { ArrowRight, Check, Smartphone, Share2, Zap, MessageCircle, FileText, BarChart3, Star, Quote, Package, Grid, Calculator, FileSignature, ClipboardList, CalendarDays, Receipt, Tag, Bell, Settings, Wrench, Shield, CheckSquare, Layers, LineChart, Banknote, Power, Crown, LayoutDashboard, Users, DollarSign, TrendingUp, Search, Menu, X, CheckCircle2, Sun, Moon, ShoppingCart, Store, Inbox, Briefcase, History, CircleDollarSign, ReceiptText } from "lucide-react";
+import { ArrowRight, Check, Smartphone, Share2, Zap, MessageCircle, FileText, BarChart3, Star, Quote, Package, Grid, Calculator, FileSignature, ClipboardList, CalendarDays, Receipt, Tag, Bell, Settings, Wrench, Shield, CheckSquare, Layers, LineChart, Banknote, Power, Crown, LayoutDashboard, Users, DollarSign, TrendingUp, Search, Menu, X, CheckCircle2, Sun, Moon, ShoppingCart, Store, Inbox, Briefcase, History, CircleDollarSign, ReceiptText, ChevronDown } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -33,6 +33,7 @@ function Landing() {
       <HowItWorks />
       <Testimonials />
       <Pricing />
+      <FAQ />
       <CTA />
       <Footer />
 
@@ -893,6 +894,72 @@ function InteractiveWheel() {
               </div>
             );
           })}
+        </div>
+      </div>
+    </section>
+  );
+}
+function FAQ() {
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
+
+  const faqs = [
+    {
+      q: "O que é o Simbi?",
+      a: "O Simbi é uma plataforma de gestão 'tudo-em-um' feita exclusivamente para prestadores de serviços, autônomos e pequenos negócios. Com ele, você cria propostas, assina contratos digitais, controla o financeiro e recebe agendamentos através de uma vitrine exclusiva. Tudo pelo celular ou computador."
+    },
+    {
+      q: "Meus clientes precisam baixar algum aplicativo?",
+      a: "Não! O seu cliente não precisa baixar absolutamente nada. Você compartilha o link da sua Vitrine (ou da Proposta) e ele acessa tudo direto do navegador do celular dele, aprova orçamentos e até assina o contrato com o dedo."
+    },
+    {
+      q: "Como funciona o teste grátis?",
+      a: "Você pode criar sua conta agora mesmo e começar a testar a plataforma na prática, enviando orçamentos reais para seus clientes, sem precisar cadastrar cartão de crédito. É só entrar e usar."
+    },
+    {
+      q: "Posso cancelar quando eu quiser?",
+      a: "Com certeza. O Simbi não tem taxas de cancelamento e nem fidelidade. O plano é cobrado mensalmente, e se você decidir parar de usar, basta cancelar a assinatura direto pelo painel."
+    },
+    {
+      q: "Funciona bem no celular?",
+      a: "Sim! Construímos o Simbi pensando primeiro em quem está na rua trabalhando. Todo o sistema de gestão é extremamente rápido e responsivo em qualquer modelo de smartphone, igualzinho a um app nativo."
+    },
+    {
+      q: "Posso colocar a minha logo e as minhas cores?",
+      a: "Sim. A sua Vitrine Online, os seus Orçamentos em PDF e os Contratos terão a identidade visual do seu negócio (sua logo e a sua cor principal), transmitindo muito mais credibilidade e profissionalismo."
+    }
+  ];
+
+  return (
+    <section id="faq" className="bg-background py-24 sm:py-32">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="mx-auto max-w-4xl divide-y divide-border/50">
+          <h2 className="text-2xl font-bold leading-10 tracking-tight text-foreground text-center mb-10">Perguntas Frequentes</h2>
+          <dl className="mt-10 space-y-6 divide-y divide-border/50">
+            {faqs.map((faq, index) => (
+              <div key={index} className="pt-6">
+                <dt>
+                  <button
+                    onClick={() => setOpenIndex(openIndex === index ? null : index)}
+                    className="flex w-full items-start justify-between text-left text-foreground"
+                  >
+                    <span className="text-base font-semibold leading-7">{faq.q}</span>
+                    <span className="ml-6 flex h-7 items-center">
+                      <ChevronDown
+                        className={`h-5 w-5 transition-transform duration-300 ${openIndex === index ? "rotate-180 text-primary" : "text-muted-foreground"}`}
+                      />
+                    </span>
+                  </button>
+                </dt>
+                <div
+                  className={`grid transition-all duration-300 ease-in-out ${openIndex === index ? "grid-rows-[1fr] opacity-100 mt-4" : "grid-rows-[0fr] opacity-0 mt-0"}`}
+                >
+                  <dd className="overflow-hidden text-base leading-7 text-muted-foreground pr-12">
+                    {faq.a}
+                  </dd>
+                </div>
+              </div>
+            ))}
+          </dl>
         </div>
       </div>
     </section>
