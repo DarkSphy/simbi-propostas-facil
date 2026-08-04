@@ -481,8 +481,11 @@ export type Database = {
           linkedin_url: string | null
           logo_url: string | null
           payment_link: string | null
+          pro_expires_at: string | null
           profile_slug: string | null
+          role: string
           theme_color: string | null
+          trial_ends_at: string | null
           updated_at: string
           vitrine_hero_type: string | null
           vitrine_hero_url: string | null
@@ -511,8 +514,11 @@ export type Database = {
           linkedin_url?: string | null
           logo_url?: string | null
           payment_link?: string | null
+          pro_expires_at?: string | null
           profile_slug?: string | null
+          role?: string
           theme_color?: string | null
+          trial_ends_at?: string | null
           updated_at?: string
           vitrine_hero_type?: string | null
           vitrine_hero_url?: string | null
@@ -541,8 +547,11 @@ export type Database = {
           linkedin_url?: string | null
           logo_url?: string | null
           payment_link?: string | null
+          pro_expires_at?: string | null
           profile_slug?: string | null
+          role?: string
           theme_color?: string | null
+          trial_ends_at?: string | null
           updated_at?: string
           vitrine_hero_type?: string | null
           vitrine_hero_url?: string | null
@@ -853,6 +862,14 @@ export type Database = {
         Args: { p_selected_item_ids: string[]; p_slug: string }
         Returns: undefined
       }
+      activate_pro_by_admin: {
+        Args: { target_user_id: string }
+        Returns: undefined
+      }
+      delete_user_by_admin: {
+        Args: { target_user_id: string }
+        Returns: undefined
+      }
       get_contract_by_slug: { Args: { p_slug: string }; Returns: Json }
       get_proposal_by_slug: { Args: { p_slug: string }; Returns: Json }
       get_public_profile: { Args: { p_slug: string }; Returns: Json }
@@ -864,6 +881,7 @@ export type Database = {
         Args: { check_env?: string; feature_flag: string; user_uuid: string }
         Returns: boolean
       }
+      is_admin: { Args: { _user_id: string }; Returns: boolean }
       sign_contract_by_slug: {
         Args: { p_signature: string; p_slug: string }
         Returns: undefined
@@ -881,6 +899,14 @@ export type Database = {
       }
       update_proposal_status: {
         Args: { p_slug: string; p_status: string }
+        Returns: undefined
+      }
+      update_user_dates_by_admin: {
+        Args: {
+          p_pro_expires_at: string
+          p_trial_ends_at: string
+          target_user_id: string
+        }
         Returns: undefined
       }
     }

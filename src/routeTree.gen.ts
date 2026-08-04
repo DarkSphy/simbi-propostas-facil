@@ -17,6 +17,7 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAgendaRouteImport } from './routes/_authenticated/agenda'
 import { Route as AuthenticatedBillingRouteImport } from './routes/_authenticated/billing'
 import { Route as AuthenticatedCalculatorRouteImport } from './routes/_authenticated/calculator'
@@ -32,7 +33,6 @@ import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedRequestsRouteImport } from './routes/_authenticated/requests'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedSuppliersRouteImport } from './routes/_authenticated/suppliers'
-import { Route as AuthenticatedUpgradeRouteImport } from './routes/_authenticated/upgrade'
 import { Route as AuthenticatedVitrineSettingsRouteImport } from './routes/_authenticated/vitrine-settings'
 import { Route as AuthenticatedWorkOrdersRouteImport } from './routes/_authenticated/work-orders'
 import { Route as CContractSlugRouteImport } from './routes/c.$contractSlug'
@@ -85,6 +85,11 @@ const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedAgendaRoute = AuthenticatedAgendaRouteImport.update({
   id: '/agenda',
@@ -159,11 +164,6 @@ const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
 const AuthenticatedSuppliersRoute = AuthenticatedSuppliersRouteImport.update({
   id: '/suppliers',
   path: '/suppliers',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedUpgradeRoute = AuthenticatedUpgradeRouteImport.update({
-  id: '/upgrade',
-  path: '/upgrade',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedVitrineSettingsRoute =
@@ -246,6 +246,7 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/agenda': typeof AuthenticatedAgendaRoute
   '/billing': typeof AuthenticatedBillingRoute
   '/calculator': typeof AuthenticatedCalculatorRoute
@@ -261,7 +262,6 @@ export interface FileRoutesByFullPath {
   '/requests': typeof AuthenticatedRequestsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/suppliers': typeof AuthenticatedSuppliersRoute
-  '/upgrade': typeof AuthenticatedUpgradeRoute
   '/vitrine-settings': typeof AuthenticatedVitrineSettingsRoute
   '/work-orders': typeof AuthenticatedWorkOrdersRoute
   '/c/$contractSlug': typeof CContractSlugRoute
@@ -284,6 +284,7 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/agenda': typeof AuthenticatedAgendaRoute
   '/billing': typeof AuthenticatedBillingRoute
   '/calculator': typeof AuthenticatedCalculatorRoute
@@ -299,7 +300,6 @@ export interface FileRoutesByTo {
   '/requests': typeof AuthenticatedRequestsRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/suppliers': typeof AuthenticatedSuppliersRoute
-  '/upgrade': typeof AuthenticatedUpgradeRoute
   '/vitrine-settings': typeof AuthenticatedVitrineSettingsRoute
   '/work-orders': typeof AuthenticatedWorkOrdersRoute
   '/c/$contractSlug': typeof CContractSlugRoute
@@ -324,6 +324,7 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/agenda': typeof AuthenticatedAgendaRoute
   '/_authenticated/billing': typeof AuthenticatedBillingRoute
   '/_authenticated/calculator': typeof AuthenticatedCalculatorRoute
@@ -339,7 +340,6 @@ export interface FileRoutesById {
   '/_authenticated/requests': typeof AuthenticatedRequestsRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/suppliers': typeof AuthenticatedSuppliersRoute
-  '/_authenticated/upgrade': typeof AuthenticatedUpgradeRoute
   '/_authenticated/vitrine-settings': typeof AuthenticatedVitrineSettingsRoute
   '/_authenticated/work-orders': typeof AuthenticatedWorkOrdersRoute
   '/c/$contractSlug': typeof CContractSlugRoute
@@ -364,6 +364,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/reset-password'
     | '/terms'
+    | '/admin'
     | '/agenda'
     | '/billing'
     | '/calculator'
@@ -379,7 +380,6 @@ export interface FileRouteTypes {
     | '/requests'
     | '/settings'
     | '/suppliers'
-    | '/upgrade'
     | '/vitrine-settings'
     | '/work-orders'
     | '/c/$contractSlug'
@@ -402,6 +402,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/reset-password'
     | '/terms'
+    | '/admin'
     | '/agenda'
     | '/billing'
     | '/calculator'
@@ -417,7 +418,6 @@ export interface FileRouteTypes {
     | '/requests'
     | '/settings'
     | '/suppliers'
-    | '/upgrade'
     | '/vitrine-settings'
     | '/work-orders'
     | '/c/$contractSlug'
@@ -441,6 +441,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/reset-password'
     | '/terms'
+    | '/_authenticated/admin'
     | '/_authenticated/agenda'
     | '/_authenticated/billing'
     | '/_authenticated/calculator'
@@ -456,7 +457,6 @@ export interface FileRouteTypes {
     | '/_authenticated/requests'
     | '/_authenticated/settings'
     | '/_authenticated/suppliers'
-    | '/_authenticated/upgrade'
     | '/_authenticated/vitrine-settings'
     | '/_authenticated/work-orders'
     | '/c/$contractSlug'
@@ -546,6 +546,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/agenda': {
       id: '/_authenticated/agenda'
@@ -650,13 +657,6 @@ declare module '@tanstack/react-router' {
       path: '/suppliers'
       fullPath: '/suppliers'
       preLoaderRoute: typeof AuthenticatedSuppliersRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/upgrade': {
-      id: '/_authenticated/upgrade'
-      path: '/upgrade'
-      fullPath: '/upgrade'
-      preLoaderRoute: typeof AuthenticatedUpgradeRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/vitrine-settings': {
@@ -765,6 +765,7 @@ const AuthenticatedOrdersRouteWithChildren =
   AuthenticatedOrdersRoute._addFileChildren(AuthenticatedOrdersRouteChildren)
 
 interface AuthenticatedRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedAgendaRoute: typeof AuthenticatedAgendaRoute
   AuthenticatedBillingRoute: typeof AuthenticatedBillingRoute
   AuthenticatedCalculatorRoute: typeof AuthenticatedCalculatorRoute
@@ -780,7 +781,6 @@ interface AuthenticatedRouteChildren {
   AuthenticatedRequestsRoute: typeof AuthenticatedRequestsRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedSuppliersRoute: typeof AuthenticatedSuppliersRoute
-  AuthenticatedUpgradeRoute: typeof AuthenticatedUpgradeRoute
   AuthenticatedVitrineSettingsRoute: typeof AuthenticatedVitrineSettingsRoute
   AuthenticatedWorkOrdersRoute: typeof AuthenticatedWorkOrdersRoute
   AuthenticatedContractIdRoute: typeof AuthenticatedContractIdRoute
@@ -790,6 +790,7 @@ interface AuthenticatedRouteChildren {
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedAgendaRoute: AuthenticatedAgendaRoute,
   AuthenticatedBillingRoute: AuthenticatedBillingRoute,
   AuthenticatedCalculatorRoute: AuthenticatedCalculatorRoute,
@@ -805,7 +806,6 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedRequestsRoute: AuthenticatedRequestsRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedSuppliersRoute: AuthenticatedSuppliersRoute,
-  AuthenticatedUpgradeRoute: AuthenticatedUpgradeRoute,
   AuthenticatedVitrineSettingsRoute: AuthenticatedVitrineSettingsRoute,
   AuthenticatedWorkOrdersRoute: AuthenticatedWorkOrdersRoute,
   AuthenticatedContractIdRoute: AuthenticatedContractIdRoute,

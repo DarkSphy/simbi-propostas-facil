@@ -83,8 +83,8 @@ function AdminPage() {
     
     const { error } = await supabase.rpc("update_user_dates_by_admin", {
       target_user_id: editProfile.id,
-      p_trial_ends_at: trialEndsAt || null,
-      p_pro_expires_at: proExpiresAt || null,
+      p_trial_ends_at: (trialEndsAt || null) as unknown as string,
+      p_pro_expires_at: (proExpiresAt || null) as unknown as string,
     });
 
     if (error) {
