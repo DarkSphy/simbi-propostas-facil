@@ -344,9 +344,9 @@ function Pricing() {
     <section id="planos" className="bg-background py-24 sm:py-32 border-t border-border">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-base font-semibold leading-7 text-primary">Planos sob medida</h2>
-          <p className="mt-2 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">Cresça no seu ritmo.</p>
-          <p className="mt-4 text-lg text-muted-foreground">Comece de graça para testar e mude para o plano Profissional quando quiser transformar seu negócio.</p>
+          <h2 className="text-base font-semibold leading-7 text-primary">Plano Único</h2>
+          <p className="mt-2 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">Simples e sem surpresas.</p>
+          <p className="mt-4 text-lg text-muted-foreground">Tenha acesso a todas as ferramentas com um plano único. Sem reajustes surpresa e sem cobranças ocultas.</p>
         </div>
         
         <div className="mx-auto mt-16 max-w-lg items-center">
