@@ -20,6 +20,8 @@ export type Database = {
           created_at: string
           date: string
           description: string | null
+          guest_name: string | null
+          guest_phone: string | null
           id: string
           proposal_id: string | null
           status: string | null
@@ -33,6 +35,8 @@ export type Database = {
           created_at?: string
           date: string
           description?: string | null
+          guest_name?: string | null
+          guest_phone?: string | null
           id?: string
           proposal_id?: string | null
           status?: string | null
@@ -46,6 +50,8 @@ export type Database = {
           created_at?: string
           date?: string
           description?: string | null
+          guest_name?: string | null
+          guest_phone?: string | null
           id?: string
           proposal_id?: string | null
           status?: string | null
@@ -145,6 +151,67 @@ export type Database = {
             columns: ["category_id"]
             isOneToOne: false
             referencedRelation: "catalog_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      charge_installments: {
+        Row: {
+          amount: number
+          client_id: string
+          created_at: string
+          due_date: string
+          id: string
+          paid_at: string | null
+          recurring_charge_id: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          client_id: string
+          created_at?: string
+          due_date: string
+          id?: string
+          paid_at?: string | null
+          recurring_charge_id: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          client_id?: string
+          created_at?: string
+          due_date?: string
+          id?: string
+          paid_at?: string | null
+          recurring_charge_id?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "charge_installments_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "charge_installments_recurring_charge_id_fkey"
+            columns: ["recurring_charge_id"]
+            isOneToOne: false
+            referencedRelation: "recurring_charges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "charge_installments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -481,9 +548,11 @@ export type Database = {
           linkedin_url: string | null
           logo_url: string | null
           payment_link: string | null
+          pix_key: string | null
           pro_expires_at: string | null
           profile_slug: string | null
           role: string
+          scheduling_settings: Json | null
           theme_color: string | null
           trial_ends_at: string | null
           updated_at: string
@@ -496,6 +565,7 @@ export type Database = {
           vitrine_testimonials: Json | null
           website_url: string | null
           whatsapp: string | null
+          whatsapp_billing_message: string | null
         }
         Insert: {
           address?: string | null
@@ -514,9 +584,11 @@ export type Database = {
           linkedin_url?: string | null
           logo_url?: string | null
           payment_link?: string | null
+          pix_key?: string | null
           pro_expires_at?: string | null
           profile_slug?: string | null
           role?: string
+          scheduling_settings?: Json | null
           theme_color?: string | null
           trial_ends_at?: string | null
           updated_at?: string
@@ -529,6 +601,7 @@ export type Database = {
           vitrine_testimonials?: Json | null
           website_url?: string | null
           whatsapp?: string | null
+          whatsapp_billing_message?: string | null
         }
         Update: {
           address?: string | null
@@ -547,9 +620,11 @@ export type Database = {
           linkedin_url?: string | null
           logo_url?: string | null
           payment_link?: string | null
+          pix_key?: string | null
           pro_expires_at?: string | null
           profile_slug?: string | null
           role?: string
+          scheduling_settings?: Json | null
           theme_color?: string | null
           trial_ends_at?: string | null
           updated_at?: string
@@ -562,6 +637,7 @@ export type Database = {
           vitrine_testimonials?: Json | null
           website_url?: string | null
           whatsapp?: string | null
+          whatsapp_billing_message?: string | null
         }
         Relationships: []
       }
@@ -769,6 +845,72 @@ export type Database = {
           },
         ]
       }
+      recurring_charges: {
+        Row: {
+          active: boolean
+          amount: number
+          client_id: string
+          created_at: string
+          custom_message: string | null
+          custom_payment_link: string | null
+          custom_pix_key: string | null
+          id: string
+          interval_months: number
+          next_due_date: string
+          plan_name: string
+          start_date: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          active?: boolean
+          amount?: number
+          client_id: string
+          created_at?: string
+          custom_message?: string | null
+          custom_payment_link?: string | null
+          custom_pix_key?: string | null
+          id?: string
+          interval_months?: number
+          next_due_date: string
+          plan_name: string
+          start_date?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          active?: boolean
+          amount?: number
+          client_id?: string
+          created_at?: string
+          custom_message?: string | null
+          custom_payment_link?: string | null
+          custom_pix_key?: string | null
+          id?: string
+          interval_months?: number
+          next_due_date?: string
+          plan_name?: string
+          start_date?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recurring_charges_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recurring_charges_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       subscriptions: {
         Row: {
           cancel_at_period_end: boolean | null
@@ -866,12 +1008,29 @@ export type Database = {
         Args: { target_user_id: string }
         Returns: undefined
       }
+      book_public_appointment: {
+        Args: {
+          p_date: string
+          p_description: string
+          p_guest_name: string
+          p_guest_phone: string
+          p_profile_slug: string
+          p_time: string
+        }
+        Returns: string
+      }
       delete_user_by_admin: {
         Args: { target_user_id: string }
         Returns: undefined
       }
       get_contract_by_slug: { Args: { p_slug: string }; Returns: Json }
       get_proposal_by_slug: { Args: { p_slug: string }; Returns: Json }
+      get_public_booked_slots: {
+        Args: { p_date: string; p_profile_slug: string }
+        Returns: {
+          booked_time: string
+        }[]
+      }
       get_public_profile: { Args: { p_slug: string }; Returns: Json }
       has_active_subscription: {
         Args: { check_env?: string; user_uuid: string }
