@@ -320,6 +320,53 @@ export type Database = {
           },
         ]
       }
+      invoices: {
+        Row: {
+          client_id: string | null
+          created_at: string
+          id: string
+          invoice_number: string
+          issue_date: string
+          observations: string | null
+          status: string
+          updated_at: string
+          user_id: string
+          value: number
+        }
+        Insert: {
+          client_id?: string | null
+          created_at?: string
+          id?: string
+          invoice_number: string
+          issue_date?: string
+          observations?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+          value?: number
+        }
+        Update: {
+          client_id?: string | null
+          created_at?: string
+          id?: string
+          invoice_number?: string
+          issue_date?: string
+          observations?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notifications: {
         Row: {
           created_at: string
@@ -346,6 +393,75 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      orders: {
+        Row: {
+          client_id: string | null
+          cost_price: number
+          created_at: string
+          due_date: string | null
+          freight_value: number
+          id: string
+          material_delivered: string | null
+          material_sold: string | null
+          payment_term: string | null
+          sale_value: number
+          status: string
+          supplier_id: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          client_id?: string | null
+          cost_price?: number
+          created_at?: string
+          due_date?: string | null
+          freight_value?: number
+          id?: string
+          material_delivered?: string | null
+          material_sold?: string | null
+          payment_term?: string | null
+          sale_value?: number
+          status?: string
+          supplier_id?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          client_id?: string | null
+          cost_price?: number
+          created_at?: string
+          due_date?: string | null
+          freight_value?: number
+          id?: string
+          material_delivered?: string | null
+          material_sold?: string | null
+          payment_term?: string | null
+          sale_value?: number
+          status?: string
+          supplier_id?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -692,6 +808,42 @@ export type Database = {
         }
         Relationships: []
       }
+      suppliers: {
+        Row: {
+          address: string | null
+          created_at: string
+          document: string | null
+          email: string | null
+          id: string
+          name: string
+          phone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string
+          document?: string | null
+          email?: string | null
+          id?: string
+          name: string
+          phone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address?: string | null
+          created_at?: string
+          document?: string | null
+          email?: string | null
+          id?: string
+          name?: string
+          phone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -703,6 +855,7 @@ export type Database = {
       }
       get_contract_by_slug: { Args: { p_slug: string }; Returns: Json }
       get_proposal_by_slug: { Args: { p_slug: string }; Returns: Json }
+      get_public_profile: { Args: { p_slug: string }; Returns: Json }
       has_active_subscription: {
         Args: { check_env?: string; user_uuid: string }
         Returns: boolean
