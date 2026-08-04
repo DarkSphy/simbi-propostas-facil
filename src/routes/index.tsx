@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
-import { ArrowRight, Check, Smartphone, Share2, Zap, MessageCircle, FileText, BarChart3, Star, Quote, Package, Grid, Calculator, FileSignature, ClipboardList, CalendarDays, Receipt, Tag, Bell, Settings, Wrench, Shield, CheckSquare, Layers, LineChart, Banknote, Power, Crown } from "lucide-react";
+import { ArrowRight, Check, Smartphone, Share2, Zap, MessageCircle, FileText, BarChart3, Star, Quote, Package, Grid, Calculator, FileSignature, ClipboardList, CalendarDays, Receipt, Tag, Bell, Settings, Wrench, Shield, CheckSquare, Layers, LineChart, Banknote, Power, Crown, LayoutDashboard, Users, DollarSign, TrendingUp, Search } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -116,23 +116,23 @@ function Hero() {
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
-          <h1 className="text-5xl font-bold tracking-tight text-white sm:text-7xl">
-            A verdadeira caixa de ferramentas digital do MEI e prestador de serviços.
+          <h1 className="text-5xl font-bold tracking-tight text-white sm:text-6xl">
+            O sistema definitivo para autônomos e prestadores de serviços.
           </h1>
-          <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-white/70">
-            Esqueça a bagunça no WhatsApp e no caderno. Com o Simbi você tem vitrine online, orçamentos magnéticos, contratos, estoque e financeiro em um único aplicativo.
+          <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-white/80">
+            Do agendamento online à assinatura do contrato e controle financeiro. Gerencie todo o seu negócio em um painel profissional, sem planilhas confusas.
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Button asChild size="lg" className="h-14 rounded-full bg-primary px-8 text-base text-primary-foreground shadow-lg shadow-primary/40 glow-primary transition-all hover:bg-primary/90 hover:glow-primary-hover hover:-translate-y-0.5">
+            <Button asChild size="lg" className="h-14 rounded-full bg-primary px-8 text-base font-bold text-primary-foreground shadow-lg shadow-primary/40 transition-all hover:bg-primary/90 hover:-translate-y-0.5">
               <Link to="/register">Criar conta gratuitamente <ArrowRight className="ml-2 h-5 w-5" /></Link>
             </Button>
           </div>
-          <p className="mt-4 text-xs font-medium uppercase tracking-wider text-white/40">Não requer cartão de crédito</p>
+          <p className="mt-4 text-xs font-medium uppercase tracking-wider text-white/40">Teste sem compromisso • Cancele quando quiser</p>
         </div>
 
-        <div className="relative mx-auto mt-20 max-w-5xl">
-          <div className="rounded-2xl bg-white/5 p-2 ring-1 ring-white/10 backdrop-blur-sm lg:rounded-3xl lg:p-4">
-            <MockProposalHero />
+        <div className="relative mx-auto mt-16 max-w-6xl">
+          <div className="rounded-2xl bg-white/5 p-2 ring-1 ring-white/10 backdrop-blur-sm lg:rounded-3xl lg:p-4 shadow-2xl">
+            <MockDashboardHero />
           </div>
         </div>
       </div>
@@ -178,19 +178,21 @@ function InfiniteLogos() {
 
 function Features() {
   const items = [
-    { icon: Smartphone, title: "[ 1. Atração ] Vitrine & Catálogo", desc: "Seu link na Bio. Exiba seus serviços de forma profissional. Deixe os clientes pedirem orçamentos direto pelo catálogo, com controle de estoque automático." },
-    { icon: FileSignature, title: "[ 2. Fechamento ] Orçamentos & Contratos", desc: "O fim do orçamento de boca. Envie propostas impecáveis com aprovação em 1 clique e gere contratos com assinatura digital instantânea." },
-    { icon: ClipboardList, title: "[ 3. Execução ] CRM & Ordens de Serviço", desc: "Acompanhe tudo no funil visual. Saiba exatamente quais orçamentos estão pendentes e gere Ordens de Serviço (OS) prontas para a execução técnica." },
-    { icon: BarChart3, title: "[ 4. Gestão ] Financeiro & Agenda", desc: "Fluxo de caixa automático assim que uma proposta é aprovada, e agenda integrada para você nunca mais perder um compromisso ou esquecer uma cobrança." },
+    { icon: CalendarDays, title: "Agendamento Inteligente", desc: "Seu cliente acessa sua Vitrine, escolhe o dia e horário e agenda sozinho. O sistema bloqueia os horários ocupados para você nunca ter conflitos na agenda." },
+    { icon: FileSignature, title: "Propostas e Contratos", desc: "Crie orçamentos profissionais em segundos. O cliente aprova pelo celular e já assina o contrato digitalmente. O estoque baixa na hora." },
+    { icon: BarChart3, title: "Controle Financeiro", desc: "Acompanhe seu faturamento, fluxo de caixa, despesas e metas de forma visual. Emita recibos e saiba exatamente quanto você está lucrando." },
+    { icon: Layers, title: "CRM, CRM e Estoque", desc: "Gerencie sua carteira de clientes, fornecedores e histórico de serviços. Tenha o controle total do seu inventário de produtos e peças." },
+    { icon: ClipboardList, title: "Ordens de Serviço (OS)", desc: "Transforme orçamentos aprovados em Ordens de Serviço completas para a sua equipe técnica executar o trabalho sem falhas de comunicação." },
+    { icon: Smartphone, title: "Vitrine e Catálogo Online", desc: "Tenha um link exclusivo com a sua marca, logo e cores. Exiba seus serviços e permita que clientes solicitem orçamentos diretamente." },
   ];
 
   return (
     <section id="recursos" className="bg-background py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-base font-semibold leading-7 text-primary">Feito para quem bota a mão na massa</h2>
-          <p className="mt-2 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">Tudo o que você precisa.</p>
-          <p className="mt-4 text-lg text-muted-foreground">O Simbi consolida os 5 aplicativos que você usa hoje de forma confusa, em uma única esteira profissional e integrada.</p>
+          <h2 className="text-base font-semibold leading-7 text-primary">Tudo em um só lugar</h2>
+          <p className="mt-2 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">Gestão profissional e integrada.</p>
+          <p className="mt-4 text-lg text-muted-foreground">O Simbi substitui as planilhas, a agenda de papel e os PDFs soltos por um sistema completo de ponta a ponta.</p>
         </div>
         
         <div className="mx-auto mt-16 max-w-6xl sm:mt-20">
@@ -217,17 +219,17 @@ function HowItWorks() {
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div>
-            <h2 className="text-base font-semibold leading-7 text-primary">O fim do retrabalho</h2>
-            <p className="mt-2 text-4xl font-bold tracking-tight text-white sm:text-5xl">Canivete Suíço.</p>
+            <h2 className="text-base font-semibold leading-7 text-primary">Produtividade Máxima</h2>
+            <p className="mt-2 text-4xl font-bold tracking-tight text-white sm:text-5xl">Fluxo de Trabalho.</p>
             <p className="mt-4 text-lg text-white/70">
-              Do primeiro contato ao pagamento, o Simbi automatiza cada etapa do seu serviço.
+              Automatize as tarefas chatas e foque no que você faz de melhor: o seu serviço.
             </p>
             
             <div className="mt-10 space-y-8">
               {[
-                { title: "O cliente acessa sua Vitrine", desc: "Ele escolhe o serviço ou produto no seu link exclusivo e clica em pedir orçamento." },
-                { title: "Você envia a Proposta Mágica", desc: "Em 1 minuto, pelo celular, você aprova, envia o link e o cliente assina o contrato." },
-                { title: "O sistema faz o resto", desc: "O estoque baixa automaticamente, o financeiro atualiza e a Ordem de Serviço fica pronta para uso." }
+                { title: "O cliente acessa e agenda", desc: "Através da sua Vitrine Online, o cliente visualiza seus serviços, pede orçamentos ou agenda um horário disponível." },
+                { title: "Você cria e envia a Proposta", desc: "Em poucos cliques, o orçamento está pronto. O cliente aprova pelo celular e assina o contrato digitalmente." },
+                { title: "O painel trabalha por você", desc: "O faturamento entra no financeiro, o estoque é atualizado e as tarefas vão para a agenda automaticamente." }
               ].map((step, i) => (
                 <div key={i} className="flex gap-4">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/20 font-bold text-white">
@@ -365,11 +367,13 @@ function Pricing() {
                 <span className="text-sm font-semibold leading-6 text-primary-foreground/80">/mês</span>
               </div>
               <ul className="mt-8 space-y-3 text-sm leading-6 text-white">
-                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-emerald-300" /> <strong>Dashboard ERP Premium</strong> (Central de Alertas e Timeline)</li>
-                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-emerald-300" /> <strong>Vitrine Interativa</strong> para seus clientes</li>
-                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-emerald-300" /> <strong>Propostas e Cadastros Ilimitados</strong></li>
-                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-emerald-300" /> Personalização Total (Sua Cor, Sua Logo, Sua URL)</li>
-                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-emerald-300" /> Status de Leitura Avançado (Saiba quando o cliente viu)</li>
+                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-emerald-300" /> <strong>Dashboard de Gestão Completo</strong></li>
+                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-emerald-300" /> <strong>Agendamento Online Automático</strong> para clientes</li>
+                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-emerald-300" /> <strong>Vitrine Interativa e Catálogo</strong> com sua marca</li>
+                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-emerald-300" /> Propostas Comerciais e Ordens de Serviço (OS)</li>
+                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-emerald-300" /> Contratos com <strong>Assinatura Digital</strong></li>
+                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-emerald-300" /> Controle de Estoque e Gestão de Clientes (CRM)</li>
+                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-emerald-300" /> Controle Financeiro, Fluxo de Caixa e Recibos</li>
               </ul>
             </div>
             <Button asChild className="mt-8 w-full rounded-full h-12 bg-white text-primary hover:bg-emerald-50 shadow-xl font-bold relative z-10 text-base">
@@ -469,97 +473,123 @@ function Footer() {
 
 /* ---------------- Mockups ---------------- */
 
-function MockProposalHero() {
+function MockDashboardHero() {
   return (
-    <div className="overflow-hidden rounded-xl bg-[#fafafa] text-left shadow-2xl relative border border-white/20">
-      {/* Browser bar */}
-      <div className="flex items-center gap-2 border-b border-border/5 bg-[#f5f5f5] px-4 py-3">
-        <div className="flex gap-1.5">
-          <div className="h-3 w-3 rounded-full bg-red-400" />
-          <div className="h-3 w-3 rounded-full bg-amber-400" />
-          <div className="h-3 w-3 rounded-full bg-green-400" />
+    <div className="overflow-hidden rounded-xl bg-card text-left shadow-2xl relative border border-border/50 flex flex-col md:flex-row h-[500px]">
+      {/* Sidebar Mock */}
+      <div className="w-16 md:w-64 bg-muted/30 border-r border-border p-4 flex flex-col gap-2 shrink-0">
+        <div className="flex items-center gap-3 mb-6 px-2">
+          <div className="h-8 w-8 rounded-lg bg-primary/20 flex items-center justify-center text-primary font-bold">S</div>
+          <div className="font-bold text-foreground hidden md:block">Simbi Admin</div>
         </div>
-        <div className="ml-4 flex h-6 flex-1 items-center rounded-md bg-white px-3 text-[10px] font-medium text-gray-400 shadow-sm sm:text-xs">
-          simbi.com/p/oficina-do-joao/orcamento-civic
-        </div>
-      </div>
-      
-      {/* Proposal Content */}
-      <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6 relative">
-        <div className="absolute inset-0 z-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-40"></div>
         
-        <div className="relative z-10">
-          <div className="mb-8 flex flex-col items-center text-center">
-            <div className="h-20 w-20 flex items-center justify-center rounded-2xl bg-blue-600 text-3xl font-bold text-white shadow-xl mb-4 border-4 border-white">
-              O
+        {[
+          { i: LayoutDashboard, t: "Dashboard", a: true },
+          { i: CalendarDays, t: "Agenda", a: false },
+          { i: FileSignature, t: "Propostas", a: false },
+          { i: Users, t: "Clientes", a: false },
+          { i: Package, t: "Estoque", a: false },
+          { i: BarChart3, t: "Financeiro", a: false },
+        ].map((item, idx) => (
+          <div key={idx} className={`flex items-center gap-3 px-3 py-2.5 rounded-lg ${item.a ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted'}`}>
+            <item.i className="h-5 w-5 shrink-0" />
+            <span className="font-medium hidden md:block">{item.t}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Main Content Mock */}
+      <div className="flex-1 flex flex-col overflow-hidden bg-background">
+        {/* Header Mock */}
+        <div className="h-16 border-b border-border flex items-center justify-between px-6 shrink-0">
+          <div className="text-xl font-bold">Resumo do Mês</div>
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-48 bg-muted rounded-md hidden md:flex items-center px-3 text-muted-foreground text-sm">
+              <Search className="h-4 w-4 mr-2" /> Buscar...
             </div>
-            <h2 className="text-2xl font-black tracking-tight text-gray-900">Oficina do João</h2>
-            <div className="mt-2 rounded-full bg-blue-100 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-blue-700 border border-blue-200">Orçamento</div>
+            <div className="h-9 w-9 rounded-full bg-primary/20" />
+          </div>
+        </div>
+
+        {/* Dashboard Cards & Content */}
+        <div className="p-6 overflow-y-auto space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Card 1 */}
+            <div className="p-5 rounded-xl border border-border bg-card shadow-sm">
+              <div className="flex items-center gap-2 text-muted-foreground mb-3">
+                <DollarSign className="h-4 w-4" />
+                <span className="text-sm font-medium">Faturamento (Mês)</span>
+              </div>
+              <div className="text-3xl font-black">R$ 12.450,00</div>
+              <div className="mt-2 text-xs font-medium text-emerald-500 flex items-center">
+                <TrendingUp className="h-3 w-3 mr-1" /> +14% em relação ao mês passado
+              </div>
+            </div>
+            {/* Card 2 */}
+            <div className="p-5 rounded-xl border border-border bg-card shadow-sm">
+              <div className="flex items-center gap-2 text-muted-foreground mb-3">
+                <CheckSquare className="h-4 w-4" />
+                <span className="text-sm font-medium">Propostas Aprovadas</span>
+              </div>
+              <div className="text-3xl font-black">18</div>
+              <div className="mt-2 text-xs font-medium text-emerald-500 flex items-center">
+                <TrendingUp className="h-3 w-3 mr-1" /> 4 aguardando resposta
+              </div>
+            </div>
+            {/* Card 3 */}
+            <div className="p-5 rounded-xl border border-border bg-card shadow-sm">
+              <div className="flex items-center gap-2 text-muted-foreground mb-3">
+                <CalendarDays className="h-4 w-4" />
+                <span className="text-sm font-medium">Agendamentos (Hoje)</span>
+              </div>
+              <div className="text-3xl font-black">5</div>
+              <div className="mt-2 text-xs font-medium text-muted-foreground flex items-center">
+                2 novos pelo site
+              </div>
+            </div>
           </div>
 
-          <div className="rounded-3xl border border-gray-200 bg-white shadow-xl overflow-hidden">
-            <div className="h-2 w-full bg-blue-600" />
-            <div className="border-b border-gray-100 bg-gray-50/50 px-6 py-4 flex justify-between items-center">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Status</span>
-                <span className="rounded-full bg-blue-100/50 px-2.5 py-1 text-xs font-bold text-blue-700 border border-blue-200">Enviada</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="border border-border rounded-xl p-5 bg-card">
+              <h3 className="font-bold mb-4">Próximos Agendamentos</h3>
+              <div className="space-y-4">
+                {[
+                  { n: "Carlos Silva", s: "Troca de Óleo", t: "09:00" },
+                  { n: "Mariana Costa", s: "Revisão Geral", t: "11:30" },
+                  { n: "Roberto Almeida", s: "Orçamento Suspensão", t: "14:00" },
+                ].map((a, i) => (
+                  <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">{a.n[0]}</div>
+                      <div>
+                        <div className="font-semibold text-sm">{a.n}</div>
+                        <div className="text-xs text-muted-foreground">{a.s}</div>
+                      </div>
+                    </div>
+                    <div className="font-bold text-sm bg-background px-2 py-1 rounded-md border border-border">{a.t}</div>
+                  </div>
+                ))}
               </div>
             </div>
-            
-            <div className="p-6 sm:p-8">
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">Revisão Completa - Honda Civic</h1>
-              <p className="mt-2 text-sm text-gray-500 font-medium">Preparado para <span className="font-bold text-blue-600">Carlos Eduardo</span></p>
-              
-              <div className="mt-8 space-y-3">
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center rounded-2xl border border-gray-100 p-4 hover:border-blue-100 transition-colors gap-3">
-                  <div>
-                    <div className="font-bold text-gray-900 text-base">Troca de Óleo e Filtros</div>
-                    <div className="flex items-center gap-2 mt-1.5">
-                      <span className="rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-bold text-gray-600">Qtd: 1</span>
-                      <span className="text-xs text-gray-500 font-medium">Óleo Sintético 5W30 + Filtro de Óleo/Ar</span>
+
+            <div className="border border-border rounded-xl p-5 bg-card flex flex-col">
+              <h3 className="font-bold mb-4">Receitas Recentes</h3>
+              <div className="flex-1 flex items-end gap-2 mt-4 opacity-70">
+                {/* Fake Bar Chart */}
+                {[40, 70, 45, 90, 65, 100, 80].map((h, i) => (
+                  <div key={i} className="w-full bg-primary/20 rounded-t-sm transition-all hover:bg-primary/50 relative group" style={{ height: `${h}%` }}>
+                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-foreground text-background text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                      R$ {h * 50}
                     </div>
                   </div>
-                  <div className="text-left sm:text-right font-black text-gray-900 text-lg">R$ 450,00</div>
-                </div>
-                
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center rounded-2xl border border-gray-100 p-4 hover:border-blue-100 transition-colors gap-3">
-                  <div>
-                    <div className="font-bold text-gray-900 text-base">Kit Correia Dentada</div>
-                    <div className="flex items-center gap-2 mt-1.5">
-                      <span className="rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-bold text-gray-600">Qtd: 1</span>
-                      <span className="text-xs text-gray-500 font-medium">Peça Original + Mão de Obra</span>
-                    </div>
-                  </div>
-                  <div className="text-left sm:text-right font-black text-gray-900 text-lg">R$ 1.200,00</div>
-                </div>
-                
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center rounded-2xl border border-gray-100 p-4 hover:border-blue-100 transition-colors gap-3">
-                  <div>
-                    <div className="font-bold text-gray-900 text-base">Alinhamento e Balanceamento</div>
-                    <div className="flex items-center gap-2 mt-1.5">
-                      <span className="rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-bold text-gray-600">Qtd: 1</span>
-                      <span className="text-xs text-gray-500 font-medium">Geometria 3D Computadorizada</span>
-                    </div>
-                  </div>
-                  <div className="text-left sm:text-right font-black text-gray-900 text-lg">R$ 180,00</div>
-                </div>
+                ))}
               </div>
-              
-              <div className="mt-8 flex flex-col sm:flex-row sm:items-center justify-between rounded-2xl bg-blue-50 px-6 py-5 border border-blue-100/50">
-                <span className="text-sm font-bold uppercase tracking-wider text-blue-800">Total do Orçamento</span>
-                <span className="text-3xl font-black text-blue-600 mt-1 sm:mt-0">R$ 1.830,00</span>
-              </div>
-              
-              <div className="mt-8 grid gap-3 sm:grid-cols-2">
-                <div className="h-14 flex cursor-pointer items-center justify-center rounded-2xl border-2 border-gray-200 bg-white font-bold text-gray-400 transition-colors hover:border-red-200 hover:text-red-500">
-                  <span className="mr-2">✕</span> Recusar
-                </div>
-                <div className="h-14 flex cursor-pointer items-center justify-center rounded-2xl bg-green-600 font-bold text-white shadow-xl shadow-green-600/20 transition-all hover:-translate-y-1 hover:shadow-green-600/40">
-                  <span className="mr-2">✓</span> Aprovar Orçamento
-                </div>
+              <div className="flex justify-between text-xs text-muted-foreground mt-2 border-t border-border pt-2">
+                <span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span><span>Dom</span>
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </div>
@@ -678,10 +708,10 @@ function InteractiveWheel() {
     <section className="py-24 sm:py-40 bg-background border-t border-border overflow-hidden">
       <div className="mx-auto max-w-7xl px-6 lg:px-8 text-center">
         <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl mb-6">
-          O verdadeiro Canivete Suíço
+          Uma plataforma centralizada
         </h2>
         <p className="text-muted-foreground text-lg mb-16 max-w-2xl mx-auto">
-          Ative o Simbi e veja como dezenas de ferramentas independentes se unem em um único cérebro central para escalar o seu negócio.
+          Ative o Simbi e unifique a sua gestão. Abandone dezenas de ferramentas independentes e controle tudo em um só lugar de forma simples.
         </p>
         
         <div className="relative mx-auto w-[350px] h-[350px] sm:w-[600px] sm:h-[600px] flex items-center justify-center mt-10">
