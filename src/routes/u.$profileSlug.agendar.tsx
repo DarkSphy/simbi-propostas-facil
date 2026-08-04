@@ -15,14 +15,21 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/u/$profileSlug/agendar")({
   component: SchedulingPage,
   loader: async ({ params }) => {
-    const { data: profile, error } = await supabase
-      .from("profiles")
-      .select("id, profile_slug, name, company_name, logo_url, phone, scheduling_settings, ui_color, ui_theme")
-      .eq("profile_slug", params.profileSlug)
-      .single();
+    const { data, error } = await supabase.rpc("get_public_profile", {
+      p_slug: params.profileSlug,
+    });
 
-    if (error || !profile) throw new Error("Perfil não encontrado");
-    
+    const raw = data as any;
+    if (error || !raw) throw new Error("Perfil não encontrado");
+
+    const profile = {
+      ...raw,
+      name: raw.full_name,
+      phone: raw.whatsapp,
+      ui_color: raw.theme_color,
+      ui_theme: null as string | null,
+    };
+
     // Check if enabled
     const settings = profile.scheduling_settings as any;
     if (!settings || !settings.enabled) {
