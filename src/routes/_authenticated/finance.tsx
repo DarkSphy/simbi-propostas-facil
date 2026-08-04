@@ -36,6 +36,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { RecurringChargesTab } from "@/components/finance/RecurringChargesTab";
 
 export const Route = createFileRoute("/_authenticated/finance")({
   component: FinancePage,
@@ -232,18 +233,25 @@ function FinancePage() {
       <div className="rounded-2xl border border-border bg-card shadow-soft print:shadow-none print:border-none">
         <div className="border-b border-border px-5 py-4 print:hidden">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full max-w-md grid-cols-3">
+            <TabsList className="grid w-full max-w-2xl grid-cols-4">
               <TabsTrigger value="all">Todas</TabsTrigger>
               <TabsTrigger value="income">Receitas</TabsTrigger>
               <TabsTrigger value="expense">Despesas</TabsTrigger>
+              <TabsTrigger value="recurring">Recorrências</TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
         
-        <div className="hidden print:block border-b border-border px-5 py-4">
-          <h2 className="text-xl font-bold">Relatório de Contas a Pagar e Receber</h2>
-          <p className="text-sm text-gray-500">Impresso em {new Date().toLocaleDateString('pt-BR')} - {activeTab === "all" ? "Todas as movimentações" : activeTab === "income" ? "Apenas Receitas" : "Apenas Despesas"}</p>
-        </div>
+        {activeTab === "recurring" ? (
+          <div className="p-4 sm:p-5">
+            <RecurringChargesTab />
+          </div>
+        ) : (
+          <>
+            <div className="hidden print:block border-b border-border px-5 py-4">
+              <h2 className="text-xl font-bold">Relatório de Contas a Pagar e Receber</h2>
+              <p className="text-sm text-gray-500">Impresso em {new Date().toLocaleDateString('pt-BR')} - {activeTab === "all" ? "Todas as movimentações" : activeTab === "income" ? "Apenas Receitas" : "Apenas Despesas"}</p>
+            </div>
         
         {isLoading ? (
           <div className="p-10 text-center text-sm text-muted-foreground">Carregando…</div>
@@ -332,6 +340,8 @@ function FinancePage() {
               </tbody>
             </table>
           </div>
+        )}
+          </>
         )}
       </div>
     </div>
