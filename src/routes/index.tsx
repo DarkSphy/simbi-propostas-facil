@@ -573,9 +573,9 @@ function MockDashboardHero() {
 
           <div className="p-4 border-t border-border/50 shrink-0">
             <div className="flex items-center gap-3 rounded-xl bg-muted/30 p-3 border border-border/50 shadow-inner">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary/80 to-primary/40 text-white font-bold shadow-md">B</div>
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary/80 to-primary/40 text-white font-bold shadow-md">V</div>
               <div className="flex flex-col overflow-hidden">
-                <span className="truncate text-sm font-bold opacity-90">brunoffbernardo</span>
+                <span className="truncate text-sm font-bold opacity-90">sua.empresa</span>
                 <span className="truncate text-[10px] uppercase tracking-wider text-emerald-400 font-bold">Simbi Pro</span>
               </div>
             </div>
@@ -614,7 +614,7 @@ function MockDashboardHero() {
             
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
               <div>
-                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-1">Olá, Bruno.</h1>
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-1">Olá, [Seu Nome].</h1>
                 <p className="text-muted-foreground text-sm">Acompanhe seu desempenho e métricas de vendas.</p>
               </div>
               <Button className="h-10 rounded-full px-6 text-sm font-bold bg-indigo-600/10 text-indigo-400 hover:bg-indigo-600/20 border border-indigo-500/30 shadow-[0_0_15px_rgba(79,70,229,0.15)] transition-all">
