@@ -45,6 +45,7 @@ import { Route as AuthenticatedProposalsIndexRouteImport } from './routes/_authe
 import { Route as AuthenticatedProposalsIdRouteImport } from './routes/_authenticated/proposals.$id'
 import { Route as AuthenticatedProposalsNewRouteImport } from './routes/_authenticated/proposals.new'
 import { Route as PProfileSlugProposalSlugRouteImport } from './routes/p.$profileSlug.$proposalSlug'
+import { Route as UProfileSlugAgendarRouteImport } from './routes/u.$profileSlug.agendar'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
 const IndexRoute = IndexRouteImport.update({
@@ -231,6 +232,11 @@ const PProfileSlugProposalSlugRoute =
     path: '/p/$profileSlug/$proposalSlug',
     getParentRoute: () => rootRouteImport,
   } as any)
+const UProfileSlugAgendarRoute = UProfileSlugAgendarRouteImport.update({
+  id: '/agendar',
+  path: '/agendar',
+  getParentRoute: () => UProfileSlugRoute,
+} as any)
 const ApiPublicPaymentsWebhookRoute =
   ApiPublicPaymentsWebhookRouteImport.update({
     id: '/api/public/payments/webhook',
@@ -267,12 +273,13 @@ export interface FileRoutesByFullPath {
   '/c/$contractSlug': typeof CContractSlugRoute
   '/os/$id': typeof OsIdRoute
   '/p/$slug': typeof PSlugRoute
-  '/u/$profileSlug': typeof UProfileSlugRoute
+  '/u/$profileSlug': typeof UProfileSlugRouteWithChildren
   '/contract/$id': typeof AuthenticatedContractIdRoute
   '/orders/new': typeof AuthenticatedOrdersNewRoute
   '/proposals/$id': typeof AuthenticatedProposalsIdRoute
   '/proposals/new': typeof AuthenticatedProposalsNewRoute
   '/p/$profileSlug/$proposalSlug': typeof PProfileSlugProposalSlugRoute
+  '/u/$profileSlug/agendar': typeof UProfileSlugAgendarRoute
   '/proposals/': typeof AuthenticatedProposalsIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
@@ -305,12 +312,13 @@ export interface FileRoutesByTo {
   '/c/$contractSlug': typeof CContractSlugRoute
   '/os/$id': typeof OsIdRoute
   '/p/$slug': typeof PSlugRoute
-  '/u/$profileSlug': typeof UProfileSlugRoute
+  '/u/$profileSlug': typeof UProfileSlugRouteWithChildren
   '/contract/$id': typeof AuthenticatedContractIdRoute
   '/orders/new': typeof AuthenticatedOrdersNewRoute
   '/proposals/$id': typeof AuthenticatedProposalsIdRoute
   '/proposals/new': typeof AuthenticatedProposalsNewRoute
   '/p/$profileSlug/$proposalSlug': typeof PProfileSlugProposalSlugRoute
+  '/u/$profileSlug/agendar': typeof UProfileSlugAgendarRoute
   '/proposals': typeof AuthenticatedProposalsIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
@@ -345,12 +353,13 @@ export interface FileRoutesById {
   '/c/$contractSlug': typeof CContractSlugRoute
   '/os/$id': typeof OsIdRoute
   '/p/$slug': typeof PSlugRoute
-  '/u/$profileSlug': typeof UProfileSlugRoute
+  '/u/$profileSlug': typeof UProfileSlugRouteWithChildren
   '/_authenticated/contract/$id': typeof AuthenticatedContractIdRoute
   '/_authenticated/orders/new': typeof AuthenticatedOrdersNewRoute
   '/_authenticated/proposals/$id': typeof AuthenticatedProposalsIdRoute
   '/_authenticated/proposals/new': typeof AuthenticatedProposalsNewRoute
   '/p/$profileSlug/$proposalSlug': typeof PProfileSlugProposalSlugRoute
+  '/u/$profileSlug/agendar': typeof UProfileSlugAgendarRoute
   '/_authenticated/proposals/': typeof AuthenticatedProposalsIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
@@ -391,6 +400,7 @@ export interface FileRouteTypes {
     | '/proposals/$id'
     | '/proposals/new'
     | '/p/$profileSlug/$proposalSlug'
+    | '/u/$profileSlug/agendar'
     | '/proposals/'
     | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
@@ -429,6 +439,7 @@ export interface FileRouteTypes {
     | '/proposals/$id'
     | '/proposals/new'
     | '/p/$profileSlug/$proposalSlug'
+    | '/u/$profileSlug/agendar'
     | '/proposals'
     | '/api/public/payments/webhook'
   id:
@@ -468,6 +479,7 @@ export interface FileRouteTypes {
     | '/_authenticated/proposals/$id'
     | '/_authenticated/proposals/new'
     | '/p/$profileSlug/$proposalSlug'
+    | '/u/$profileSlug/agendar'
     | '/_authenticated/proposals/'
     | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
@@ -484,7 +496,7 @@ export interface RootRouteChildren {
   CContractSlugRoute: typeof CContractSlugRoute
   OsIdRoute: typeof OsIdRoute
   PSlugRoute: typeof PSlugRoute
-  UProfileSlugRoute: typeof UProfileSlugRoute
+  UProfileSlugRoute: typeof UProfileSlugRouteWithChildren
   PProfileSlugProposalSlugRoute: typeof PProfileSlugProposalSlugRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
@@ -743,6 +755,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PProfileSlugProposalSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/u/$profileSlug/agendar': {
+      id: '/u/$profileSlug/agendar'
+      path: '/agendar'
+      fullPath: '/u/$profileSlug/agendar'
+      preLoaderRoute: typeof UProfileSlugAgendarRouteImport
+      parentRoute: typeof UProfileSlugRoute
+    }
     '/api/public/payments/webhook': {
       id: '/api/public/payments/webhook'
       path: '/api/public/payments/webhook'
@@ -818,6 +837,18 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
   AuthenticatedRouteChildren,
 )
 
+interface UProfileSlugRouteChildren {
+  UProfileSlugAgendarRoute: typeof UProfileSlugAgendarRoute
+}
+
+const UProfileSlugRouteChildren: UProfileSlugRouteChildren = {
+  UProfileSlugAgendarRoute: UProfileSlugAgendarRoute,
+}
+
+const UProfileSlugRouteWithChildren = UProfileSlugRoute._addFileChildren(
+  UProfileSlugRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
@@ -830,7 +861,7 @@ const rootRouteChildren: RootRouteChildren = {
   CContractSlugRoute: CContractSlugRoute,
   OsIdRoute: OsIdRoute,
   PSlugRoute: PSlugRoute,
-  UProfileSlugRoute: UProfileSlugRoute,
+  UProfileSlugRoute: UProfileSlugRouteWithChildren,
   PProfileSlugProposalSlugRoute: PProfileSlugProposalSlugRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
