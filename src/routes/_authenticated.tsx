@@ -3,9 +3,10 @@ import { useEffect } from "react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { useAuth } from "@/lib/auth";
+import { useSubscription } from "@/hooks/useSubscription";
 import { NotificationBell } from "@/components/NotificationBell";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { Search, Plus, FileText, Users, Grid, ChevronRight } from "lucide-react";
+import { Search, Plus, FileText, Users, Grid, ChevronRight, AlertTriangle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,14 +24,26 @@ export const Route = createFileRoute("/_authenticated")({
 
 function AuthLayout() {
   const { user, loading } = useAuth();
+  const { daysRemaining, isAdmin, isActive, loading: subLoading } = useSubscription();
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    if (!loading && !user) navigate({ to: "/login", replace: true });
+    if (!loading && !user) {
+      navigate({ to: "/login", replace: true });
+    }
   }, [user, loading, navigate]);
 
-  if (loading || !user) {
+  useEffect(() => {
+    if (!subLoading && !isAdmin && location.pathname !== "/billing") {
+      // Se passou de 2 dias de atraso (daysRemaining < -2), bloqueia tudo e redireciona
+      if (daysRemaining < -2) {
+        navigate({ to: "/billing", replace: true });
+      }
+    }
+  }, [daysRemaining, isAdmin, subLoading, location.pathname, navigate]);
+
+  if (loading || !user || subLoading) {
     return (
       <div className="grid min-h-screen place-items-center bg-background">
         <div className="text-sm text-muted-foreground">Carregando…</div>
@@ -44,11 +57,33 @@ function AuthLayout() {
     ? pathSegments[0].charAt(0).toUpperCase() + pathSegments[0].slice(1).replace("-", " ")
     : "Visão Geral";
 
+  // Lógica do Banner de Aviso
+  let banner = null;
+  if (!isAdmin && location.pathname !== "/billing") {
+    if (daysRemaining <= 3 && daysRemaining >= 0) {
+      banner = (
+        <div className="bg-amber-500 text-amber-950 px-4 py-2 text-sm text-center font-medium flex items-center justify-center gap-2">
+          <AlertTriangle className="h-4 w-4" />
+          Seu período de acesso acaba em {daysRemaining === 0 ? "hoje" : `${daysRemaining} dia(s)`}. <Link to="/billing" className="underline font-bold ml-1">Efetue o pagamento para continuar utilizando.</Link>
+        </div>
+      );
+    } else if (daysRemaining < 0 && daysRemaining >= -2) {
+      const daysLeftToBlock = 2 + daysRemaining;
+      banner = (
+        <div className="bg-destructive text-destructive-foreground px-4 py-2 text-sm text-center font-medium flex items-center justify-center gap-2">
+          <AlertTriangle className="h-4 w-4" />
+          Seu acesso expirou. Você perderá o acesso total em {daysLeftToBlock === 0 ? "hoje" : `${daysLeftToBlock} dia(s)`} se não regularizar a situação. <Link to="/billing" className="underline font-bold ml-1">Pagar agora</Link>
+        </div>
+      );
+    }
+  }
+
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full bg-background">
         <AppSidebar />
         <div className="flex flex-1 flex-col overflow-hidden">
+          {banner}
           {/* Topbar / Command Center */}
           <header className="print:hidden sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-border/40 glass-panel px-4 shadow-sm">
             <SidebarTrigger className="text-muted-foreground hover:text-foreground" />

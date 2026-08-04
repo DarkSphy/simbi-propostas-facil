@@ -3,10 +3,11 @@ import {
   Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarGroupLabel,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar,
 } from "@/components/ui/sidebar";
-import { LayoutDashboard, FileText, FileSignature, Users, History, Settings, LogOut, Package, ClipboardList, Calculator, BarChart3, CalendarDays, Grid, Inbox, Store, CircleDollarSign, Briefcase, ReceiptText, ShoppingCart } from "lucide-react";
+import { LayoutDashboard, FileText, FileSignature, Users, History, Settings, LogOut, Package, ClipboardList, Calculator, BarChart3, CalendarDays, Grid, Inbox, Store, CircleDollarSign, Briefcase, ReceiptText, ShoppingCart, ShieldAlert } from "lucide-react";
 import { Logo } from "./Logo";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import { useSubscription } from "@/hooks/useSubscription";
 
 const navGroups = [
   {
@@ -58,6 +59,17 @@ export function AppSidebar() {
   const collapsed = state === "collapsed";
   const path = useRouterState({ select: (r) => r.location.pathname });
   const { user } = useAuth();
+  const { isAdmin } = useSubscription();
+
+  const groups = [...navGroups];
+  if (isAdmin) {
+    groups.push({
+      label: "Administração",
+      items: [
+        { title: "Painel Admin", url: "/admin", icon: ShieldAlert },
+      ]
+    });
+  }
 
   return (
     <Sidebar collapsible="icon">
@@ -71,7 +83,7 @@ export function AppSidebar() {
         </div>
       </SidebarHeader>
       <SidebarContent className="px-2">
-        {navGroups.map((group, index) => (
+        {groups.map((group, index) => (
           <SidebarGroup key={index} className="pt-2">
             {!collapsed && <SidebarGroupLabel className="text-xs font-semibold uppercase tracking-wider text-sidebar-foreground/50 px-3 mb-1">{group.label}</SidebarGroupLabel>}
             <SidebarGroupContent>
