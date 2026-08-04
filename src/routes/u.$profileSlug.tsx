@@ -30,11 +30,11 @@ function MarqueeBanner({ words }: { words: string[] }) {
 export const Route = createFileRoute("/u/$profileSlug")({
   component: VitrinePageWrapper,
   loader: async ({ params }) => {
-    const { data: profile, error } = await supabase.from("profiles")
-      .select("*")
-      .eq("profile_slug", params.profileSlug)
-      .single();
-      
+    const { data: rpcProfile, error } = await supabase.rpc("get_public_profile", {
+      p_slug: params.profileSlug,
+    });
+
+    const profile = rpcProfile as any;
     if (error || !profile) throw new Error("Perfil não encontrado");
     
     const { data: items } = await supabase.from("catalog_items")
