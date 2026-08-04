@@ -9,13 +9,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { CalendarDays, ChevronLeft, ChevronRight, Plus, MapPin, Clock, Trash2, CheckCircle2, Users, FileText } from "lucide-react";
+import { CalendarDays, ChevronLeft, ChevronRight, Plus, MapPin, Clock, Trash2, CheckCircle2, Users, FileText, Settings } from "lucide-react";
 import { toast } from "sonner";
 import { 
   format, addMonths, subMonths, startOfMonth, endOfMonth, eachDayOfInterval, 
   isSameMonth, isToday, startOfWeek, endOfWeek, parseISO, isSameDay
 } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { SchedulingSettingsModal } from "@/components/SchedulingSettingsModal";
 
 export const Route = createFileRoute("/_authenticated/agenda")({
   head: () => ({ meta: [{ title: "Agenda · Simbi" }] }),
@@ -27,6 +28,7 @@ function AgendaPage() {
   const qc = useQueryClient();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [isNewOpen, setIsNewOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   
   // Form state
@@ -183,6 +185,9 @@ function AgendaPage() {
               Lista
             </Button>
           </div>
+          <Button variant="outline" onClick={() => setIsSettingsOpen(true)}>
+            <Settings className="mr-2 h-4 w-4" /> Configurar Agendamento Online
+          </Button>
           <Button onClick={() => openNewAppointment(new Date())}>
             <Plus className="mr-2 h-4 w-4" /> Novo Compromisso
           </Button>
@@ -308,6 +313,17 @@ function AgendaPage() {
                           {apt.time && <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {apt.time.substring(0,5)}</span>}
                           {apt.clients?.name && <span className="flex items-center gap-1"><Users className="h-3 w-3" /> {apt.clients.name}</span>}
                           {apt.proposals?.title && <span className="flex items-center gap-1 text-primary/80"><FileText className="h-3 w-3" /> {apt.proposals.title}</span>}
+                          {apt.guest_name && (
+                            <span className="flex items-center gap-1 text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md font-medium text-xs border border-emerald-100">
+                              <Users className="h-3 w-3" /> 
+                              {apt.guest_name} 
+                              {apt.guest_phone && (
+                                <a href={`https://wa.me/${apt.guest_phone.replace(/\D/g, '')}`} target="_blank" rel="noreferrer" className="ml-1 underline hover:text-emerald-700" onClick={e => e.stopPropagation()}>
+                                  ({apt.guest_phone})
+                                </a>
+                              )}
+                            </span>
+                          )}
                         </div>
                         {apt.description && <p className="mt-2 text-sm text-muted-foreground line-clamp-1">{apt.description}</p>}
                       </div>
@@ -424,6 +440,14 @@ function AgendaPage() {
           </form>
         </DialogContent>
       </Dialog>
+      
+      {user && (
+        <SchedulingSettingsModal 
+          open={isSettingsOpen} 
+          onOpenChange={setIsSettingsOpen} 
+          userId={user.id} 
+        />
+      )}
     </div>
   );
 }

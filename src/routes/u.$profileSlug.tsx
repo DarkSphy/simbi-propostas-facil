@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Send, Instagram, Phone, Mail, Globe, MapPin, Search } from "lucide-react";
+import { Send, Instagram, Phone, Mail, Globe, MapPin, Search, CalendarDays } from "lucide-react";
 import { formatBRL } from "@/lib/format";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -237,9 +237,17 @@ function VitrinePage() {
             </div>
           </div>
           
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight mb-1">{profile.company_name || profile.name}</h1>
-            <p className="text-muted-foreground text-sm font-medium mb-4 whitespace-pre-wrap">{profile.vitrine_pitch_text || "Profissional independente. Entre em contato para transformar suas ideias em realidade."}</p>
+          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight mb-1">{profile.company_name || profile.name}</h1>
+              <p className="text-muted-foreground text-sm font-medium mb-4 whitespace-pre-wrap max-w-xl">{profile.vitrine_pitch_text || "Profissional independente. Entre em contato para transformar suas ideias em realidade."}</p>
+            </div>
+            
+            {profile.scheduling_settings?.enabled && (
+              <a href={`/u/${profile.profile_slug}/agendar`} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/90 shrink-0 shadow-lg animate-in slide-in-from-bottom-4">
+                <CalendarDays className="mr-2 h-4 w-4" /> Agendar Horário
+              </a>
+            )}
           </div>
         </div>
       </header>
