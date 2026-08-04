@@ -349,28 +349,7 @@ function Pricing() {
           <p className="mt-4 text-lg text-muted-foreground">Comece de graça para testar e mude para o plano Profissional quando quiser transformar seu negócio.</p>
         </div>
         
-        <div className="mx-auto mt-16 grid max-w-lg grid-cols-1 gap-8 md:max-w-4xl md:grid-cols-2 items-center">
-          {/* Free Plan */}
-          <div className="flex flex-col justify-between rounded-3xl bg-card border border-border p-8 shadow-sm">
-            <div>
-              <h3 className="text-2xl font-bold text-foreground">Básico (Grátis)</h3>
-              <p className="mt-4 text-sm leading-6 text-muted-foreground">O essencial para autônomos que querem sair do papel e enviar orçamentos digitais.</p>
-              <div className="mt-6 flex items-baseline gap-x-1">
-                <span className="text-5xl font-bold tracking-tight text-foreground">R$ 0</span>
-                <span className="text-sm font-semibold leading-6 text-muted-foreground">/para sempre</span>
-              </div>
-              <ul className="mt-8 space-y-3 text-sm leading-6 text-muted-foreground">
-                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-muted-foreground" /> Painel de Orçamentos Simples</li>
-                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-muted-foreground" /> Até 5 propostas por mês</li>
-                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-muted-foreground" /> Limite de 10 clientes e 10 itens</li>
-                <li className="flex gap-x-3"><Check className="h-6 w-5 flex-none text-muted-foreground" /> Envio rápido via link de WhatsApp</li>
-              </ul>
-            </div>
-            <Button asChild variant="outline" className="mt-8 w-full rounded-full h-12">
-              <Link to="/register">Começar grátis</Link>
-            </Button>
-          </div>
-
+        <div className="mx-auto mt-16 max-w-lg items-center">
           {/* Pro Plan */}
           <div className="flex flex-col justify-between rounded-3xl bg-gradient-to-br from-primary to-primary/80 p-8 shadow-[0_0_40px_rgba(42,157,143,0.3)] ring-1 ring-primary relative overflow-hidden transition-transform hover:-translate-y-1">
             <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-white/20 blur-2xl"></div>
@@ -394,10 +373,10 @@ function Pricing() {
               </ul>
             </div>
             <Button asChild className="mt-8 w-full rounded-full h-12 bg-white text-primary hover:bg-emerald-50 shadow-xl font-bold relative z-10 text-base">
-              <Link to="/register">Assinar Simbi Pro</Link>
+              <Link to="/register">Testar 7 dias grátis</Link>
             </Button>
             <p className="mt-4 text-xs text-center text-emerald-100/70 font-medium flex items-center justify-center gap-1.5 relative z-10">
-              <Shield className="h-3.5 w-3.5" /> Garantia incondicional de 7 dias ou seu dinheiro de volta.
+              <Shield className="h-3.5 w-3.5" /> Comece agora, sem compromisso.
             </p>
           </div>
         </div>

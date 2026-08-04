@@ -44,7 +44,7 @@ export function useSubscription() {
     fetchSub();
     if (!user) return;
     const channel = supabase
-      .channel(`profile_status:${user.id}`)
+      .channel(`profile_status:${user.id}:${Math.random()}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "profiles", filter: `id=eq.${user.id}` }, () => fetchSub())
       .subscribe();
     return () => { supabase.removeChannel(channel); };
