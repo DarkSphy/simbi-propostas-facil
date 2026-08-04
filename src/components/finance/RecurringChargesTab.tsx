@@ -145,7 +145,7 @@ export function RecurringChargesTab() {
 
     const phone = charge.clients?.phone?.replace(/\D/g, '') || "";
     
-    const url = \`https://wa.me/\${phone}?text=\${encodeURIComponent(message)}\`;
+    const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
   };
 
