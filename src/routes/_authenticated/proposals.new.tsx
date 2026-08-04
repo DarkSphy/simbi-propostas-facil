@@ -264,6 +264,7 @@ function NewProposal() {
       }
       
       queryClient.invalidateQueries({ queryKey: ["proposals"] });
+      queryClient.invalidateQueries({ queryKey: ["proposals-list"] });
       toast.success(editingId ? "Proposta atualizada!" : "Proposta enviada com sucesso!");
       navigate({ to: "/proposals" });
     } catch (e: any) {

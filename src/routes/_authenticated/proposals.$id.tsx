@@ -77,6 +77,7 @@ function ProposalDetail() {
     if (error) { toast.error(getErrorMessage(error)); return; }
     toast.success("Proposta excluída");
     qc.invalidateQueries({ queryKey: ["proposals-list"] });
+    qc.invalidateQueries({ queryKey: ["proposals"] });
     navigate({ to: "/proposals" });
   }
 
@@ -86,6 +87,7 @@ function ProposalDetail() {
     toast.success("Status atualizado!");
     qc.invalidateQueries({ queryKey: ["proposal", id] });
     qc.invalidateQueries({ queryKey: ["proposals-list"] });
+    qc.invalidateQueries({ queryKey: ["proposals"] });
   }
 
   return (
