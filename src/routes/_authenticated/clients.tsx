@@ -13,9 +13,17 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "
 import { formatBRL } from "@/lib/format";
 import { Clock, Eye, CheckCircle2, XCircle, Send, StickyNote, Activity } from "lucide-react";
 import { getErrorMessage } from "@/lib/utils/error";
+import { ClientDocuments } from "@/components/ClientDocuments";
 
 export const Route = createFileRoute("/_authenticated/clients")({
-  head: () => ({ meta: [{ title: "Clientes · Simbi" }] }),
+  head: () => ({ meta: [
+    { title: "Clientes · Simbi" },
+    { name: "description", content: "Gerencie seus clientes, documentos anexados, anotações e histórico de propostas no Simbi." },
+    { property: "og:title", content: "Clientes · Simbi" },
+    { property: "og:description", content: "Clientes, documentos e histórico de propostas organizados no Simbi." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: ClientsPage,
 });
 
@@ -36,9 +44,10 @@ function ClientsPage() {
   const { data: clients = [], isLoading } = useQuery({
     queryKey: ["clients"],
     queryFn: async () => {
+      if (!user) return [];
       const { data, error } = await supabase.from("clients")
         .select("*, proposals(status, created_at)")
-        .eq("user_id", user!.id)
+        .eq("user_id", user.id)
         .order("created_at", { ascending: false });
       if (error) throw error; return data ?? [];
     },
@@ -245,6 +254,7 @@ function ClientsPage() {
               </div>
 
               <div className="flex-1 px-6 py-6">
+                <ClientDocuments key={selectedClient.id} clientId={selectedClient.id} />
                 <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold text-muted-foreground uppercase tracking-wider">
                   <StickyNote className="h-4 w-4" /> Anotações (CRM)
                 </h3>
