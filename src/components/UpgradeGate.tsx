@@ -32,7 +32,7 @@ export function UpgradeGate({ open, onOpenChange, resource }: Props) {
           Faça upgrade para o <span className="font-semibold text-foreground">Plano Profissional</span> e tenha tudo ilimitado por <span className="font-semibold text-foreground">R$ 39,90/mês</span>.
         </p>
         <Button asChild size="lg" className="w-full">
-          <Link to="/upgrade" onClick={() => onOpenChange(false)}>
+          <Link to="/billing" onClick={() => onOpenChange(false)}>
             <Sparkles className="h-4 w-4 mr-2" /> Fazer upgrade
           </Link>
         </Button>
