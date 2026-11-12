@@ -216,6 +216,50 @@ export type Database = {
           },
         ]
       }
+      client_documents: {
+        Row: {
+          client_id: string
+          content_type: string | null
+          created_at: string
+          document_type: string
+          file_name: string
+          file_size: number
+          id: string
+          storage_path: string
+          user_id: string
+        }
+        Insert: {
+          client_id: string
+          content_type?: string | null
+          created_at?: string
+          document_type: string
+          file_name: string
+          file_size?: number
+          id?: string
+          storage_path: string
+          user_id: string
+        }
+        Update: {
+          client_id?: string
+          content_type?: string | null
+          created_at?: string
+          document_type?: string
+          file_name?: string
+          file_size?: number
+          id?: string
+          storage_path?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_documents_client_owner_fk"
+            columns: ["client_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id", "user_id"]
+          },
+        ]
+      }
       client_notes: {
         Row: {
           client_id: string | null
