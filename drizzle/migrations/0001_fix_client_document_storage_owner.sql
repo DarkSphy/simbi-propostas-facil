@@ -1,0 +1,1 @@
+ALTER POLICY client_documents_storage_insert ON storage.objects WITH CHECK (bucket_id = 'client-documents' AND (storage.foldername(name))[1] = auth.uid()::text AND EXISTS (SELECT 1 FROM public.clients c WHERE c.id::text = (storage.foldername(storage.objects.name))[2] AND c.user_id = auth.uid()));
